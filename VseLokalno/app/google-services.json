@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "193521994305",
+    "project_id": "diplomska-naloga-a66de",
+    "storage_bucket": "diplomska-naloga-a66de.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:193521994305:android:49559149995bfa25cc94c0",
+        "android_client_info": {
+          "package_name": "diplomska.naloga.vselokalno"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "193521994305-2damclq67gj5h85r61q5agh80esb56dl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "diplomska.naloga.vselokalno",
+            "certificate_hash": "0d692056dcdec4ee66f0edeb4f22285fa5125d02"
+          }
+        },
+        {
+          "client_id": "193521994305-r3fdm9v91rfdq9n463smhkdm9tcln197.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCS7NcDuoOoDS6hk0-iyK14hW0fsCh0chM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "193521994305-r3fdm9v91rfdq9n463smhkdm9tcln197.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
