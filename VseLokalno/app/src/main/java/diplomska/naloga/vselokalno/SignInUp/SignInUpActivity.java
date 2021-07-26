@@ -5,26 +5,27 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
-import android.view.View;
 
-import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import diplomska.naloga.vselokalno.R;
+import diplomska.naloga.vselokalno.DataObjects.User;
 
 public class SignInUpActivity extends AppCompatActivity {
 
 //        TAG:
     private static final String TAG = "SignInUpActivity";
-//        Firebase AUTH:
+    //        Firebase AUTH:
     public FirebaseAuth mAuth;
-
+    //    User data
+    public static User userData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in_up);
+
+        userData = new User();
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -33,9 +34,9 @@ public class SignInUpActivity extends AppCompatActivity {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.fragment_container_view_signINUP, chooseFragment)
                 .commit();
-    }
+    }// onCreate
 
     public static boolean isValidEmail(CharSequence target) {
         return target != null && android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
-    }
+    }// isValidEmail
 }

@@ -1,14 +1,6 @@
 <resources>
     <string name="app_name">VseLokalno</string>
     <string name="title_activity_sign_in_up">SignInUp</string>
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password</string>
-    <string name="action_sign_in">Sign in or register</string>
-    <string name="action_sign_in_short">Sign in</string>
-    <string name="welcome">"Welcome !"</string>
-    <string name="invalid_username">Not a valid username</string>
-    <string name="invalid_password">Password must be >5 characters</string>
-    <string name="login_failed">"Login failed"</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="zacnimo">Začnimo</string>
@@ -17,4 +9,22 @@
     <string name="vnesite_e_postni_naslov">Vnesite e-poštni naslov.</string>
     <string name="vnesite_geslo">Vnesite geslo.</string>
     <string name="vpisi_me">Vpiši me</string>
+    <string name="naprej">Naprej</string>
+    <string name="proizvajalec">Proizvajalec</string>
+    <string name="kupec">Kupec</string>
+    <string name="prijavljam_se_kot">Prijavljam se kot</string>
+    <string name="moj_e_postni_naslov_je">Moj e-poštni naslov je</string>
+    <string name="email_pojasnilo">Vnesite svoj e-poštni naslov, s katerim boste lahko dostopali do svojega profila.</string>
+    <string name="vnesite_ime">Vnesite ime.</string>
+    <string name="vnesite_priimek">Vnesite priimek.</string>
+    <string name="ime_pojasnilo">Vnesite nekaj osnovnih podatkov, s katerimi vas lahko ostali uporabniki prepoznajo.</string>
+    <string name="moje_geslo_naj_bo">Moje geslo naj bo</string>
+    <string name="ponovite_geslo">Ponovite geslo.</string>
+    <string name="z_vne_enim_geslom_se_lahko_prijavljate_v_profil">Z vnešenim geslom se lahko prijavljate v profil.</string>
+    <string name="moje_ime_je">Moje ime je</string>
+    <string name="registriraj_me">Registriraj me</string>
+    <string name="profilka_detail">Neobvezno! S profilno sliko vas ostali uporabniki lažje prepoznajo.</string>
+    <string name="izberi_sliko">Izberi sliko</string>
+    <string name="prilo_i_profilno_sliko">Priloži profilno sliko</string>
+    <string name="shared_pref_file">Vse_lokalno_shared_preferences</string>
 </resources>
