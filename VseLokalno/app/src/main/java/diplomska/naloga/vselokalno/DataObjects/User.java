@@ -44,7 +44,7 @@ public class User {
         this.password = "";
         this.lastnik_kmetije = false;
         this.narocila = new ArrayList<>();
-        use_default_pic = true;
+        this.use_default_pic = true;
     }
 
     public boolean isUse_default_pic() {

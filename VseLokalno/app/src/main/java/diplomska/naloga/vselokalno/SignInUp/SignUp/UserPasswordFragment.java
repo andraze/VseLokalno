@@ -1,39 +1,25 @@
 package diplomska.naloga.vselokalno.SignInUp.SignUp;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FirebaseFirestore;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-import diplomska.naloga.vselokalno.MainActivity;
 import diplomska.naloga.vselokalno.R;
 import diplomska.naloga.vselokalno.DataObjects.User;
+import diplomska.naloga.vselokalno.SignInUp.CreateAFarm.FarmNameFragment;
 
-import static android.app.Activity.RESULT_OK;
 import static diplomska.naloga.vselokalno.SignInUp.SignInUpActivity.userData;
 
 public class UserPasswordFragment extends Fragment {
@@ -84,18 +70,30 @@ public class UserPasswordFragment extends Fragment {
                 Toast.makeText(requireContext(), "Gesli se ne ujemata.", Toast.LENGTH_SHORT).show();
             else {
                 userData.setPassword(passwordET.getText().toString());
-                FINALChoosePhotoFragment finalChoosePhotoFragment = FINALChoosePhotoFragment.newInstance();
-                FragmentManager fragmentManager = getParentFragmentManager();
-                fragmentManager.beginTransaction()
-                        .setCustomAnimations(
-                                R.anim.enter_from_right, R.anim.exit_to_left,
-                                R.anim.enter_from_left, R.anim.exit_to_right
-                        )
-                        .replace(R.id.fragment_container_view_signINUP, finalChoosePhotoFragment)
-                        .addToBackStack(null)
-                        .commit();
-
-
+//                If user is also a farm owner we will ask for picture later and first ask to fill in data for farm.
+                if (!userData.isLastnik_kmetije()) {
+                    FINALChoosePhotoFragment finalChoosePhotoFragment = FINALChoosePhotoFragment.newInstance();
+                    FragmentManager fragmentManager = getParentFragmentManager();
+                    fragmentManager.beginTransaction()
+                            .setCustomAnimations(
+                                    R.anim.enter_from_right, R.anim.exit_to_left,
+                                    R.anim.enter_from_left, R.anim.exit_to_right
+                            )
+                            .replace(R.id.fragment_container_view_signINUP, finalChoosePhotoFragment)
+                            .addToBackStack(null)
+                            .commit();
+                } else {
+                    FarmNameFragment farmNameFragment = FarmNameFragment.newInstance();
+                    FragmentManager fragmentManager = getParentFragmentManager();
+                    fragmentManager.beginTransaction()
+                            .setCustomAnimations(
+                                    R.anim.enter_from_right, R.anim.exit_to_left,
+                                    R.anim.enter_from_left, R.anim.exit_to_right
+                            )
+                            .replace(R.id.fragment_container_view_signINUP, farmNameFragment)
+                            .addToBackStack(null)
+                            .commit();
+                }
             }
 
         });

@@ -2,6 +2,7 @@
 <resources>
     <color name="blue_dark">#032B38</color>
     <color name="blue_normal">#325462</color>
+    <color name="blue_normal_low">#D5DCDF</color>
     <color name="blue_light">#5E808F</color>
     <color name="green_dark">#02382F</color>
     <color name="green_normal">#326258</color>

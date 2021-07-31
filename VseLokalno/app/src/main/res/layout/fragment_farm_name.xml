@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="@dimen/margin_16dp"
-    tools:context=".SignInUp.SignUp.UserTypeFragment">
+    tools:context=".SignInUp.CreateAFarm.FarmNameFragment">
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/pop_to_choser_btn"
@@ -21,44 +21,37 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/pop_to_choser_btn"
         android:layout_marginTop="@dimen/margin_32dp"
-        android:text="@string/prijavljam_se_kot"
+        android:text="@string/ime_kmetije_je"
         android:textAppearance="@style/TextAppearance.AppCompat.Display2"
         android:textColor="@color/blue_normal" />
 
-    <LinearLayout
+    <View
+        android:id="@+id/center_view_farmNameFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_centerInParent="true" />
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/name_et_farmNameFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:gravity="center"
-        android:orientation="vertical">
+        android:layout_below="@id/center_view_farmNameFragment"
+        android:hint="@string/vnesite_ime"
+        android:inputType="textPersonName"
+        android:textColorHint="@color/blue_light" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_proizvajalec"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/white"
-            android:elevation="2dp"
-            android:stateListAnimator="@null"
-            android:text="@string/kmetija"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-            android:textColor="@color/blue_normal" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_kupec"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/white"
-            android:elevation="2dp"
-            android:stateListAnimator="@null"
-            android:text="@string/kupec"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-            android:textColor="@color/blue_normal" />
-
-    </LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/name_et_farmNameFragment"
+        android:layout_margin="@dimen/margin_4dp"
+        android:text="@string/farm_creator_explain"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="@color/blue_light" />
 
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/next_btn_userType"
+        android:id="@+id/next_btn_farmName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

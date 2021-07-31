@@ -3,10 +3,12 @@ package diplomska.naloga.vselokalno;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
+import android.view.View;
+import android.widget.EditText;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -15,8 +17,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import diplomska.naloga.vselokalno.DataObjects.ImageSaver;
 import diplomska.naloga.vselokalno.DataObjects.User;
 import diplomska.naloga.vselokalno.SignInUp.SignInUpActivity;
 
@@ -35,6 +39,12 @@ public class MainActivity extends AppCompatActivity {
     public FirebaseFirestore db;
     //    Firebase storage:
     public FirebaseStorage storage;
+    //    Other variables:
+    public static final String[] allTimes = {"07:00-08:00", "08:00-09:00", "09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-13:00", "13:00-14:00",
+            "14:00-15:00", "15:00-16:00", "16:00-17:00", "17:00-18:00", "18:00-19:00", "19:00-20:00", "20:00-21:00"};
+    public static final int[] timeIDs = {R.id.time_7_8, R.id.time_8_9, R.id.time_9_10, R.id.time_10_11, R.id.time_11_12, R.id.time_12_13, R.id.time_13_14,
+            R.id.time_14_15, R.id.time_15_16, R.id.time_16_17, R.id.time_17_18, R.id.time_18_19, R.id.time_19_20, R.id.time_20_21};
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,28 +84,11 @@ public class MainActivity extends AppCompatActivity {
                     .addOnFailureListener(e -> makeLogW(TAG, "(updateUI) ERROR getting document user.\n" + e.getMessage()))
                     .addOnSuccessListener(documentSnapshot -> {
                         appUser = documentSnapshot.toObject(User.class);
-                        if (appUser != null)
+                        if (appUser != null) {
                             makeLogD(TAG, "(updateUI) success, got user:\n" + appUser.toString());
-                        else
+                        } else {
                             makeLogW(TAG, "User came back NULL!");
-                    });
-            storage.getReference().child(currentUser.getUid()).getDownloadUrl()
-                    .addOnSuccessListener(uri -> {
-//                        Save to local storage
-                        try {
-                            Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
-                            ImageSaver imageSaver = new ImageSaver(this);
-                            imageSaver.setDirectoryName("Vse Lokalno");
-                            imageSaver.setFileName(currentUser.getUid());
-                            imageSaver.save(bitmap);
-                            makeLogD(TAG, "(updateUI) Image saved successfully.");
-                        } catch (IOException e) {
-                            e.printStackTrace();
                         }
-                    })
-                    .addOnFailureListener(exception -> {
-                        // Handle any errors
-                        makeLogW(TAG, "(updateUI) ERROR\n" + exception.getMessage());
                     });
 
         }
@@ -112,6 +105,42 @@ public class MainActivity extends AppCompatActivity {
     public static void makeLogI(String TAG, String Message) {
         Log.i(TAG, Message);
     } // makeLogI
+
+    public void signOut(View view) {
+        mAuth.signOut();
+        Intent restart = new Intent(this, MainActivity.class);
+        startActivity(restart);
+        finish();
+    } // signOut
+
+    public void findLoc(View view) {
+        EditText et = findViewById(R.id.eT);
+        getLocationFromAddress(et.getText().toString());
+    } //findLoc
+
+    public Map<String, Object> getLocationFromAddress(String strAddress) {
+        Map<String, Object> latLon = new HashMap<>();
+        latLon.put("lat", 46.056946);
+        latLon.put("lon", 14.505751);
+        Geocoder coder = new Geocoder(this);
+        List<Address> address;
+        try {
+            address = coder.getFromLocationName(strAddress, 5);
+            for (Address a : address) {
+                makeLogD(TAG, "(getLocationFromAddress) LAT: " + a.getLatitude() + " LON: " + a.getLongitude());
+            }
+            if (address == null) {
+                return latLon;
+            }
+            Address location = address.get(0);
+            latLon.put("lat", location.getLatitude());
+            latLon.put("lon", location.getLongitude());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return latLon;
+    } // getLocationFromAddress
 }
 
-// TODO NEXT TIME: add farm, test sign in/up, making account + using pic, ..., start on map
+// TODO NEXT TIME: add to vse kmetije, start on map

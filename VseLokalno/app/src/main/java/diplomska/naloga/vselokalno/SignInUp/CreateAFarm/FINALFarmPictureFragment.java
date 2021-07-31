@@ -1,9 +1,18 @@
-package diplomska.naloga.vselokalno.SignInUp.SignUp;
+package diplomska.naloga.vselokalno.SignInUp.CreateAFarm;
+
+import static android.app.Activity.RESULT_OK;
+import static diplomska.naloga.vselokalno.MainActivity.makeLogD;
+import static diplomska.naloga.vselokalno.MainActivity.makeLogW;
+import static diplomska.naloga.vselokalno.SignInUp.SignInUpActivity.farmData;
+import static diplomska.naloga.vselokalno.SignInUp.SignInUpActivity.userData;
 
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.fragment.app.Fragment;
@@ -15,25 +24,29 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import diplomska.naloga.vselokalno.DataObjects.User;
 import diplomska.naloga.vselokalno.MainActivity;
 import diplomska.naloga.vselokalno.R;
 
-import static android.app.Activity.RESULT_OK;
-import static diplomska.naloga.vselokalno.MainActivity.makeLogD;
-import static diplomska.naloga.vselokalno.MainActivity.makeLogW;
-import static diplomska.naloga.vselokalno.SignInUp.SignInUpActivity.userData;
-
-public class FINALChoosePhotoFragment extends Fragment {
+public class FINALFarmPictureFragment extends Fragment {
 
     //    Views
     AppCompatImageView imageView;
@@ -47,6 +60,8 @@ public class FINALChoosePhotoFragment extends Fragment {
     String TAG = "FINALChoosePhotoFragment";
     //    Other variables
     boolean photo_changed = false;
+    //    Firebase firestore DB
+    FirebaseFirestore db;
 
     @Override
     public void onStart() {
@@ -54,24 +69,25 @@ public class FINALChoosePhotoFragment extends Fragment {
         mAuth = FirebaseAuth.getInstance();
     } // onStart
 
-    public FINALChoosePhotoFragment() {
+    public FINALFarmPictureFragment() {
         // Required empty public constructor
     }
 
-    public static FINALChoosePhotoFragment newInstance() {
-        return new FINALChoosePhotoFragment();
+    public static FINALFarmPictureFragment newInstance() {
+        return new FINALFarmPictureFragment();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        db = FirebaseFirestore.getInstance();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_final_choose_photo, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_final_farm_picture, container, false);
         imageView = rootView.findViewById(R.id.image_holder);
 //        Cancel
         FloatingActionButton cancelBtn = rootView.findViewById(R.id.pop_to_choser_btn);
@@ -83,7 +99,7 @@ public class FINALChoosePhotoFragment extends Fragment {
         MaterialButton choosePhotoButton = rootView.findViewById(R.id.choose_photo);
         choosePhotoButton.setOnClickListener(v -> openGallery());
 //        Next
-        MaterialButton nexBtn = rootView.findViewById(R.id.register_me_btn);
+        MaterialButton nexBtn = rootView.findViewById(R.id.create_a_farm_btn);
         nexBtn.setOnClickListener(v -> createAccount());
         return rootView;
     } // onCreateView
@@ -107,7 +123,7 @@ public class FINALChoosePhotoFragment extends Fragment {
                                 Toast.LENGTH_SHORT).show();
                     }
                 });
-    }
+    } // createAccount
 
     public void updateUI(FirebaseUser user) {
         if (!photo_changed) {
@@ -135,21 +151,46 @@ public class FINALChoosePhotoFragment extends Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
+    } // updateUI
 
     private void makeUser(FirebaseUser user) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("Uporabniki").document(user.getUid()).set(userData).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 makeLogD("UserPasswordFragment", "(makeUser) user created!");
-                Intent toMainActivity = new Intent(requireContext(), MainActivity.class);
-                startActivity(toMainActivity);
-                requireActivity().finish();
+                makeFarm(user);
             } else {
                 makeLogW("UserPasswordFragment", "(makeUser) " + task.getException());
             }
         });
-    }
+    } // makeUser
+
+    private void makeFarm(FirebaseUser user) {
+        farmData.setKoordinate_kmetije(getLocationFromAddress(farmData.getNaslov_kmetije()));
+        db.collection("Kmetije").document(user.getUid()).set(farmData).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                makeLogD("UserPasswordFragment", "(makeFarm) farm created!");
+                addTooAllFarmList();
+            } else {
+                makeLogW("UserPasswordFragment", "(makeFarm) " + task.getException());
+            }
+        });
+    } // makeFarm
+
+    private void addTooAllFarmList() {
+        DocumentReference allFarmsDocument = db.collection("Kmetije").document("Vse_kmetije");
+        Map<String, Object> shortDataFarm = farmData.getKoordinate_kmetije();
+        shortDataFarm.put("ime_kmetije", farmData.getIme_kmetije());
+        allFarmsDocument.update("seznam_vseh_kmetij", FieldValue.arrayUnion(shortDataFarm))
+                .addOnSuccessListener(unused -> {
+                    makeLogD(TAG, "(addToAllFarmList) addition successful.");
+                    Intent toMainActivity = new Intent(requireContext(), MainActivity.class);
+                    startActivity(toMainActivity);
+                    requireActivity().finish();
+                })
+                .addOnFailureListener(e -> {
+                    makeLogW(TAG, "(addToAllFarmList) addition failure.\n" + e.getMessage());
+                });
+    } // addTooAllFarmList
 
     private void openGallery() {
         Intent gallery = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI);
@@ -167,4 +208,25 @@ public class FINALChoosePhotoFragment extends Fragment {
             } else makeLogW(TAG, "(onActivityResult) data == null!");
         }
     } // onActivityResult
+
+    public Map<String, Object> getLocationFromAddress(String strAddress) {
+        Map<String, Object> latLon = new HashMap<>();
+        latLon.put("lat", 46.056946);
+        latLon.put("lon", 14.505751);
+        Geocoder coder = new Geocoder(requireContext());
+        List<Address> address;
+        try {
+            address = coder.getFromLocationName(strAddress, 5);
+            if (address == null) {
+                return latLon;
+            }
+            Address location = address.get(0);
+            latLon.put("lat", location.getLatitude());
+            latLon.put("lon", location.getLongitude());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return latLon;
+    } // getLocationFromAddress
 }

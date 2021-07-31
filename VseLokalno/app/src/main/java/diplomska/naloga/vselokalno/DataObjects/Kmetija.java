@@ -13,12 +13,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Kmetija ima isti ID kot uporanik, ki je lastnil kmetije.
  * public String ime_kmetije
  * public String naslov_kmetije
  * public String naslov_dostave
  * public String opis_kmetije
- * public String lastnik ... email uporabnika, ki je lastnik kmetije.
- * public Map<String, Object> cas_dostave ... npr: {"pom": ["10:00-11:00", "11:00-12:00"]}
+ * public Map<String, boolean[14]> cas_prevzema ... npr: {"pon": ["10:00-11:00", "11:00-12:00"]}
  * public Map<String, Object> koordinate_kmetije ... npr: {"lat": 45.65154123, "lan": 22.85636531}
  * public ArrayList<Narocilo> narocila ... vsebuje objekt Narocilo ki je podrazred tega razreda
  * public Map<String, Object> ponudbe_cene ... npr: {"Mleko": 3.5}
@@ -38,8 +38,7 @@ public class Kmetija {
     public String naslov_kmetije;
     public String naslov_dostave;
     public String opis_kmetije;
-    public String lastnik;
-    public Map<String, Object> cas_dostave;
+    public Map<String, ArrayList<Boolean>> cas_prevzema;
     public Map<String, Object> koordinate_kmetije;
     public ArrayList<Narocilo> narocila;
     public Map<String, Object> ponudbe_cene;
@@ -51,8 +50,7 @@ public class Kmetija {
         this.naslov_kmetije = "";
         this.naslov_dostave = "";
         this.opis_kmetije = "";
-        this.lastnik = "";
-        this.cas_dostave = new HashMap<>();
+        this.cas_prevzema = new HashMap<>();
         this.koordinate_kmetije = new HashMap<>();
         this.narocila = new ArrayList<>();
         this.ponudbe_cene = new HashMap<>();
@@ -60,12 +58,12 @@ public class Kmetija {
         this.ponudbe_zaloge = new HashMap<>();
     }
 
-    public Kmetija(String ime_kmetije, String naslov_kmetije, String naslov_dostave, String opis_kmetije, Map<String, Object> cas_dostave, Map<String, Object> koordinate_kmetije, ArrayList<Narocilo> narocila, Map<String, Object> ponudbe_cene, Map<String, Object> ponudbe_enote, Map<String, Object> ponudbe_zaloge) {
+    public Kmetija(String ime_kmetije, String naslov_kmetije, String naslov_dostave, String opis_kmetije, Map<String, ArrayList<Boolean>> cas_prevzema, Map<String, Object> koordinate_kmetije, ArrayList<Narocilo> narocila, Map<String, Object> ponudbe_cene, Map<String, Object> ponudbe_enote, Map<String, Object> ponudbe_zaloge) {
         this.ime_kmetije = ime_kmetije;
         this.naslov_kmetije = naslov_kmetije;
         this.naslov_dostave = naslov_dostave;
         this.opis_kmetije = opis_kmetije;
-        this.cas_dostave = cas_dostave;
+        this.cas_prevzema = cas_prevzema;
         this.koordinate_kmetije = koordinate_kmetije;
         this.narocila = narocila;
         this.ponudbe_cene = ponudbe_cene;
@@ -105,12 +103,12 @@ public class Kmetija {
         this.opis_kmetije = opis_kmetije;
     }
 
-    public Map<String, Object> getCas_dostave() {
-        return cas_dostave;
+    public Map<String, ArrayList<Boolean>> getCas_prevzema() {
+        return cas_prevzema;
     }
 
-    public void setCas_dostave(Map<String, Object> cas_dostave) {
-        this.cas_dostave = cas_dostave;
+    public void setCas_prevzema(Map<String, ArrayList<Boolean>> cas_prevzema) {
+        this.cas_prevzema = cas_prevzema;
     }
 
     public Map<String, Object> getKoordinate_kmetije() {
@@ -171,14 +169,6 @@ public class Kmetija {
 
     public void addPonudbe_enote(String izdelek, Object enota) {
         this.ponudbe_enote.put(izdelek, enota);
-    }
-
-    public String getLastnik() {
-        return lastnik;
-    }
-
-    public void setLastnik(String lastnik) {
-        this.lastnik = lastnik;
     }
 
     /**
