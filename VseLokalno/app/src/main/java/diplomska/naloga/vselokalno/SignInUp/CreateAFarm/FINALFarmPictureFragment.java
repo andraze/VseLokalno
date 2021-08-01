@@ -12,7 +12,6 @@ import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.fragment.app.Fragment;
@@ -24,8 +23,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -178,7 +175,7 @@ public class FINALFarmPictureFragment extends Fragment {
 
     private void addTooAllFarmList() {
         DocumentReference allFarmsDocument = db.collection("Kmetije").document("Vse_kmetije");
-        Map<String, Object> shortDataFarm = farmData.getKoordinate_kmetije();
+        Map<String, String> shortDataFarm = farmData.getKoordinate_kmetije();
         shortDataFarm.put("ime_kmetije", farmData.getIme_kmetije());
         allFarmsDocument.update("seznam_vseh_kmetij", FieldValue.arrayUnion(shortDataFarm))
                 .addOnSuccessListener(unused -> {
@@ -187,9 +184,7 @@ public class FINALFarmPictureFragment extends Fragment {
                     startActivity(toMainActivity);
                     requireActivity().finish();
                 })
-                .addOnFailureListener(e -> {
-                    makeLogW(TAG, "(addToAllFarmList) addition failure.\n" + e.getMessage());
-                });
+                .addOnFailureListener(e -> makeLogW(TAG, "(addToAllFarmList) addition failure.\n" + e.getMessage()));
     } // addTooAllFarmList
 
     private void openGallery() {
@@ -209,10 +204,10 @@ public class FINALFarmPictureFragment extends Fragment {
         }
     } // onActivityResult
 
-    public Map<String, Object> getLocationFromAddress(String strAddress) {
-        Map<String, Object> latLon = new HashMap<>();
-        latLon.put("lat", 46.056946);
-        latLon.put("lon", 14.505751);
+    public Map<String, String> getLocationFromAddress(String strAddress) {
+        Map<String, String> latLon = new HashMap<>();
+        latLon.put("lat", "46.056946");
+        latLon.put("lon", "14.505751");
         Geocoder coder = new Geocoder(requireContext());
         List<Address> address;
         try {
@@ -221,8 +216,8 @@ public class FINALFarmPictureFragment extends Fragment {
                 return latLon;
             }
             Address location = address.get(0);
-            latLon.put("lat", location.getLatitude());
-            latLon.put("lon", location.getLongitude());
+            latLon.put("lat", String.valueOf(location.getLatitude()));
+            latLon.put("lon", String.valueOf(location.getLongitude()));
 
         } catch (IOException e) {
             e.printStackTrace();

@@ -1,6 +1,7 @@
 package diplomska.naloga.vselokalno;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 
 import android.content.Intent;
 import android.location.Address;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import diplomska.naloga.vselokalno.DataObjects.User;
+import diplomska.naloga.vselokalno.FarmLookup.Map.MapFragment;
 import diplomska.naloga.vselokalno.SignInUp.SignInUpActivity;
 
 
@@ -126,9 +128,6 @@ public class MainActivity extends AppCompatActivity {
         List<Address> address;
         try {
             address = coder.getFromLocationName(strAddress, 5);
-            for (Address a : address) {
-                makeLogD(TAG, "(getLocationFromAddress) LAT: " + a.getLatitude() + " LON: " + a.getLongitude());
-            }
             if (address == null) {
                 return latLon;
             }
@@ -141,6 +140,19 @@ public class MainActivity extends AppCompatActivity {
         }
         return latLon;
     } // getLocationFromAddress
+
+    public void openMap(View view) {
+        MapFragment mapFragment = new MapFragment();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .setCustomAnimations(
+                        R.anim.enter_from_right, R.anim.exit_to_left,
+                        R.anim.enter_from_left, R.anim.exit_to_right
+                )
+                .replace(R.id.main_fragment_container, mapFragment)
+                .addToBackStack(null)
+                .commit();
+    }
 }
 
-// TODO NEXT TIME: add to vse kmetije, start on map
+// TODO NEXT TIME: start on map

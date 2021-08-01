@@ -19,7 +19,7 @@ import java.util.Map;
  * public String naslov_dostave
  * public String opis_kmetije
  * public Map<String, boolean[14]> cas_prevzema ... npr: {"pon": ["10:00-11:00", "11:00-12:00"]}
- * public Map<String, Object> koordinate_kmetije ... npr: {"lat": 45.65154123, "lan": 22.85636531}
+ * public Map<String, String> koordinate_kmetije ... npr: {"lat": 45.65154123, "lan": 22.85636531}
  * public ArrayList<Narocilo> narocila ... vsebuje objekt Narocilo ki je podrazred tega razreda
  * public Map<String, Object> ponudbe_cene ... npr: {"Mleko": 3.5}
  * public Map<String, Object> ponudbe_enote ... npr: {"Mleko": liter}
@@ -39,7 +39,7 @@ public class Kmetija {
     public String naslov_dostave;
     public String opis_kmetije;
     public Map<String, ArrayList<Boolean>> cas_prevzema;
-    public Map<String, Object> koordinate_kmetije;
+    public Map<String, String> koordinate_kmetije;
     public ArrayList<Narocilo> narocila;
     public Map<String, Object> ponudbe_cene;
     public Map<String, Object> ponudbe_enote;
@@ -56,19 +56,6 @@ public class Kmetija {
         this.ponudbe_cene = new HashMap<>();
         this.ponudbe_enote = new HashMap<>();
         this.ponudbe_zaloge = new HashMap<>();
-    }
-
-    public Kmetija(String ime_kmetije, String naslov_kmetije, String naslov_dostave, String opis_kmetije, Map<String, ArrayList<Boolean>> cas_prevzema, Map<String, Object> koordinate_kmetije, ArrayList<Narocilo> narocila, Map<String, Object> ponudbe_cene, Map<String, Object> ponudbe_enote, Map<String, Object> ponudbe_zaloge) {
-        this.ime_kmetije = ime_kmetije;
-        this.naslov_kmetije = naslov_kmetije;
-        this.naslov_dostave = naslov_dostave;
-        this.opis_kmetije = opis_kmetije;
-        this.cas_prevzema = cas_prevzema;
-        this.koordinate_kmetije = koordinate_kmetije;
-        this.narocila = narocila;
-        this.ponudbe_cene = ponudbe_cene;
-        this.ponudbe_enote = ponudbe_enote;
-        this.ponudbe_zaloge = ponudbe_zaloge;
     }
 
     public String getIme_kmetije() {
@@ -111,11 +98,11 @@ public class Kmetija {
         this.cas_prevzema = cas_prevzema;
     }
 
-    public Map<String, Object> getKoordinate_kmetije() {
+    public Map<String, String> getKoordinate_kmetije() {
         return koordinate_kmetije;
     }
 
-    public void setKoordinate_kmetije(Map<String, Object> koordinate_kmetije) {
+    public void setKoordinate_kmetije(Map<String, String> koordinate_kmetije) {
         this.koordinate_kmetije = koordinate_kmetije;
     }
 
