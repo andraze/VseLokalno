@@ -59,4 +59,7 @@
     <string name="_16_00_17_00">16:00–17:00</string>
     <string name="_17_00_18_00">17:00–18:00</string>
     <string name="_18_00_19_00">18:00–19:00</string>
+    <string name="zemljevid">Zemljevid</string>
+    <string name="kmetije">Kmetije</string>
+    <string name="uporabnik">Uporabnik</string>
 </resources>

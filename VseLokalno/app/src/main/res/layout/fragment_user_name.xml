@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="@dimen/margin_16dp"
+    android:layout_margin="@dimen/dp_16"
     tools:context=".SignInUp.SignUp.UserNameFragment">
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -20,7 +20,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/pop_to_choser_btn"
-        android:layout_marginTop="@dimen/margin_32dp"
+        android:layout_marginTop="@dimen/dp_32"
         android:text="@string/moje_ime_je"
         android:textAppearance="@style/TextAppearance.AppCompat.Display2"
         android:textColor="@color/blue_normal" />
@@ -53,7 +53,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/surrname_et_userNameFragment"
-        android:layout_margin="@dimen/margin_4dp"
+        android:layout_margin="@dimen/dp_4"
         android:text="@string/ime_pojasnilo"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textColor="@color/blue_light" />

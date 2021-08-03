@@ -18,10 +18,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import diplomska.naloga.vselokalno.DataObjects.AllFarms;
 import diplomska.naloga.vselokalno.DataObjects.User;
 import diplomska.naloga.vselokalno.FarmLookup.Map.MapFragment;
 import diplomska.naloga.vselokalno.SignInUp.SignInUpActivity;
@@ -46,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
             "14:00-15:00", "15:00-16:00", "16:00-17:00", "17:00-18:00", "18:00-19:00", "19:00-20:00", "20:00-21:00"};
     public static final int[] timeIDs = {R.id.time_7_8, R.id.time_8_9, R.id.time_9_10, R.id.time_10_11, R.id.time_11_12, R.id.time_12_13, R.id.time_13_14,
             R.id.time_14_15, R.id.time_15_16, R.id.time_16_17, R.id.time_17_18, R.id.time_18_19, R.id.time_19_20, R.id.time_20_21};
+    public static ArrayList<Map<String, String>> allFarmsDataShort;
 
 
     @Override
@@ -88,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
                         appUser = documentSnapshot.toObject(User.class);
                         if (appUser != null) {
                             makeLogD(TAG, "(updateUI) success, got user:\n" + appUser.toString());
+                            getAllFarmData();
                         } else {
                             makeLogW(TAG, "User came back NULL!");
                         }
@@ -95,6 +99,28 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }// updateUI
+
+    private void getAllFarmData() {
+        DocumentReference allFarmsDocRef = db.collection("Kmetije").document("Vse_kmetije");
+        allFarmsDocRef.get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    // Success
+                    if (documentSnapshot.exists()) {
+                        makeLogD(TAG, "(getAllFarmData) Got document: " + documentSnapshot.getId());
+                        AllFarms allFarms = documentSnapshot.toObject(AllFarms.class);
+                        if (allFarms != null) {
+                            allFarmsDataShort = allFarms.getSeznam_vseh_kmetij();
+                            openMap();
+                        }
+                    } else {
+                        makeLogW(TAG, "(getAllFarmData) No such document!");
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    // Fail
+                    makeLogW(TAG, "(getAllFarmData) got FAIL with:\n" + e.getMessage());
+                });
+    }
 
     public static void makeLogD(String TAG, String Message) {
         Log.d(TAG, Message);
@@ -114,11 +140,6 @@ public class MainActivity extends AppCompatActivity {
         startActivity(restart);
         finish();
     } // signOut
-
-    public void findLoc(View view) {
-        EditText et = findViewById(R.id.eT);
-        getLocationFromAddress(et.getText().toString());
-    } //findLoc
 
     public Map<String, Object> getLocationFromAddress(String strAddress) {
         Map<String, Object> latLon = new HashMap<>();
@@ -141,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
         return latLon;
     } // getLocationFromAddress
 
-    public void openMap(View view) {
+    public void openMap() {
         MapFragment mapFragment = new MapFragment();
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
@@ -152,7 +173,5 @@ public class MainActivity extends AppCompatActivity {
                 .replace(R.id.main_fragment_container, mapFragment)
                 .addToBackStack(null)
                 .commit();
-    }
+    } // openMap
 }
-
-// TODO NEXT TIME: start on map

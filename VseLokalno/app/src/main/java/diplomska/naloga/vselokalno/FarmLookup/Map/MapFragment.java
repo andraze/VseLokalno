@@ -1,5 +1,6 @@
 package diplomska.naloga.vselokalno.FarmLookup.Map;
 
+import static diplomska.naloga.vselokalno.MainActivity.allFarmsDataShort;
 import static diplomska.naloga.vselokalno.MainActivity.makeLogD;
 import static diplomska.naloga.vselokalno.MainActivity.makeLogW;
 
@@ -37,14 +38,11 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Objects;
 
-import diplomska.naloga.vselokalno.DataObjects.AllFarms;
 import diplomska.naloga.vselokalno.R;
 import im.delight.android.location.SimpleLocation;
 
@@ -52,8 +50,6 @@ public class MapFragment extends Fragment implements GoogleMap.OnInfoWindowClick
 
     // TAG:
     private static final String TAG = "MapFragment";
-    // Firebase firestore database:
-    private FirebaseFirestore db;
     // Google map:
     private GoogleMap mMap;
     // Location settings request:
@@ -93,10 +89,10 @@ public class MapFragment extends Fragment implements GoogleMap.OnInfoWindowClick
             LatLng MyLocation = new LatLng(LAT, LON);
             MarkerOptions marker = new MarkerOptions().position(MyLocation);
 
-            showFarms1();
+            showFarms();
 
             // Changing marker icon
-            marker.icon(vectorToBitmap(R.drawable.ic_map_my_location));
+            marker.icon(vectorToBitmap(R.drawable.ic_current_location));
             mMap.addMarker(marker);
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(MyLocation, 12));
         } // onMapReady
@@ -160,7 +156,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnInfoWindowClick
                     requestPermissionID
             );
         }
-    }
+    } // onViewCreated
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -175,55 +171,31 @@ public class MapFragment extends Fragment implements GoogleMap.OnInfoWindowClick
             }
             restartApp();
         }
-    }
+    } // onActivityResult
 
     @Override
     public void onInfoWindowClick(@NonNull Marker marker) {
-        // TODO
+        // TODO show details about the selected marker/farm.
     } // onInfoWindowClick
 
-    private void showFarms1() {
-        db = FirebaseFirestore.getInstance();
-        DocumentReference allFarmsDocRef = db.collection("Kmetije").document("Vse_kmetije");
-        allFarmsDocRef.get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    // Success
-                    if (documentSnapshot.exists()) {
-                        makeLogD(TAG, "(showFarms1) Got document: " + documentSnapshot.getId());
-                        AllFarms allFarms = documentSnapshot.toObject(AllFarms.class);
-                        if (allFarms != null) {
-                            farmsList = allFarms.getSeznam_vseh_kmetij();
-                            showFarms2();
-                        }
-                    } else {
-                        makeLogW(TAG, "(showFarms1) No such document!");
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    // Fail
-                    makeLogW(TAG, "(showFarms1) got FAIL with:\n" + e.getMessage());
-                });
-    } // showFarms1
-
-    private void showFarms2() {
+    private void showFarms() {
         mMap.setInfoWindowAdapter(new CustomInfoWindowAdaper(requireActivity()));
-        for (Map<String, String> farm : farmsList) {
+        for (Map<String, String> farm : allFarmsDataShort) {
             LatLng latLngOfFarm = null;
             if (farm.get("lat") == null || farm.get("lon") == null)
-                makeLogW(TAG, "(showFarms2) lat or lon == null!");
+                makeLogW(TAG, "(showFarms) lat or lon == null!");
             latLngOfFarm = new LatLng(Double.parseDouble(Objects.requireNonNull(farm.get("lat"))), Double.parseDouble(Objects.requireNonNull(farm.get("lon"))));
-            makeLogD(TAG, "(showFarms2) " + latLngOfFarm.toString());
+            makeLogD(TAG, "(showFarms) " + latLngOfFarm.toString());
 
             Marker farmMarker = mMap.addMarker(
                     new MarkerOptions()
                             .position(latLngOfFarm)
                             .title(farm.get("ime_kmetije"))
-                    // .snippet(thisActivity.getAvg_score() + "★")
-                    // .icon(vectorToBitmap(R.drawable.ic_farm))
+                            // .snippet(thisActivity.getAvg_score() + "★")
+                            .icon(vectorToBitmap(R.drawable.ic_map_farm))
             );
             farmMarkers.add(farmMarker);
         }
-
     } // showFarms2
 
     @Override

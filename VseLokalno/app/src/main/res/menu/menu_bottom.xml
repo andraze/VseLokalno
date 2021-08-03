@@ -1,0 +1,18 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/map_menu"
+        android:icon="@drawable/ic_gpc_location_menu"
+        android:title="@string/zemljevid"
+        app:cnb_iconColor="@color/blue_normal" />
+    <item
+        android:id="@+id/list_menu"
+        android:icon="@drawable/ic_kmetija_menu"
+        android:title="@string/kmetije"
+        app:cnb_iconColor="@color/blue_normal" />
+    <item
+        android:id="@+id/user_menu"
+        android:icon="@drawable/ic_user_menu"
+        android:title="@string/uporabnik"
+        app:cnb_iconColor="@color/blue_normal" />
+</menu>

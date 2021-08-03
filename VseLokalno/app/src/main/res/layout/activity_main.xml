@@ -10,33 +10,27 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="sign out"
-        android:onClick="signOut" />
-
-    <EditText
-        android:id="@+id/eT"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="30sp" />
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="find location"
-        android:onClick="findLoc" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Open map"
-        android:onClick="openMap" />
+        android:onClick="signOut"
+        android:text="sign out" />
 
     <androidx.fragment.app.FragmentContainerView xmlns:map="http://schemas.android.com/apk/res-auto"
         android:id="@+id/main_fragment_container"
-        android:name="diplomska.naloga.vselokalno.FarmLookup.Map.MapFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         tools:context=".MainActivity" />
 
+
+    <!--https://github.com/ismaeldivita/chip-navigation-bar-->
+    <com.ismaeldivita.chipnavigation.ChipNavigationBar
+        android:id="@+id/bottom_nav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_4"
+        android:background="@color/white"
+        app:cnb_iconSize="40dp"
+        app:cnb_menuResource="@menu/menu_bottom"
+        app:cnb_textAppearance="@style/TextAppearance.AppCompat.Medium" />
+    <!--    TODO: round upper edge (not too much!!!)-->
 
 </LinearLayout>

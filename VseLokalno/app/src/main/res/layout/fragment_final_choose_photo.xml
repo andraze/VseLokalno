@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="@dimen/margin_16dp"
+    android:layout_margin="@dimen/dp_16"
     android:orientation="vertical"
     tools:context=".SignInUp.SignUp.FINALChoosePhotoFragment">
 
@@ -18,8 +18,8 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_32dp"
-        android:layout_marginBottom="@dimen/margin_32dp"
+        android:layout_marginTop="@dimen/dp_32"
+        android:layout_marginBottom="@dimen/dp_32"
         android:text="@string/prilo_i_profilno_sliko"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         android:textColor="@color/blue_normal" />
@@ -46,7 +46,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_4dp"
+        android:layout_margin="@dimen/dp_4"
         android:layout_weight="1"
         android:gravity="center_vertical"
         android:text="@string/profilka_detail"

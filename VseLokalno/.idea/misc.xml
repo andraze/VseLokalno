@@ -6,11 +6,12 @@
         <entry key="app/src/main/res/drawable-v24/ic_map_my_location.xml" value="0.3958333333333333" />
         <entry key="app/src/main/res/drawable-v24/info_window_bg.xml" value="0.3958333333333333" />
         <entry key="app/src/main/res/drawable/checkmark.xml" value="0.3619791666666667" />
+        <entry key="app/src/main/res/drawable/ic_map_farm.xml" value="0.3625" />
         <entry key="app/src/main/res/drawable/time_btn_pressed.xml" value="0.36041666666666666" />
         <entry key="app/src/main/res/drawable/time_btn_unpressed.xml" value="0.36041666666666666" />
         <entry key="app/src/main/res/drawable/time_selection_btn.xml" value="0.36041666666666666" />
         <entry key="app/src/main/res/drawable/unchecked.xml" value="0.48072916666666665" />
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.2453125" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.33" />
         <entry key="app/src/main/res/layout/custom_info_window.xml" value="0.3802083333333333" />
         <entry key="app/src/main/res/layout/fragment_choose.xml" value="0.19166666666666668" />
         <entry key="app/src/main/res/layout/fragment_farm_location.xml" value="0.5" />
@@ -18,8 +19,11 @@
         <entry key="app/src/main/res/layout/fragment_farm_time_fragmetn.xml" value="0.46510416666666665" />
         <entry key="app/src/main/res/layout/fragment_final_choose_photo.xml" value="0.3463541666666667" />
         <entry key="app/src/main/res/layout/fragment_final_farm_picture.xml" value="0.46510416666666665" />
+        <entry key="app/src/main/res/layout/fragment_list.xml" value="0.46510416666666665" />
         <entry key="app/src/main/res/layout/fragment_map.xml" value="0.46510416666666665" />
         <entry key="app/src/main/res/layout/fragment_user_type.xml" value="0.30833333333333335" />
+        <entry key="app/src/main/res/layout/list_farm_item.xml" value="0.3802083333333333" />
+        <entry key="app/src/main/res/menu/menu_bottom.xml" value="0.3802083333333333" />
       </map>
     </option>
   </component>

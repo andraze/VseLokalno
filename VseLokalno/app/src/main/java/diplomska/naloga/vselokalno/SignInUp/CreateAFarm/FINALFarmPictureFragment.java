@@ -166,17 +166,18 @@ public class FINALFarmPictureFragment extends Fragment {
         db.collection("Kmetije").document(user.getUid()).set(farmData).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 makeLogD("UserPasswordFragment", "(makeFarm) farm created!");
-                addTooAllFarmList();
+                addTooAllFarmList(user);
             } else {
                 makeLogW("UserPasswordFragment", "(makeFarm) " + task.getException());
             }
         });
     } // makeFarm
 
-    private void addTooAllFarmList() {
+    private void addTooAllFarmList(FirebaseUser user) {
         DocumentReference allFarmsDocument = db.collection("Kmetije").document("Vse_kmetije");
         Map<String, String> shortDataFarm = farmData.getKoordinate_kmetije();
         shortDataFarm.put("ime_kmetije", farmData.getIme_kmetije());
+        shortDataFarm.put("id_kmetije", user.getUid());
         allFarmsDocument.update("seznam_vseh_kmetij", FieldValue.arrayUnion(shortDataFarm))
                 .addOnSuccessListener(unused -> {
                     makeLogD(TAG, "(addToAllFarmList) addition successful.");
