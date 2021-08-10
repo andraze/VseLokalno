@@ -1,5 +1,7 @@
 package diplomska.naloga.vselokalno.FarmLookup.List;
 
+import static diplomska.naloga.vselokalno.MainActivity.makeLogD;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +27,8 @@ import diplomska.naloga.vselokalno.R;
  * The adapter class for the RecyclerView, farm data.
  */
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
+
+    private final String TAG = "RecyclerAdapter";
 
     public interface ItemClickListener {
         void onItemClick(int position, Map<String, String> farm, TextView textView, String transitionName, ImageView imageView, String imageTransitionName, StorageReference imageRef);
@@ -69,12 +73,14 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     public void onBindViewHolder(RecyclerAdapter.ViewHolder holder, int position) {
         // Get current sport.
         Map<String, String> currentFarm = mFarmData.get(position);
+        makeLogD(TAG, "(onBindViewHolder) showing farm: " + currentFarm.get("ime_kmetije"));
         // Populate the textviews with data.
         holder.mNaslovText.setText(currentFarm.get("ime_kmetije"));
         // Reference to an image file in Cloud Storage
         StorageReference imageRef = FirebaseStorage.getInstance().getReference()
                 .child("Uporabniške profilke/" + currentFarm.get("id_kmetije"));
-        Glide.with(mContext).load(imageRef).into(holder.mImage);
+//        makeLogD(TAG, "(onBindViewHolder) storage reference: " + imageRef.toString());
+        GlideApp.with(mContext).load(imageRef).into(holder.mImage);
 
         ViewCompat.setTransitionName(holder.mNaslovText, "ime" + currentFarm.get("id_kmetije"));
         ViewCompat.setTransitionName(holder.mImage, "slika" + currentFarm.get("id_kmetije"));

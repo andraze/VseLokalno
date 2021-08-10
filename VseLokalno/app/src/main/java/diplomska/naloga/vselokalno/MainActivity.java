@@ -1,21 +1,25 @@
 package diplomska.naloga.vselokalno;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
+import android.transition.Fade;
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
+import com.ismaeldivita.chipnavigation.ChipNavigationBar;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,6 +30,7 @@ import java.util.Map;
 import diplomska.naloga.vselokalno.DataObjects.AllFarms;
 import diplomska.naloga.vselokalno.DataObjects.User;
 import diplomska.naloga.vselokalno.FarmLookup.Map.MapFragment;
+import diplomska.naloga.vselokalno.FarmLookup.List.ListFragment;
 import diplomska.naloga.vselokalno.SignInUp.SignInUpActivity;
 
 
@@ -43,6 +48,11 @@ public class MainActivity extends AppCompatActivity {
     public FirebaseFirestore db;
     //    Firebase storage:
     public FirebaseStorage storage;
+    //    Bottom navigation:
+    public ChipNavigationBar bottomNavigation;
+    //    Fragments:
+    private MapFragment mapFragment;
+    private ListFragment listFragment;
     //    Other variables:
     public static final String[] allTimes = {"07:00-08:00", "08:00-09:00", "09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-13:00", "13:00-14:00",
             "14:00-15:00", "15:00-16:00", "16:00-17:00", "17:00-18:00", "18:00-19:00", "19:00-20:00", "20:00-21:00"};
@@ -51,18 +61,35 @@ public class MainActivity extends AppCompatActivity {
     public static ArrayList<Map<String, String>> allFarmsDataShort;
 
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        // Initialise the firebase authentication:
         mAuth = FirebaseAuth.getInstance();
-
+        // Initialise the app user:
         appUser = new User();
-
+        // Initialise the firebase firestore:
         db = FirebaseFirestore.getInstance();
-
+        // Initialise the firebase storage:
         storage = FirebaseStorage.getInstance();
+        // Use the bottom navigation:
+        bottomNavigation = findViewById(R.id.bottom_nav);
+        bottomNavigation.setItemSelected(R.id.map_menu, true);
+        mapFragment = new MapFragment();
+        listFragment = ListFragment.newInstance();
+        bottomNavigation.setOnItemSelectedListener(id -> {
+            // id == id number of tab.
+            switch (id) {
+                case R.id.map_menu:
+                    openFragment(0);
+                    break;
+                case R.id.list_menu:
+                    openFragment(1);
+                    break;
+            }
+        });
     }// onCreate
 
     @Override
@@ -110,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
                         AllFarms allFarms = documentSnapshot.toObject(AllFarms.class);
                         if (allFarms != null) {
                             allFarmsDataShort = allFarms.getSeznam_vseh_kmetij();
-                            openMap();
+                            openFragment(0);
                         }
                     } else {
                         makeLogW(TAG, "(getAllFarmData) No such document!");
@@ -162,16 +189,28 @@ public class MainActivity extends AppCompatActivity {
         return latLon;
     } // getLocationFromAddress
 
-    public void openMap() {
-        MapFragment mapFragment = new MapFragment();
+    public void openFragment(int id) {
+        Fragment fragmentToOpen;
+        switch (id) {
+            case 0:
+                fragmentToOpen = mapFragment;
+                break;
+            case 1:
+                fragmentToOpen = listFragment;
+                break;
+            default: // case 3:
+//                fragmentToOpen = userSettingsFragment;
+                fragmentToOpen = null;
+                break;
+        }
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .setCustomAnimations(
-                        R.anim.enter_from_right, R.anim.exit_to_left,
-                        R.anim.enter_from_left, R.anim.exit_to_right
-                )
-                .replace(R.id.main_fragment_container, mapFragment)
-                .addToBackStack(null)
-                .commit();
+        if (fragmentToOpen != null) {
+            fragmentManager.beginTransaction()
+                    .setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
+                    .replace(R.id.main_fragment_container, fragmentToOpen)
+                    .addToBackStack(null)
+                    .commit();
+        } else
+            makeLogW(TAG, "(openFragment) ERROR! fragmentToOpen == null!");
     } // openMap
 }

@@ -1,6 +1,8 @@
 package diplomska.naloga.vselokalno.FarmLookup.List;
 
 import static diplomska.naloga.vselokalno.MainActivity.allFarmsDataShort;
+import static diplomska.naloga.vselokalno.MainActivity.makeLogD;
+import static diplomska.naloga.vselokalno.MainActivity.makeLogI;
 import static diplomska.naloga.vselokalno.MainActivity.makeLogW;
 
 import android.os.Bundle;
@@ -38,12 +40,14 @@ public class ListFragment extends Fragment implements RecyclerAdapter.ItemClickL
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        makeLogI(TAG, "(onCreate) Working!");
     } // onCreate
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+//        makeLogI(TAG, "(onCreateView) Working!");
         View rootView = inflater.inflate(R.layout.fragment_list, container, false);
         mItemClickListener = this;
         RecyclerView mRecyclerView = rootView.findViewById(R.id.recycler_view);
@@ -52,7 +56,9 @@ public class ListFragment extends Fragment implements RecyclerAdapter.ItemClickL
             RecyclerAdapter mAdapter = new RecyclerAdapter(requireContext(), allFarmsDataShort,
                     requireActivity().getSupportFragmentManager(), mItemClickListener);
             mRecyclerView.setAdapter(mAdapter);
+//            mRecyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 2));
             mRecyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 2));
+            makeLogD(TAG, "(OnCreateView) recycler adapter ready.");
         } else {
             makeLogW(TAG, "(onCreateView) RecyclerView is NULL!");
         }
