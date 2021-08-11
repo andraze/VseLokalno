@@ -29,7 +29,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="2"
-        android:src="@drawable/img_default_user_foreground" />
+        android:src="@drawable/ic_default_profile_picture" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/choose_photo"

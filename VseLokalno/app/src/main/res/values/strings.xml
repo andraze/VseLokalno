@@ -62,4 +62,15 @@
     <string name="zemljevid">Zemljevid</string>
     <string name="kmetije">Kmetije</string>
     <string name="uporabnik">Uporabnik</string>
+    <string name="kosarica">Košarica</string>
+    <string name="seznam">Seznam</string>
+    <string name="zelje">Želje</string>
+    <string name="zgodovina">Zgodovina</string>
+    <string name="testni_uporabnik_ali_kmetija">Testni uporabnik ali kmetija</string>
+    <string name="testni_uporabnik_ali_kmetija_email">testni.uporabnik@ali.kmetija</string>
+    <string name="odjava">Odjava</string>
+    <string name="narocila">Naročila</string>
+    <string name="artikli">Artikli</string>
+    <string name="article_between">€ /</string>
+    <string name="prilo_i_fotografijo_kmetije">Priloži fotografijo kmetije</string>
 </resources>

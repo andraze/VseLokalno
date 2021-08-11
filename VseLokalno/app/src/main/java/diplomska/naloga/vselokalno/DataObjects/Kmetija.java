@@ -24,6 +24,7 @@ import java.util.Map;
  * public Map<String, Object> ponudbe_cene ... npr: {"Mleko": 3.5}
  * public Map<String, Object> ponudbe_enote ... npr: {"Mleko": liter}
  * public Map<String, Object> ponudbe_zaloge .. npr: {"Mleko": 2}
+ * public Map<String, Object> ponudbe_slike .. npr: {"Mleko": mleko_slika_{$userUID}}
  */
 public class Kmetija {
 
@@ -41,9 +42,7 @@ public class Kmetija {
     public Map<String, ArrayList<Boolean>> cas_prevzema;
     public Map<String, String> koordinate_kmetije;
     public ArrayList<Narocilo> narocila;
-    public Map<String, Object> ponudbe_cene;
-    public Map<String, Object> ponudbe_enote;
-    public Map<String, Object> ponudbe_zaloge;
+    public ArrayList<Map<String, String>> artikli;
 
     public Kmetija() {
         this.ime_kmetije = "";
@@ -53,9 +52,7 @@ public class Kmetija {
         this.cas_prevzema = new HashMap<>();
         this.koordinate_kmetije = new HashMap<>();
         this.narocila = new ArrayList<>();
-        this.ponudbe_cene = new HashMap<>();
-        this.ponudbe_enote = new HashMap<>();
-        this.ponudbe_zaloge = new HashMap<>();
+        this.artikli = new ArrayList<>();
     }
 
     public String getIme_kmetije() {
@@ -118,44 +115,16 @@ public class Kmetija {
         this.narocila.add(narocilo);
     }
 
-    public Map<String, Object> getPonudbe_cene() {
-        return ponudbe_cene;
+    public ArrayList<Map<String, String>> getArtikli() {
+        return artikli;
     }
 
-    public void setPonudbe_cene(Map<String, Object> ponudbe_cene) {
-        this.ponudbe_cene = ponudbe_cene;
+    public void setArtikli(ArrayList<Map<String, String>> artikli) {
+        this.artikli = artikli;
     }
 
-    public void addPonudbe_cene(String izdelek, Object cena) {
-        this.ponudbe_cene.put(izdelek, cena);
-    }
-
-    public void addponudbe_enote(String izdelek, Object enota) {
-        this.ponudbe_enote.put(izdelek, enota);
-    }
-
-    public Map<String, Object> getPonudbe_zaloge() {
-        return ponudbe_zaloge;
-    }
-
-    public void setPonudbe_zaloge(Map<String, Object> ponudbe_zaloge) {
-        this.ponudbe_zaloge = ponudbe_zaloge;
-    }
-
-    public void addPonudbe_zaloge(String izdelek, Object zaloga) {
-        this.ponudbe_zaloge.put(izdelek, zaloga);
-    }
-
-    public Map<String, Object> getPonudbe_enote() {
-        return ponudbe_enote;
-    }
-
-    public void setPonudbe_enote(Map<String, Object> ponudbe_enote) {
-        this.ponudbe_enote = ponudbe_enote;
-    }
-
-    public void addPonudbe_enote(String izdelek, Object enota) {
-        this.ponudbe_enote.put(izdelek, enota);
+    public void addArtikel(Map<String, String> artikel) {
+        this.artikli.add(artikel);
     }
 
     /**

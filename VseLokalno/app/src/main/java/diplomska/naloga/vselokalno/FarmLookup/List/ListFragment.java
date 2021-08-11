@@ -40,7 +40,6 @@ public class ListFragment extends Fragment implements RecyclerAdapter.ItemClickL
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        makeLogI(TAG, "(onCreate) Working!");
     } // onCreate
 
     @Override

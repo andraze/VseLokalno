@@ -121,26 +121,9 @@ public class SignInFragment extends Fragment {
     private void updateUI(FirebaseUser currentUser) {
         if (currentUser != null) {
             makeLogD(TAG, "(updateUI) currentUser is NOT null!");
-//            SharedPreferences mPrefs = requireActivity().getSharedPreferences(getString(R.string.shared_pref_file), MODE_PRIVATE);
-//            FirebaseFirestore db = FirebaseFirestore.getInstance();
-//            DocumentReference docRef = db.collection("Uporabniki").document(currentUser.getUid());
-//            docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-//                @Override
-//                public void onSuccess(DocumentSnapshot documentSnapshot) {
-//                    makeLogD(TAG, "Getting user by id: " + currentUser.getUid());
-//                    userData = documentSnapshot.toObject(User.class);
-//                    SharedPreferences.Editor prefsEditor = mPrefs.edit();
-//                    Gson gson = new Gson();
-//                    String json = gson.toJson(userData);
-//                    prefsEditor.putString("User data", json);
-//                    prefsEditor.apply();
-//                    makeLogD(TAG, "(updateUI) User data saved:\n" + json);
-//
-//                    Intent intent = new Intent(requireContext(), MainActivity.class);
-//                    startActivity(intent);
-//                    requireActivity().finish();
-//                }
-//            });
+            Intent intent = new Intent(requireContext(), MainActivity.class);
+            startActivity(intent);
+            requireActivity().finish();
         } else {
             makeLogW(TAG, "(updateUI) currentUser IS null!");
         }

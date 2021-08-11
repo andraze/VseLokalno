@@ -28,10 +28,12 @@ import java.util.List;
 import java.util.Map;
 
 import diplomska.naloga.vselokalno.DataObjects.AllFarms;
+import diplomska.naloga.vselokalno.DataObjects.Kmetija;
 import diplomska.naloga.vselokalno.DataObjects.User;
 import diplomska.naloga.vselokalno.FarmLookup.Map.MapFragment;
 import diplomska.naloga.vselokalno.FarmLookup.List.ListFragment;
 import diplomska.naloga.vselokalno.SignInUp.SignInUpActivity;
+import diplomska.naloga.vselokalno.UserFunctions.UserFunctionsFragment;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -43,7 +45,10 @@ public class MainActivity extends AppCompatActivity {
     //    Firebase user:
     public FirebaseUser currentUser;
     //    App user:
+    public static String userID = "";
     public static User appUser;
+    //    users farm:
+    public static Kmetija appFarm;
     //    Firestore:
     public FirebaseFirestore db;
     //    Firebase storage:
@@ -53,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
     //    Fragments:
     private MapFragment mapFragment;
     private ListFragment listFragment;
+    private UserFunctionsFragment userFunctionsFragment;
     //    Other variables:
     public static final String[] allTimes = {"07:00-08:00", "08:00-09:00", "09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-13:00", "13:00-14:00",
             "14:00-15:00", "15:00-16:00", "16:00-17:00", "17:00-18:00", "18:00-19:00", "19:00-20:00", "20:00-21:00"};
@@ -68,8 +74,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         // Initialise the firebase authentication:
         mAuth = FirebaseAuth.getInstance();
-        // Initialise the app user:
+        // Initialise the app user and app farm:
         appUser = new User();
+        appFarm = new Kmetija();
         // Initialise the firebase firestore:
         db = FirebaseFirestore.getInstance();
         // Initialise the firebase storage:
@@ -79,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigation.setItemSelected(R.id.map_menu, true);
         mapFragment = new MapFragment();
         listFragment = ListFragment.newInstance();
+        userFunctionsFragment = UserFunctionsFragment.newInstance();
         bottomNavigation.setOnItemSelectedListener(id -> {
             // id == id number of tab.
             switch (id) {
@@ -87,6 +95,9 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case R.id.list_menu:
                     openFragment(1);
+                    break;
+                case R.id.user_menu:
+                    openFragment(2);
                     break;
             }
         });
@@ -109,23 +120,44 @@ public class MainActivity extends AppCompatActivity {
             Intent loginIntent = new Intent(this, SignInUpActivity.class);
             startActivity(loginIntent);
             finish();
-        } else {
+        } else
 //            Refresh user data.
-            DocumentReference docRef = db.collection("Uporabniki").document(currentUser.getUid());
-            docRef.get()
-                    .addOnFailureListener(e -> makeLogW(TAG, "(updateUI) ERROR getting document user.\n" + e.getMessage()))
-                    .addOnSuccessListener(documentSnapshot -> {
-                        appUser = documentSnapshot.toObject(User.class);
-                        if (appUser != null) {
-                            makeLogD(TAG, "(updateUI) success, got user:\n" + appUser.toString());
-                            getAllFarmData();
-                        } else {
-                            makeLogW(TAG, "User came back NULL!");
-                        }
-                    });
-
-        }
+            getUserData();
     }// updateUI
+
+    private void getUserData() {
+        DocumentReference docRef = db.collection("Uporabniki").document(currentUser.getUid());
+        docRef.get()
+                .addOnFailureListener(e -> makeLogW(TAG, "(getUserData) ERROR getting document user.\n" + e.getMessage()))
+                .addOnSuccessListener(documentSnapshot -> {
+                    appUser = documentSnapshot.toObject(User.class);
+                    if (appUser != null) {
+                        userID = currentUser.getUid();
+                        makeLogD(TAG, "(getUserData) success, got user:\n" + appUser.toString());
+                        if (appUser.isLastnik_kmetije())
+                            getUserFarm();
+                        else
+                            getAllFarmData();
+                    } else {
+                        makeLogW(TAG, "(getUserData) User came back NULL!");
+                    }
+                });
+    } // getUserData
+
+    private void getUserFarm() {
+        DocumentReference docRef = db.collection("Kmetije").document(currentUser.getUid());
+        docRef.get()
+                .addOnFailureListener(e -> makeLogW(TAG, "(getUserFarm) ERROR getting document user.\n" + e.getMessage()))
+                .addOnSuccessListener(documentSnapshot -> {
+                    appFarm = documentSnapshot.toObject(Kmetija.class);
+                    if (appFarm != null) {
+                        makeLogD(TAG, "(getUserFarm) success, got farm:\n" + appFarm.toString());
+                        getAllFarmData();
+                    } else {
+                        makeLogW(TAG, "(getUserFarm) Farm came back NULL!");
+                    }
+                });
+    } // getUserFarm
 
     private void getAllFarmData() {
         DocumentReference allFarmsDocRef = db.collection("Kmetije").document("Vse_kmetije");
@@ -190,7 +222,7 @@ public class MainActivity extends AppCompatActivity {
     } // getLocationFromAddress
 
     public void openFragment(int id) {
-        Fragment fragmentToOpen;
+        Fragment fragmentToOpen = null;
         switch (id) {
             case 0:
                 fragmentToOpen = mapFragment;
@@ -198,9 +230,8 @@ public class MainActivity extends AppCompatActivity {
             case 1:
                 fragmentToOpen = listFragment;
                 break;
-            default: // case 3:
-//                fragmentToOpen = userSettingsFragment;
-                fragmentToOpen = null;
+            case 2:
+                fragmentToOpen = userFunctionsFragment;
                 break;
         }
         FragmentManager fragmentManager = getSupportFragmentManager();

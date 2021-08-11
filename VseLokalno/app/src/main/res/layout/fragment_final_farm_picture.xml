@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_32"
         android:layout_marginBottom="@dimen/dp_32"
-        android:text="Priloži fotografijo kmetije"
+        android:text="@string/prilo_i_fotografijo_kmetije"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         android:textColor="@color/blue_normal" />
 
@@ -29,7 +29,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="2"
-        android:src="@drawable/img_default_user_foreground" />
+        android:src="@drawable/ic_default_profile_picture" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/choose_photo"
