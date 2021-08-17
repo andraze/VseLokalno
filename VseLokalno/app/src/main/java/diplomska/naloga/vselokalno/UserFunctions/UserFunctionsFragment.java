@@ -8,6 +8,7 @@ import android.os.Bundle;
 
 import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +23,7 @@ import java.text.MessageFormat;
 import de.hdodenhof.circleimageview.CircleImageView;
 import diplomska.naloga.vselokalno.FarmLookup.List.GlideApp;
 import diplomska.naloga.vselokalno.R;
+import diplomska.naloga.vselokalno.UserFunctions.ArticleList.ArticleListFragment;
 
 
 public class UserFunctionsFragment extends Fragment {
@@ -88,6 +90,13 @@ public class UserFunctionsFragment extends Fragment {
         seznam_artikliLinearLayout.setOnClickListener(l -> {
             if (appUser.isLastnik_kmetije()) {
                 // TODO open seznam artiklov
+                ArticleListFragment articleListFragment = ArticleListFragment.newInstance();
+                FragmentManager fragmentManager = getParentFragmentManager();
+                fragmentManager.beginTransaction()
+                        .setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
+                        .replace(R.id.main_fragment_container, articleListFragment)
+                        .addToBackStack(null)
+                        .commit();
             } else {
                 // TODO open nakupovalni seznam
             }

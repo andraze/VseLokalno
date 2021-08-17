@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/dp_4"
         android:background="@color/white"
-        app:cnb_iconSize="40dp"
+        app:cnb_iconSize="30dp"
         app:cnb_menuResource="@menu/menu_bottom"
         app:cnb_textAppearance="@style/TextAppearance.AppCompat.Medium" />
     <!--    TODO: round upper edge (not too much!!!)-->

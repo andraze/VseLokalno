@@ -1,18 +1,14 @@
 package diplomska.naloga.vselokalno;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
-import android.annotation.SuppressLint;
-import android.content.Intent;
-import android.location.Address;
-import android.location.Geocoder;
-import android.os.Bundle;
-import android.transition.Fade;
-import android.util.Log;
-import android.view.View;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -21,17 +17,14 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.ismaeldivita.chipnavigation.ChipNavigationBar;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import diplomska.naloga.vselokalno.DataObjects.AllFarms;
 import diplomska.naloga.vselokalno.DataObjects.Kmetija;
 import diplomska.naloga.vselokalno.DataObjects.User;
-import diplomska.naloga.vselokalno.FarmLookup.Map.MapFragment;
 import diplomska.naloga.vselokalno.FarmLookup.List.ListFragment;
+import diplomska.naloga.vselokalno.FarmLookup.Map.MapFragment;
 import diplomska.naloga.vselokalno.SignInUp.SignInUpActivity;
 import diplomska.naloga.vselokalno.UserFunctions.UserFunctionsFragment;
 
@@ -71,16 +64,20 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
+
         // Initialise the firebase authentication:
         mAuth = FirebaseAuth.getInstance();
-        // Initialise the app user and app farm:
-        appUser = new User();
-        appFarm = new Kmetija();
+        currentUser = mAuth.getCurrentUser();
+        makeLogD(TAG, "(onStart) current user: " + currentUser);
         // Initialise the firebase firestore:
         db = FirebaseFirestore.getInstance();
         // Initialise the firebase storage:
         storage = FirebaseStorage.getInstance();
+        // Initialise the app user and app farm:
+        appUser = new User();
+        appFarm = new Kmetija();
         // Use the bottom navigation:
         bottomNavigation = findViewById(R.id.bottom_nav);
         bottomNavigation.setItemSelected(R.id.map_menu, true);
@@ -90,28 +87,21 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigation.setOnItemSelectedListener(id -> {
             // id == id number of tab.
             switch (id) {
-                case R.id.map_menu:
-                    openFragment(0);
-                    break;
                 case R.id.list_menu:
                     openFragment(1);
                     break;
                 case R.id.user_menu:
                     openFragment(2);
                     break;
+                default:
+                    // Map
+                    openFragment(0);
+                    break;
             }
         });
-    }// onCreate
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        makeLogI(TAG, "(onStart) Started.");
         // Check if user is signed in (non-null) and update UI accordingly.
-        currentUser = mAuth.getCurrentUser();
-        makeLogD(TAG, "(onStart) current user: " + currentUser);
         updateUI(currentUser);
-    }// onStart
+    }// onCreate
 
     private void updateUI(FirebaseUser currentUser) {
         if (currentUser == null) {
@@ -121,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
             startActivity(loginIntent);
             finish();
         } else
-//            Refresh user data.
+            // Refresh user data.
             getUserData();
     }// updateUI
 
@@ -152,13 +142,15 @@ public class MainActivity extends AppCompatActivity {
                     appFarm = documentSnapshot.toObject(Kmetija.class);
                     if (appFarm != null) {
                         makeLogD(TAG, "(getUserFarm) success, got farm:\n" + appFarm.toString());
-                        getAllFarmData();
+                        findViewById(R.id.bottom_nav).setVisibility(View.GONE);
+                        openFragment(2);
                     } else {
                         makeLogW(TAG, "(getUserFarm) Farm came back NULL!");
                     }
                 });
     } // getUserFarm
 
+    @SuppressLint("NonConstantResourceId")
     private void getAllFarmData() {
         DocumentReference allFarmsDocRef = db.collection("Kmetije").document("Vse_kmetije");
         allFarmsDocRef.get()
@@ -200,27 +192,6 @@ public class MainActivity extends AppCompatActivity {
         finish();
     } // signOut
 
-    public Map<String, Object> getLocationFromAddress(String strAddress) {
-        Map<String, Object> latLon = new HashMap<>();
-        latLon.put("lat", 46.056946);
-        latLon.put("lon", 14.505751);
-        Geocoder coder = new Geocoder(this);
-        List<Address> address;
-        try {
-            address = coder.getFromLocationName(strAddress, 5);
-            if (address == null) {
-                return latLon;
-            }
-            Address location = address.get(0);
-            latLon.put("lat", location.getLatitude());
-            latLon.put("lon", location.getLongitude());
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return latLon;
-    } // getLocationFromAddress
-
     public void openFragment(int id) {
         Fragment fragmentToOpen = null;
         switch (id) {
@@ -239,7 +210,6 @@ public class MainActivity extends AppCompatActivity {
             fragmentManager.beginTransaction()
                     .setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
                     .replace(R.id.main_fragment_container, fragmentToOpen)
-                    .addToBackStack(null)
                     .commit();
         } else
             makeLogW(TAG, "(openFragment) ERROR! fragmentToOpen == null!");

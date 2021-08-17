@@ -21,10 +21,7 @@ import java.util.Map;
  * public Map<String, boolean[14]> cas_prevzema ... npr: {"pon": ["10:00-11:00", "11:00-12:00"]}
  * public Map<String, String> koordinate_kmetije ... npr: {"lat": 45.65154123, "lan": 22.85636531}
  * public ArrayList<Narocilo> narocila ... vsebuje objekt Narocilo ki je podrazred tega razreda
- * public Map<String, Object> ponudbe_cene ... npr: {"Mleko": 3.5}
- * public Map<String, Object> ponudbe_enote ... npr: {"Mleko": liter}
- * public Map<String, Object> ponudbe_zaloge .. npr: {"Mleko": 2}
- * public Map<String, Object> ponudbe_slike .. npr: {"Mleko": mleko_slika_{$userUID}}
+ * public ArrayList<Map<String, String>> artikli
  */
 public class Kmetija {
 

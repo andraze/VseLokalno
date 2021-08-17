@@ -1,5 +1,6 @@
 package diplomska.naloga.vselokalno.UserFunctions.ArticleList;
 
+import static diplomska.naloga.vselokalno.MainActivity.appFarm;
 import static diplomska.naloga.vselokalno.MainActivity.makeLogD;
 
 import android.content.Context;
@@ -18,6 +19,7 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Objects;
 
 import diplomska.naloga.vselokalno.FarmLookup.List.GlideApp;
 import diplomska.naloga.vselokalno.R;
@@ -75,10 +77,9 @@ public class RecyclerAdapter_FarmArticles extends RecyclerView.Adapter<RecyclerA
         holder.mImeArtikel.setText(currentArtikel.get("ime_artikel"));
         holder.mCenaArtikel.setText(currentArtikel.get("cena_artikel"));
         holder.mEnotaArtikel.setText(currentArtikel.get("enota_artikel"));
-
         // Reference to an image file in Cloud Storage
         StorageReference imageRef = FirebaseStorage.getInstance().getReference()
-                .child("Uporabniške profilke/" + currentArtikel.get("slika_artikel"));
+                .child(Objects.requireNonNull(currentArtikel.get("slika_artikel")));
         GlideApp.with(mContext).load(imageRef).into(holder.mSlikaArtikel);
 
         holder.itemView.setOnClickListener(v -> ItemClickListener.onItemClick(

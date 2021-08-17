@@ -73,4 +73,15 @@
     <string name="artikli">Artikli</string>
     <string name="article_between">€ /</string>
     <string name="prilo_i_fotografijo_kmetije">Priloži fotografijo kmetije</string>
+    <string name="ime_artikla">Ime artikla:</string>
+    <string name="cena">Cena:</string>
+    <string name="dash">€ /</string>
+    <string name="omeji_zalogo">Omeji zalogo</string>
+    <string name="enota_kg">Enota (kg):</string>
+    <string name="shrani_artikel">Shrani artikel</string>
+    <string name="zavrzi_artikel">Zavrzi artikel</string>
+    <string name="zaloga">Zaloga</string>
+    <string name="neomejeno">Neomejeno</string>
+    <string name="hint_kolicine_zaloga">Količina (npr. 10)</string>
+    <string name="hint_enote_zaloga">Enote (npr. kg)</string>
 </resources>

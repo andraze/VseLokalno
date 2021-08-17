@@ -54,6 +54,8 @@ public class ArticleListFragment extends Fragment implements RecyclerAdapter_Far
         FloatingActionButton fab = rootView.findViewById(R.id.add_article_fab);
         fab.setOnClickListener(view -> {
             // TODO: open fragment to add a new article
+            EditArticleFragment editArticleFragment = new EditArticleFragment();
+            editArticleFragment.show(getParentFragmentManager(), "Nov artikel");
         });
         return rootView;
     } // onCreateView
