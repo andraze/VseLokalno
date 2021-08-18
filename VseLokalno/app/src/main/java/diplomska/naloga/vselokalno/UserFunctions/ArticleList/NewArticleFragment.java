@@ -10,6 +10,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,73 +26,51 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
-
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
-import diplomska.naloga.vselokalno.FarmLookup.List.GlideApp;
 import diplomska.naloga.vselokalno.R;
 
-public class EditArticleFragment extends DialogFragment {
+public class NewArticleFragment extends DialogFragment {
 
-    public interface EditArticleRefreshAdapterInterface {
-        void refreshAdapterEditArticle(int position);
+    public interface NewArticleRefreshAdapterInterface {
+        void refreshAdapterNewArticle();
     }
 
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_ITEM_NUMBER = "Article_INDEX";
-    // Parameter:
-    private int articleIndexParam;
     //    Views
     ImageButton articleImage;
     //    Image request code
-    private final static int PICK_IMAGE = 200;
+    private final static int PICK_IMAGE = 100;
     //    Image uri
     Uri imageURI;
     //    Firebase firestore DB
     FirebaseFirestore db;
-    //    Firebase storage
-    FirebaseStorage mStorage;
     //    TAG
-    String TAG = "EditArticleFragment";
+    String TAG = "NewArticleFragment";
     //    Other variables
     boolean photo_changed = false;
-    Map<String, String> mArticle;
+    Map<String, String> newArticle;
     String zaloga = "";
-    EditArticleRefreshAdapterInterface mInterface;
+    NewArticleRefreshAdapterInterface mInterface;
 
-    public EditArticleFragment() {
+    public NewArticleFragment() {
         // Required empty public constructor
     }
 
-    public static EditArticleFragment newInstance(int param1) {
-        EditArticleFragment fragment = new EditArticleFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_ITEM_NUMBER, param1);
-        fragment.setArguments(args);
-        return fragment;
+    public static NewArticleFragment newInstance() {
+        return new NewArticleFragment();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            articleIndexParam = getArguments().getInt(ARG_ITEM_NUMBER);
-            mStorage = FirebaseStorage.getInstance();
-        } else {
-            makeLogW(TAG, "(onCreate) no arguments!");
-        }
-    } // onCreate
+    }
 
     @Override
     public void onStart() {
@@ -99,37 +83,29 @@ public class EditArticleFragment extends DialogFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_edit_article, container, false);
-        mArticle = appFarm.getArtikli().get(articleIndexParam);
+        newArticle = new HashMap<>();
         // Add article image:
         articleImage = rootView.findViewById(R.id.article_image_editArticleFragment);
-        StorageReference imageRef = mStorage.getReference()
-                .child(Objects.requireNonNull(mArticle.get("slika_artikel")));
-        GlideApp.with(requireContext()).load(imageRef).into(articleImage);
         articleImage.setOnClickListener(view -> {
             // Open gallery:
             openGallery();
         });
         // Article name:
         EditText articleName = rootView.findViewById(R.id.ime_artikel_et_editArticleFragment);
-        articleName.setText(mArticle.get("ime_artikel"));
         // Article price:
         EditText articlePrice = rootView.findViewById(R.id.cena_artikel_et_editArticleFragment);
-        articlePrice.setText(mArticle.get("cena_artikel"));
         // Article unit:
         EditText articleUnit = rootView.findViewById(R.id.enota_artikel_et_editArticleFragment);
-        articleUnit.setText(mArticle.get("enota_artikel"));
         // Stock unit:
         EditText stockUnit = rootView.findViewById(R.id.enota_zaloge);
         // Stock size:
         EditText stockQuantity = rootView.findViewById(R.id.kolicina_zaloge);
-        stockQuantity.setText(mArticle.get("zaloga_artikel"));
         // Relative Layouts:
         RelativeLayout layout1 = rootView.findViewById(R.id.rel_layout1_editArticleFragment);
         RelativeLayout layout2 = rootView.findViewById(R.id.rel_layout2_editArticleFragment);
         // Save button:
         FloatingActionButton saveArticle = rootView.findViewById(R.id.save_artikel_fab_editArticleFragment);
         saveArticle.setOnClickListener(view -> {
-            // Check if all data present
             if (articleName.getText().toString().isEmpty())
                 Toast.makeText(requireContext(), "Vpišite ime artikla.", Toast.LENGTH_SHORT).show();
             else if (articlePrice.getText().toString().isEmpty())
@@ -145,9 +121,7 @@ public class EditArticleFragment extends DialogFragment {
                         // Create a storage reference from the app
                         StorageReference storageRef = storage.getReference();
                         String path = "Slike artiklov/" + userID + "/" + articleName.getText().toString() + "_" + uniqueString;
-                        StorageReference imagesRefDelete = storageRef.child(Objects.requireNonNull(mArticle.get("slika_artikel")));
-                        imagesRefDelete.delete().addOnFailureListener(e -> makeLogW(TAG, "(onCreateView)\n" + e.getMessage()));
-                        StorageReference imagesRef = storageRef.child(Objects.requireNonNull(path));
+                        StorageReference imagesRef = storageRef.child(path);
                         UploadTask uploadTask = imagesRef.putFile(imageURI);
                         // Register observers to listen for when the download is done or if it fails
                         uploadTask.addOnFailureListener(exception -> {
@@ -155,24 +129,22 @@ public class EditArticleFragment extends DialogFragment {
                             makeLogW(TAG, "(onCreateView) " + exception);
                             Toast.makeText(requireContext(), "Prišlo je do napake! Poskusite ponovno.", Toast.LENGTH_SHORT).show();
                         }).addOnSuccessListener(taskSnapshot -> {
-                            mArticle.put("slika_artikel", path);
-                            mArticle.put("ime_artikel", articleName.getText().toString());
-                            mArticle.put("cena_artikel", articlePrice.getText().toString());
-                            mArticle.put("enota_artikel", articleUnit.getText().toString());
+                            newArticle.put("slika_artikel", path);
+                            newArticle.put("ime_artikel", articleName.getText().toString());
+                            newArticle.put("cena_artikel", articlePrice.getText().toString());
+                            newArticle.put("enota_artikel", articleUnit.getText().toString());
                             zaloga = zaloga.trim();
                             if (zaloga.isEmpty())
-                                mArticle.put("zaloga_artikel", "-1");
+                                newArticle.put("zaloga_artikel", "-1");
                             else
-                                mArticle.put("zaloga_artikel", zaloga);
-                            ArrayList<Map<String, String>> tempArrayList = appFarm.getArtikli();
-                            tempArrayList.set(articleIndexParam, mArticle);
-                            appFarm.setArtikli(tempArrayList);
+                                newArticle.put("zaloga_artikel", zaloga);
+                            appFarm.addArtikel(newArticle);
                             db.collection("Kmetije").document(userID).set(appFarm).addOnCompleteListener(task -> {
                                 if (task.isSuccessful()) {
-                                    makeLogD(TAG, "(onCreateView) updating article successful!");
+                                    makeLogD(TAG, "(onCreateView) creating article successful!");
                                     this.dismiss();
                                 } else {
-                                    makeLogW(TAG, "(onCreateView) updating article ERROR; task is not successful!");
+                                    makeLogW(TAG, "(onCreateView) creating article ERROR; task is not successful!");
                                 }
                             });
                         });
@@ -180,23 +152,23 @@ public class EditArticleFragment extends DialogFragment {
                         e.printStackTrace();
                     }
                 } else {
-                    mArticle.put("ime_artikel", articleName.getText().toString().trim());
-                    mArticle.put("cena_artikel", articlePrice.getText().toString().trim());
-                    mArticle.put("enota_artikel", articleUnit.getText().toString().trim());
+                    String path = "Slike artiklov/default_article_image.png";
+                    newArticle.put("slika_artikel", path);
+                    newArticle.put("ime_artikel", articleName.getText().toString());
+                    newArticle.put("cena_artikel", articlePrice.getText().toString());
+                    newArticle.put("enota_artikel", articleUnit.getText().toString());
                     zaloga = zaloga.trim();
                     if (zaloga.isEmpty())
-                        mArticle.put("zaloga_artikel", "-1");
+                        newArticle.put("zaloga_artikel", "-1");
                     else
-                        mArticle.put("zaloga_artikel", zaloga);
-                    ArrayList<Map<String, String>> tempArrayList = appFarm.getArtikli();
-                    tempArrayList.set(articleIndexParam, mArticle);
-                    appFarm.setArtikli(tempArrayList);
+                        newArticle.put("zaloga_artikel", zaloga);
+                    appFarm.addArtikel(newArticle);
                     db.collection("Kmetije").document(userID).set(appFarm).addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
-                            makeLogD(TAG, "(onCreateView) updating article successful!");
+                            makeLogD(TAG, "(onCreateView) creating article successful!");
                             this.dismiss();
                         } else {
-                            makeLogW(TAG, "(onCreateView) updating article ERROR; task is not successful!");
+                            makeLogW(TAG, "(onCreateView) creating article ERROR; task is not successful!");
                         }
                     });
                 }
@@ -255,17 +227,17 @@ public class EditArticleFragment extends DialogFragment {
         }
     } // onActivityResult
 
-    public void setEditArticleListener(EditArticleRefreshAdapterInterface listener) {
+    public void setNewArticleListener(NewArticleRefreshAdapterInterface listener) {
         this.mInterface = listener;
-    } // setEditArticleListener
+    } // setNewArticleListener
 
-    public EditArticleRefreshAdapterInterface getEditArticleListener() {
+    public NewArticleRefreshAdapterInterface getNewArticleListener() {
         return this.mInterface;
-    } // getEditArticleListener
+    } // getNewArticleListener
 
     @Override
     public void onDismiss(@NonNull DialogInterface dialog) {
         super.onDismiss(dialog);
-        mInterface.refreshAdapterEditArticle(articleIndexParam);
+        mInterface.refreshAdapterNewArticle();
     } // onDismiss
 }

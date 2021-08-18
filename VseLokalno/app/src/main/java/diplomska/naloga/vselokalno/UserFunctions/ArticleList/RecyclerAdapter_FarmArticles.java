@@ -1,8 +1,8 @@
 package diplomska.naloga.vselokalno.UserFunctions.ArticleList;
 
-import static diplomska.naloga.vselokalno.MainActivity.appFarm;
 import static diplomska.naloga.vselokalno.MainActivity.makeLogD;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -29,8 +30,14 @@ import diplomska.naloga.vselokalno.R;
  */
 public class RecyclerAdapter_FarmArticles extends RecyclerView.Adapter<RecyclerAdapter_FarmArticles.ViewHolder> {
 
+    public interface ArticleDeleteListener {
+        void onArticleDeleteListener(int position);
+    } // ArticleDeleteListener
+
+    ArticleDeleteListener articleDeleteListener;
+
     public interface ItemClickListener {
-        void onItemClick(int position, Map<String, String> currentArtikel);
+        void onItemClick(int position);
     } // ItemClickListener
 
     ItemClickListener ItemClickListener;
@@ -42,13 +49,15 @@ public class RecyclerAdapter_FarmArticles extends RecyclerView.Adapter<RecyclerA
     FragmentManager fragmentManager;
 
     public RecyclerAdapter_FarmArticles(Context context, ArrayList<Map<String, String>> artikli,
-                                        FragmentManager newFragmentmaneger, ItemClickListener itemClickListener) {
+                                        FragmentManager newFragmentmaneger, ItemClickListener itemClickListener,
+                                        ArticleDeleteListener deleteListener) {
         mInflater = LayoutInflater.from(context);
         this.mArtikli = artikli;
         this.mContext = context;
         setHasStableIds(true);
         this.fragmentManager = newFragmentmaneger;
         this.ItemClickListener = itemClickListener;
+        this.articleDeleteListener = deleteListener;
     } // RecyclerAdapter
 
     @Override
@@ -82,10 +91,24 @@ public class RecyclerAdapter_FarmArticles extends RecyclerView.Adapter<RecyclerA
                 .child(Objects.requireNonNull(currentArtikel.get("slika_artikel")));
         GlideApp.with(mContext).load(imageRef).into(holder.mSlikaArtikel);
 
-        holder.itemView.setOnClickListener(v -> ItemClickListener.onItemClick(
-                holder.getAdapterPosition(),
-                currentArtikel
-        ));
+        holder.mDeleteFab.setOnClickListener(view -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+            builder.setMessage("Ste prepričani, da želite izbrisati artikel:\n" + currentArtikel.get("ime_artikel"))
+                    .setTitle("Izbris artikla");
+            // Add the buttons
+            builder.setPositiveButton("Ja", (dialog, id) -> {
+                // User clicked OK button
+                articleDeleteListener.onArticleDeleteListener(position);
+            });
+            builder.setNegativeButton("ne", (dialog, id) -> {
+                // User cancelled the dialog
+                dialog.cancel();
+            });
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        });
+
+        holder.itemView.setOnClickListener(v -> ItemClickListener.onItemClick(holder.getAdapterPosition()));
     } // onBindViewHolder
 
     /**
@@ -109,6 +132,7 @@ public class RecyclerAdapter_FarmArticles extends RecyclerView.Adapter<RecyclerA
         private final TextView mCenaArtikel;
         private final TextView mEnotaArtikel;
         private final ShapeableImageView mSlikaArtikel;
+        private final FloatingActionButton mDeleteFab;
 
         /**
          * Constructor for the ViewHolder, used in onCreateViewHolder().
@@ -122,6 +146,7 @@ public class RecyclerAdapter_FarmArticles extends RecyclerView.Adapter<RecyclerA
             mCenaArtikel = itemView.findViewById(R.id.cena_artikel);
             mEnotaArtikel = itemView.findViewById(R.id.enota_artikel);
             mSlikaArtikel = itemView.findViewById(R.id.slika_artikla);
+            mDeleteFab = itemView.findViewById(R.id.delete_article);
         } // ViewHolder
 
     } // ViewHolder

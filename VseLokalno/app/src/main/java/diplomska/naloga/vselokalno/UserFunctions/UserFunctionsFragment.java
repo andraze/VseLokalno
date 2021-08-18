@@ -24,6 +24,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import diplomska.naloga.vselokalno.FarmLookup.List.GlideApp;
 import diplomska.naloga.vselokalno.R;
 import diplomska.naloga.vselokalno.UserFunctions.ArticleList.ArticleListFragment;
+import diplomska.naloga.vselokalno.UserFunctions.ArticleList.EditArticleFragment;
 
 
 public class UserFunctionsFragment extends Fragment {
@@ -33,6 +34,8 @@ public class UserFunctionsFragment extends Fragment {
     LinearLayoutCompat seznam_artikliLinearLayout;
     LinearLayoutCompat zeljeLinearLayout;
     LinearLayoutCompat zgodovinaLinearLayout;
+    // Fragment:
+    ArticleListFragment articleListFragment;
 
 
     public UserFunctionsFragment() {
@@ -89,8 +92,7 @@ public class UserFunctionsFragment extends Fragment {
         seznam_artikliLinearLayout = rootView.findViewById(R.id.artikli_nakupovalniSeznam_userFunctionsFragment);
         seznam_artikliLinearLayout.setOnClickListener(l -> {
             if (appUser.isLastnik_kmetije()) {
-                // TODO open seznam artiklov
-                ArticleListFragment articleListFragment = ArticleListFragment.newInstance();
+                articleListFragment = ArticleListFragment.newInstance();
                 FragmentManager fragmentManager = getParentFragmentManager();
                 fragmentManager.beginTransaction()
                         .setCustomAnimations(R.anim.fade_in, R.anim.fade_out)

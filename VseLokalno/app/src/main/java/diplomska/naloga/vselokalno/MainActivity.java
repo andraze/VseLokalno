@@ -214,4 +214,5 @@ public class MainActivity extends AppCompatActivity {
         } else
             makeLogW(TAG, "(openFragment) ERROR! fragmentToOpen == null!");
     } // openMap
+
 }

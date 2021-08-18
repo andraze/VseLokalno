@@ -124,6 +124,10 @@ public class Kmetija {
         this.artikli.add(artikel);
     }
 
+    public void removeArtikel(int position) {
+        this.artikli.remove(position);
+    }
+
     /**
      * Narocilo je objekt, ki ima osnovne podatke o naročilu, ki jih lahko vidi lastnik kmetije. V firestoru so shranjena v dokumentu Kmetije/{$id_kmetije}
      * Podeduje vse metode in spremenljivke od razreda SkupnoNarocilo.
