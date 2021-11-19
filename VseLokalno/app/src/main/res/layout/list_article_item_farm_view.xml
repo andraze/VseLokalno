@@ -10,6 +10,7 @@
     app:cardElevation="2dp">
 
     <RelativeLayout
+        android:id="@+id/article_relLayout_recyclerAdapter"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 

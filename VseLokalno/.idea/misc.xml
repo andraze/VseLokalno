@@ -3,10 +3,12 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="../../../../../layout/custom_preview.xml" value="0.19583333333333333" />
         <entry key="app/src/main/res/drawable-v24/ic_map_my_location.xml" value="0.3958333333333333" />
         <entry key="app/src/main/res/drawable-v24/info_window_bg.xml" value="0.3958333333333333" />
         <entry key="app/src/main/res/drawable/button_background.xml" value="0.3484375" />
         <entry key="app/src/main/res/drawable/button_background_green.xml" value="0.3484375" />
+        <entry key="app/src/main/res/drawable/button_background_red.xml" value="0.3484375" />
         <entry key="app/src/main/res/drawable/checked.xml" value="0.3619791666666667" />
         <entry key="app/src/main/res/drawable/checkmark.xml" value="0.3619791666666667" />
         <entry key="app/src/main/res/drawable/clickable_text_background.xml" value="0.5" />
@@ -24,6 +26,7 @@
         <entry key="app/src/main/res/drawable/ic_zelje.xml" value="0.14270833333333333" />
         <entry key="app/src/main/res/drawable/ic_zgodovina.xml" value="0.14270833333333333" />
         <entry key="app/src/main/res/drawable/img_default_user_foreground.xml" value="0.3619791666666667" />
+        <entry key="app/src/main/res/drawable/stock_run_out_background_article.xml" value="0.346875" />
         <entry key="app/src/main/res/drawable/time_btn_pressed.xml" value="0.36041666666666666" />
         <entry key="app/src/main/res/drawable/time_btn_unpressed.xml" value="0.36041666666666666" />
         <entry key="app/src/main/res/drawable/time_selection_btn.xml" value="0.36041666666666666" />
@@ -34,6 +37,7 @@
         <entry key="app/src/main/res/layout/fragment_article_list.xml" value="0.4050314465408805" />
         <entry key="app/src/main/res/layout/fragment_choose.xml" value="0.19166666666666668" />
         <entry key="app/src/main/res/layout/fragment_edit_article.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/fragment_farm_details.xml" value="0.33229166666666665" />
         <entry key="app/src/main/res/layout/fragment_farm_location.xml" value="0.5" />
         <entry key="app/src/main/res/layout/fragment_farm_time.xml" value="0.3463541666666667" />
         <entry key="app/src/main/res/layout/fragment_farm_time_fragmetn.xml" value="0.46510416666666665" />
@@ -45,7 +49,8 @@
         <entry key="app/src/main/res/layout/fragment_user_functions.xml" value="0.46510416666666665" />
         <entry key="app/src/main/res/layout/fragment_user_type.xml" value="0.30833333333333335" />
         <entry key="app/src/main/res/layout/list_article_item_farm_view.xml" value="0.3463541666666667" />
-        <entry key="app/src/main/res/layout/list_farm_item.xml" value="0.3802083333333333" />
+        <entry key="app/src/main/res/layout/list_farm_item.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/list_specific_farm_item.xml" value="0.25" />
         <entry key="app/src/main/res/menu/menu_bottom.xml" value="0.3802083333333333" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_default_user.xml" value="0.20677083333333332" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_default_user_round.xml" value="0.20677083333333332" />

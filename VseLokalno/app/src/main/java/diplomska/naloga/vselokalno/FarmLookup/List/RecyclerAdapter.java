@@ -31,7 +31,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     private final String TAG = "RecyclerAdapter";
 
     public interface ItemClickListener {
-        void onItemClick(int position, Map<String, String> farm, TextView textView, String transitionName, ImageView imageView, String imageTransitionName, StorageReference imageRef);
+        void onItemClick(int position, Map<String, String> farm, TextView textView, ImageView imageView, StorageReference imageRef);
     } // ItemClickListener
 
     ItemClickListener ItemClickListener;
@@ -44,7 +44,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
     public RecyclerAdapter(Context context, ArrayList<Map<String, String>> farmArrayList,
                            FragmentManager newFragmentmaneger, ItemClickListener itemClickListener) {
-//        setHasStableIds(true);
         mInflater = LayoutInflater.from(context);
         this.mFarmData = farmArrayList;
         this.mContext = context;
@@ -82,15 +81,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 //        makeLogD(TAG, "(onBindViewHolder) storage reference: " + imageRef.toString());
         GlideApp.with(mContext).load(imageRef).into(holder.mImage);
 
-        ViewCompat.setTransitionName(holder.mNaslovText, "ime" + currentFarm.get("id_kmetije"));
-        ViewCompat.setTransitionName(holder.mImage, "slika" + currentFarm.get("id_kmetije"));
         holder.itemView.setOnClickListener(v -> ItemClickListener.onItemClick(
                 holder.getAdapterPosition(),
                 currentFarm,
                 holder.mNaslovText,
-                "ime" + currentFarm.get("id_kmetije"),
                 holder.mImage,
-                "slika" + currentFarm.get("id_kmetije"),
                 imageRef
         ));
     } // onBindViewHolder
@@ -109,7 +104,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     /**
      * ViewHolder class that represents each row of data in the RecyclerView.
      */
-    static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
 
         // Member Variables for the TextViews
         private final TextView mNaslovText;
@@ -120,7 +115,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
          *
          * @param itemView The rootview of the list_item.xml layout file.
          */
-        ViewHolder(View itemView) {
+        public ViewHolder(View itemView) {
             super(itemView);
             // Initialize the views.
             mNaslovText = itemView.findViewById(R.id.naslov);

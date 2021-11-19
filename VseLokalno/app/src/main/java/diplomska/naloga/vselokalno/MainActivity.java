@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     //    users farm:
     public static Kmetija appFarm;
     //    Firestore:
-    public FirebaseFirestore db;
+    public static FirebaseFirestore db;
     //    Firebase storage:
     public FirebaseStorage storage;
     //    Bottom navigation:
@@ -207,6 +207,7 @@ public class MainActivity extends AppCompatActivity {
         }
         FragmentManager fragmentManager = getSupportFragmentManager();
         if (fragmentToOpen != null) {
+            fragmentManager.popBackStack();
             fragmentManager.beginTransaction()
                     .setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
                     .replace(R.id.main_fragment_container, fragmentToOpen)

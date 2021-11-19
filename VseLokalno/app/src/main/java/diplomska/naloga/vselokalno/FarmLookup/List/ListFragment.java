@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.transition.TransitionInflater;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.Map;
 
+import diplomska.naloga.vselokalno.FarmLookup.FarmDetails.FarmDetailsFragment;
 import diplomska.naloga.vselokalno.R;
 
 public class ListFragment extends Fragment implements RecyclerAdapter.ItemClickListener {
@@ -55,7 +57,6 @@ public class ListFragment extends Fragment implements RecyclerAdapter.ItemClickL
             RecyclerAdapter mAdapter = new RecyclerAdapter(requireContext(), allFarmsDataShort,
                     requireActivity().getSupportFragmentManager(), mItemClickListener);
             mRecyclerView.setAdapter(mAdapter);
-//            mRecyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 2));
             mRecyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 2));
             makeLogD(TAG, "(OnCreateView) recycler adapter ready.");
         } else {
@@ -65,26 +66,21 @@ public class ListFragment extends Fragment implements RecyclerAdapter.ItemClickL
     } // onCreateView
 
     @Override
-    public void onItemClick(int position, Map<String, String> farm, TextView textView, String transitionName,
-                            ImageView imageView, String imageTransitionName, StorageReference imageRef) {
-//        TODO: show details and articles the farm has:
-//        Gson gson = new Gson();
-//        final DetailFragment detailFragment = DetailFragment.newInstance(gson.toJson(activity), drawableResource, transitionName, imageTransitionName);
-//        detailFragment.setSharedElementEnterTransition(TransitionInflater.from(getContext()).inflateTransition(R.transition.do_transaction));
-//        if (getFragmentManager() != null) {
-//            getFragmentManager()
-//                    .beginTransaction()
-//                    .setCustomAnimations(
-//                            R.anim.enter_from_right, R.anim.exit_to_left,
-//                            R.anim.enter_from_left, R.anim.exit_to_right
-//                    )
-//                    .addSharedElement(imageView, imageTransitionName)
-//                    .addSharedElement(textView, transitionName)
-//                    .addToBackStack(null)
-//                    .replace(R.id.main_fragment_container, detailFragment)
-//                    .commit();
-//        } else {
-//            makeLogW(TAG, "(onItemClick) getFragmentManager == null!");
-//        }
+    public void onItemClick(int position, Map<String, String> farm, TextView textView, ImageView imageView, StorageReference imageRef) {
+        makeLogD(TAG, "Farm: " + farm.toString());
+        final FarmDetailsFragment detailFragment = FarmDetailsFragment.newInstance(farm.get("id_kmetije"));
+        if (getFragmentManager() != null) {
+            getFragmentManager()
+                    .beginTransaction()
+                    .setCustomAnimations(
+                            R.anim.enter_from_right, R.anim.exit_to_left,
+                            R.anim.enter_from_left, R.anim.exit_to_right
+                    )
+                    .addToBackStack(null)
+                    .replace(R.id.main_fragment_container, detailFragment)
+                    .commit();
+        } else {
+            makeLogW(TAG, "(onItemClick) getFragmentManager == null!");
+        }
     } // onItemClick
 }

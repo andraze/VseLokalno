@@ -12,14 +12,6 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-
-import androidx.annotation.DrawableRes;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.res.ResourcesCompat;
-import androidx.fragment.app.Fragment;
-
 import android.os.Handler;
 import android.provider.Settings;
 import android.util.Log;
@@ -27,6 +19,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -43,6 +42,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Objects;
 
+import diplomska.naloga.vselokalno.FarmLookup.FarmDetails.FarmDetailsFragment;
 import diplomska.naloga.vselokalno.R;
 import im.delight.android.location.SimpleLocation;
 
@@ -67,6 +67,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnInfoWindowClick
     private SimpleLocation location;
     // On Info Window Click Listener:
     GoogleMap.OnInfoWindowClickListener onInfoWindowClickListener = this;
+
     // Callback:
     private final OnMapReadyCallback callback = new OnMapReadyCallback() {
         @Override
@@ -176,6 +177,29 @@ public class MapFragment extends Fragment implements GoogleMap.OnInfoWindowClick
     @Override
     public void onInfoWindowClick(@NonNull Marker marker) {
         // TODO show details about the selected marker/farm.
+        makeLogD(TAG, marker.getPosition().toString());
+        String farmLookingForID = "";
+        for (Map<String, String> farm : allFarmsDataShort) {
+            if (farm.get("ime_kmetije").equals(marker.getTitle()) &&
+                    marker.getPosition().equals(new LatLng(Double.parseDouble(Objects.requireNonNull(farm.get("lat"))), Double.parseDouble(Objects.requireNonNull(farm.get("lon")))))) {
+                farmLookingForID = farm.get("id_kmetije");
+                break;
+            }
+        }
+        final FarmDetailsFragment detailFragment = FarmDetailsFragment.newInstance(farmLookingForID);
+        if (getFragmentManager() != null) {
+            getFragmentManager()
+                    .beginTransaction()
+                    .setCustomAnimations(
+                            R.anim.enter_from_right, R.anim.exit_to_left,
+                            R.anim.enter_from_left, R.anim.exit_to_right
+                    )
+                    .addToBackStack(null)
+                    .replace(R.id.main_fragment_container, detailFragment)
+                    .commit();
+        } else {
+            makeLogW(TAG, "(onInfoWindowClick) getFragmentManager == null!");
+        }
     } // onInfoWindowClick
 
     private void showFarms() {
@@ -185,13 +209,13 @@ public class MapFragment extends Fragment implements GoogleMap.OnInfoWindowClick
             if (farm.get("lat") == null || farm.get("lon") == null)
                 makeLogW(TAG, "(showFarms) lat or lon == null!");
             latLngOfFarm = new LatLng(Double.parseDouble(Objects.requireNonNull(farm.get("lat"))), Double.parseDouble(Objects.requireNonNull(farm.get("lon"))));
-            makeLogD(TAG, "(showFarms) " + latLngOfFarm.toString());
+//            makeLogD(TAG, "(showFarms) " + latLngOfFarm.toString());
 
             Marker farmMarker = mMap.addMarker(
                     new MarkerOptions()
                             .position(latLngOfFarm)
                             .title(farm.get("ime_kmetije"))
-                            // .snippet(thisActivity.getAvg_score() + "★")
+                            .snippet("Obišči kmetijo " + farm.get("ime_kmetije"))
                             .icon(vectorToBitmap(R.drawable.ic_map_farm))
             );
             farmMarkers.add(farmMarker);

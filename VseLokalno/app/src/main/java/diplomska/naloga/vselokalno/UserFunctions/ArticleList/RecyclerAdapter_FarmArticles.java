@@ -2,14 +2,17 @@ package diplomska.naloga.vselokalno.UserFunctions.ArticleList;
 
 import static diplomska.naloga.vselokalno.MainActivity.makeLogD;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,6 +26,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import diplomska.naloga.vselokalno.FarmLookup.List.GlideApp;
+import diplomska.naloga.vselokalno.MainActivity;
 import diplomska.naloga.vselokalno.R;
 
 /***
@@ -76,6 +80,7 @@ public class RecyclerAdapter_FarmArticles extends RecyclerView.Adapter<RecyclerA
         return new ViewHolder(mInflater.inflate(R.layout.list_article_item_farm_view, parent, false));
     } // onCreateViewHolder
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         // Get current sport.
@@ -90,6 +95,10 @@ public class RecyclerAdapter_FarmArticles extends RecyclerView.Adapter<RecyclerA
         StorageReference imageRef = FirebaseStorage.getInstance().getReference()
                 .child(Objects.requireNonNull(currentArtikel.get("slika_artikel")));
         GlideApp.with(mContext).load(imageRef).into(holder.mSlikaArtikel);
+
+        if (Double.parseDouble(Objects.requireNonNull(currentArtikel.get("zaloga_artikel"))) == 0) {
+            holder.mRelLayout.setBackground(mContext.getDrawable(R.drawable.stock_run_out_background_article));
+        }
 
         holder.mDeleteFab.setOnClickListener(view -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
@@ -133,6 +142,7 @@ public class RecyclerAdapter_FarmArticles extends RecyclerView.Adapter<RecyclerA
         private final TextView mEnotaArtikel;
         private final ShapeableImageView mSlikaArtikel;
         private final FloatingActionButton mDeleteFab;
+        private final RelativeLayout mRelLayout;
 
         /**
          * Constructor for the ViewHolder, used in onCreateViewHolder().
@@ -147,6 +157,7 @@ public class RecyclerAdapter_FarmArticles extends RecyclerView.Adapter<RecyclerA
             mEnotaArtikel = itemView.findViewById(R.id.enota_artikel);
             mSlikaArtikel = itemView.findViewById(R.id.slika_artikla);
             mDeleteFab = itemView.findViewById(R.id.delete_article);
+            mRelLayout = itemView.findViewById(R.id.article_relLayout_recyclerAdapter);
         } // ViewHolder
 
     } // ViewHolder
