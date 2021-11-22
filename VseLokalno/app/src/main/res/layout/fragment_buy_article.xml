@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/article_image_buyArticleFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="@dimen/dp_4"
+        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginEnd="@dimen/dp_4"
+        android:layout_marginBottom="@dimen/dp_4"
+        android:adjustViewBounds="true"
+        android:backgroundTint="@color/white"
+        android:maxWidth="200dp"
+        android:maxHeight="200dp"
+        android:minWidth="150dp"
+        android:minHeight="150dp"
+        android:scaleType="centerCrop"
+        app:shapeAppearanceOverlay="@style/FullRoundedSquare" />
+
+    <TextView
+        android:id="@+id/ime_artikel_buyArticleFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/article_image_buyArticleFragment"
+        android:layout_alignParentStart="true"
+        android:layout_margin="@dimen/dp_16"
+        android:maxWidth="200dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:textColor="@color/blue_normal"
+        android:textColorHint="@color/blue_normal_low" />
+
+    <TextView
+        android:id="@+id/cena_artikel_buyArticleFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ime_artikel_buyArticleFragment"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_4"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:maxWidth="200dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="@color/blue_normal"
+        android:textColorHint="@color/blue_normal_low" />
+
+    <TextView
+        android:id="@+id/dash"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ime_artikel_buyArticleFragment"
+        android:layout_marginStart="@dimen/dp_4"
+        android:layout_marginEnd="@dimen/dp_4"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:layout_toEndOf="@id/cena_artikel_buyArticleFragment"
+        android:maxWidth="200dp"
+        android:text="@string/dash"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="@color/blue_normal"
+        android:textColorHint="@color/blue_normal_low" />
+
+    <TextView
+        android:id="@+id/unit3_buyArticleFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ime_artikel_buyArticleFragment"
+        android:layout_marginStart="@dimen/dp_4"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:layout_toEndOf="@id/dash"
+        android:maxWidth="200dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="@color/blue_normal"
+        android:textColorHint="@color/blue_normal_low" />
+
+    <LinearLayout
+        android:id="@+id/lin1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@id/article_image_buyArticleFragment"
+        android:orientation="horizontal">
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/subtract_artikel_buyArticleFragment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_4"
+            android:adjustViewBounds="true"
+            android:background="@drawable/button_background_subtract"
+            android:elevation="@dimen/dp_2"
+            android:padding="@dimen/dp_4"
+            android:src="@drawable/ic_minus" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/add_artikel_buyArticleFragment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_4"
+            android:background="@drawable/button_background_subtract"
+            android:backgroundTint="@color/green_normal"
+            android:elevation="@dimen/dp_2"
+            android:padding="@dimen/dp_4"
+            android:src="@drawable/ic_plus_small" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/lin2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/lin1"
+        android:layout_toEndOf="@id/article_image_buyArticleFragment"
+        android:orientation="horizontal">
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="3" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/kolicina_artikel_et_buyArticleFragment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_4"
+            android:hint="@string/hint_kolicine_kupovanje"
+            android:inputType="numberDecimal"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="@color/blue_dark"
+            android:textColorHint="@color/blue_normal_low" />
+
+        <TextView
+            android:id="@+id/unit1_buyArticleFragment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_4"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/blue_light" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="2" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/lin2"
+        android:layout_toEndOf="@id/article_image_buyArticleFragment"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_4"
+            android:text="Na voljo:"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/blue_light" />
+
+        <TextView
+            android:id="@+id/zaloga_buyArticleFragment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_4"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="@color/blue_light" />
+
+        <TextView
+            android:id="@+id/unit2_buyArticleFragment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_4"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/blue_light" />
+
+    </LinearLayout>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ime_artikel_buyArticleFragment"
+        android:layout_alignParentEnd="true"
+        android:orientation="horizontal">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/cancel_artikel_fab_buyArticleFragment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_4"
+            android:contentDescription="@string/zavrzi_artikel"
+            android:src="@drawable/ic_clear"
+            app:backgroundTint="@color/red_normal"
+            app:fabSize="mini" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/buy_artikel_fab_buyArticleFragment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_4"
+            android:contentDescription="@string/shrani_artikel"
+            android:src="@drawable/ic_check"
+            app:fabSize="mini" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+</RelativeLayout>

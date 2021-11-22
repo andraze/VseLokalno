@@ -31,12 +31,22 @@ public class FarmDetailsArticleAdapter extends RecyclerView.Adapter<FarmDetailsA
     FragmentManager mFragmentManager;
     LayoutInflater mInflater;
 
+    /**
+     * When a buyer wishes to buy a specific article of a specific farm.
+     */
+    public interface OnArticleBuyerClickListener {
+        void onArticleClickListener(int position);
+    } // OnArticleBuyerClickListener
+
+    OnArticleBuyerClickListener onArticleBuyerClickListener;
+
     public FarmDetailsArticleAdapter(Context context, ArrayList<Map<String, String>> articles,
-                                     FragmentManager fragmentManager) {
+                                     FragmentManager fragmentManager, OnArticleBuyerClickListener tempArticleBuyerClickListener) {
         this.mContext = context;
         this.mArticles = articles;
         this.mFragmentManager = fragmentManager;
-        mInflater = LayoutInflater.from(this.mContext);
+        this.mInflater = LayoutInflater.from(this.mContext);
+        this.onArticleBuyerClickListener = tempArticleBuyerClickListener;
         setHasStableIds(true);
     }
 
@@ -69,6 +79,7 @@ public class FarmDetailsArticleAdapter extends RecyclerView.Adapter<FarmDetailsA
         StorageReference imageRef = FirebaseStorage.getInstance().getReference()
                 .child(Objects.requireNonNull(currentArticle.get("slika_artikel")));
         GlideApp.with(mContext).load(imageRef).into(holder.mArticleImage);
+        holder.itemView.setOnClickListener(v -> onArticleBuyerClickListener.onArticleClickListener(holder.getPosition()));
     } // onBindViewHolder
 
     @Override

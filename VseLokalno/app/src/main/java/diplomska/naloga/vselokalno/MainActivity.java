@@ -22,6 +22,7 @@ import java.util.Map;
 
 import diplomska.naloga.vselokalno.DataObjects.AllFarms;
 import diplomska.naloga.vselokalno.DataObjects.Kmetija;
+import diplomska.naloga.vselokalno.DataObjects.Narocilo.ZaKupca;
 import diplomska.naloga.vselokalno.DataObjects.User;
 import diplomska.naloga.vselokalno.FarmLookup.List.ListFragment;
 import diplomska.naloga.vselokalno.FarmLookup.Map.MapFragment;
@@ -43,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
     //    users farm:
     public static Kmetija appFarm;
     //    Firestore:
-    public static FirebaseFirestore db;
+    public FirebaseFirestore db;
     //    Firebase storage:
     public FirebaseStorage storage;
     //    Bottom navigation:
@@ -58,7 +59,8 @@ public class MainActivity extends AppCompatActivity {
     public static final int[] timeIDs = {R.id.time_7_8, R.id.time_8_9, R.id.time_9_10, R.id.time_10_11, R.id.time_11_12, R.id.time_12_13, R.id.time_13_14,
             R.id.time_14_15, R.id.time_15_16, R.id.time_16_17, R.id.time_17_18, R.id.time_18_19, R.id.time_19_20, R.id.time_20_21};
     public static ArrayList<Map<String, String>> allFarmsDataShort;
-
+    // Orders for buyer:
+    public static ArrayList<ZaKupca> appBasket;
 
     @SuppressLint("NonConstantResourceId")
     @Override
@@ -75,9 +77,10 @@ public class MainActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         // Initialise the firebase storage:
         storage = FirebaseStorage.getInstance();
-        // Initialise the app user and app farm:
+        // Initialise the app user and app farm and app basket:
         appUser = new User();
         appFarm = new Kmetija();
+        appBasket = new ArrayList<>();
         // Use the bottom navigation:
         bottomNavigation = findViewById(R.id.bottom_nav);
         bottomNavigation.setItemSelected(R.id.map_menu, true);

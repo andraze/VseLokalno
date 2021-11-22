@@ -80,12 +80,6 @@ public class EditArticleFragment extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            articleIndexParam = getArguments().getInt(ARG_ITEM_NUMBER);
-            mStorage = FirebaseStorage.getInstance();
-        } else {
-            makeLogW(TAG, "(onCreate) no arguments!");
-        }
     } // onCreate
 
     @Override
@@ -99,6 +93,10 @@ public class EditArticleFragment extends DialogFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_edit_article, container, false);
+        if (getArguments() != null) {
+            articleIndexParam = getArguments().getInt(ARG_ITEM_NUMBER);
+            mStorage = FirebaseStorage.getInstance();
+        }
         mArticle = appFarm.getArtikli().get(articleIndexParam);
         // Add article image:
         articleImage = rootView.findViewById(R.id.article_image_editArticleFragment);

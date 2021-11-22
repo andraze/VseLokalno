@@ -1,5 +1,6 @@
 package diplomska.naloga.vselokalno.FarmLookup.FarmDetails;
 
+import static diplomska.naloga.vselokalno.MainActivity.appBasket;
 import static diplomska.naloga.vselokalno.MainActivity.appFarm;
 import static diplomska.naloga.vselokalno.MainActivity.makeLogD;
 import static diplomska.naloga.vselokalno.MainActivity.makeLogI;
@@ -27,22 +28,30 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 import diplomska.naloga.vselokalno.DataObjects.Kmetija;
+import diplomska.naloga.vselokalno.DataObjects.Narocilo.ZaKupca;
+import diplomska.naloga.vselokalno.FarmLookup.FarmDetails.ArticleDetails.BuyArticleFragment;
 import diplomska.naloga.vselokalno.FarmLookup.List.GlideApp;
 import diplomska.naloga.vselokalno.R;
 import diplomska.naloga.vselokalno.UserFunctions.ArticleList.RecyclerAdapter_FarmArticles;
 
-public class FarmDetailsFragment extends Fragment {
+public class FarmDetailsFragment extends Fragment implements FarmDetailsArticleAdapter.OnArticleBuyerClickListener, BuyArticleFragment.BuyArticleCallBack {
 
     private String TAG = "FarmDetailsFragment";
     private static final String FARM_ID = "farm_id";
     private String mFarm_id;
     private FirebaseFirestore db;
     Kmetija farmOfInterest;
+    ArrayList<Map<String, String>> mArticlesForBuying;
     public RecyclerView mRecyclerView;
     public FarmDetailsArticleAdapter mAdapter;
     public TextView mFarmName;
     public ImageView mFarmImage;
+    public static FarmDetailsArticleAdapter.OnArticleBuyerClickListener mArticleBuyerClickListener;
 
     public FarmDetailsFragment() {
         // Required empty public constructor
@@ -72,6 +81,7 @@ public class FarmDetailsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_farm_details, container, false);
+        mArticleBuyerClickListener = this;
         mFarmName = rootView.findViewById(R.id.farm_name_text_view_FarmDetailsFragment);
         mFarmImage = rootView.findViewById(R.id.farm_image_view_FarmDetailsFragment);
         mRecyclerView = rootView.findViewById(R.id.recycler_view_FarmDetailsFragment);
@@ -87,9 +97,10 @@ public class FarmDetailsFragment extends Fragment {
                             .child("Uporabniške profilke/" + mFarm_id);
                     GlideApp.with(requireContext()).load(imageRef).into(mFarmImage);
 //                    Fill the recycler view with articles:
+                    mArticlesForBuying = farmOfInterest.getArtikli();
                     if (mRecyclerView != null) {
                         mAdapter = new FarmDetailsArticleAdapter(requireContext(), farmOfInterest.getArtikli(),
-                                requireActivity().getSupportFragmentManager());
+                                requireActivity().getSupportFragmentManager(), mArticleBuyerClickListener);
                         mRecyclerView.setAdapter(mAdapter);
                         mRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
                     }
@@ -98,4 +109,45 @@ public class FarmDetailsFragment extends Fragment {
         }
         return rootView;
     } // onCreateView
+
+    @Override
+    public void onArticleClickListener(int position) {
+        BuyArticleFragment buyArticleFragment = BuyArticleFragment.newInstance(mArticlesForBuying.get(position));
+        buyArticleFragment.show(getParentFragmentManager(), "Kupi izdelek");
+        buyArticleFragment.setBuyArticleListener(this::callbackBuyArticle_fun);
+    } // onArticleClickListener
+
+    @Override
+    public void callbackBuyArticle_fun(Map<String, String> order) {
+        // TODO: update with farm details ZaKupca + ZaKmetijo.
+        if (appBasket.isEmpty()) {
+            // New order:
+            newOrder(order);
+        } else {
+            boolean found = false;
+            for (ZaKupca zaKupcaOrderFromSpecificFarm : appBasket) {
+                if (zaKupcaOrderFromSpecificFarm.getId_kmetije().equals(mFarm_id)) {
+                    // Update order:
+                    found = true;
+                    zaKupcaOrderFromSpecificFarm.addNarocilo_cene(order.get("ime"), order.get("cena"));
+                    zaKupcaOrderFromSpecificFarm.addNarocilo_enote(order.get("ime"), order.get("enota"));
+                    zaKupcaOrderFromSpecificFarm.addNarocilo_kolicine(order.get("ime"), order.get("kolicina"));
+                }
+            }
+            if (!found) {
+                // New order:
+                newOrder(order);
+            }
+        }
+    } // callbackBuyArticle_fun
+
+    private void newOrder(Map<String, String> order) {
+        ZaKupca newOrder = new ZaKupca();
+        newOrder.setIme_kmetije(farmOfInterest.getIme_kmetije());
+        newOrder.setId_kmetije(mFarm_id);
+        newOrder.addNarocilo_cene(order.get("ime"), order.get("cena"));
+        newOrder.addNarocilo_enote(order.get("ime"), order.get("enota"));
+        newOrder.addNarocilo_kolicine(order.get("ime"), order.get("kolicina"));
+        appBasket.add(newOrder);
+    } // newOrder
 }
