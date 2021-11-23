@@ -11,9 +11,10 @@ import java.util.Map;
  * Timestamp datum_narocila
  * String naslov_dostave
  * int opravljeno {0 == v procesu; 1 == uspešno; 2 == neuspešno}
- * Map<String, Object> narocilo_cene ... npr: {"Mleko": 3.5}
- * Map<String, Object> narocilo_enote ... npr: {"Mleko": liter}
- * Map<String, Object> narocilo_kolicine ... npr: {"Mleko": 2}
+ * Map<String, String> narocilo_cene ... npr: {"Mleko": 3.5}
+ * Map<String, String> narocilo_enote ... npr: {"Mleko": liter}
+ * Map<String, String> narocilo_kolicine ... npr: {"Mleko": 2}
+ * Mao<String, String> narocilo_slike ... pot do slike na firebase storage
  * String povezava_narocil ... povezuje naročilo, ki ga dobi kmetija z naročilom, ki ga izda kupec npr: {Uporabniki/TH2q!6ascHUfj/Narocila/ZgHfbhUUI3749JIO_23_11_2021_19_54_23}
  */
 public class SkupnoNarocilo {
@@ -25,6 +26,7 @@ public class SkupnoNarocilo {
     Map<String, String> narocilo_cene;
     Map<String, String> narocilo_enote;
     Map<String, String> narocilo_kolicine;
+    Map<String, String> narocilo_slike;
     String povezava_narocil;
 
     public SkupnoNarocilo() {
@@ -35,7 +37,16 @@ public class SkupnoNarocilo {
         this.narocilo_cene = new HashMap<>();
         this.narocilo_enote = new HashMap<>();
         this.narocilo_kolicine = new HashMap<>();
+        this.narocilo_slike = new HashMap<>();
         this.povezava_narocil = "";
+    }
+
+    public void addNarocilo_slike(String articleName, String imagePath) {
+        this.narocilo_slike.put(articleName, imagePath);
+    }
+
+    public Map<String, String> getNarocilo_slike() {
+        return this.narocilo_slike;
     }
 
     public String getPovezava_narocil() {

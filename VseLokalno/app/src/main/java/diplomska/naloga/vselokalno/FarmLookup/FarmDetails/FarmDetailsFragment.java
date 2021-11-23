@@ -1,35 +1,24 @@
 package diplomska.naloga.vselokalno.FarmLookup.FarmDetails;
 
 import static diplomska.naloga.vselokalno.MainActivity.appBasket;
-import static diplomska.naloga.vselokalno.MainActivity.appFarm;
-import static diplomska.naloga.vselokalno.MainActivity.makeLogD;
-import static diplomska.naloga.vselokalno.MainActivity.makeLogI;
-import static diplomska.naloga.vselokalno.MainActivity.makeLogW;
 
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 import diplomska.naloga.vselokalno.DataObjects.Kmetija;
@@ -37,11 +26,10 @@ import diplomska.naloga.vselokalno.DataObjects.Narocilo.ZaKupca;
 import diplomska.naloga.vselokalno.FarmLookup.FarmDetails.ArticleDetails.BuyArticleFragment;
 import diplomska.naloga.vselokalno.FarmLookup.List.GlideApp;
 import diplomska.naloga.vselokalno.R;
-import diplomska.naloga.vselokalno.UserFunctions.ArticleList.RecyclerAdapter_FarmArticles;
 
 public class FarmDetailsFragment extends Fragment implements FarmDetailsArticleAdapter.OnArticleBuyerClickListener, BuyArticleFragment.BuyArticleCallBack {
 
-    private String TAG = "FarmDetailsFragment";
+    private final String TAG = "FarmDetailsFragment";
     private static final String FARM_ID = "farm_id";
     private String mFarm_id;
     private FirebaseFirestore db;
@@ -131,6 +119,7 @@ public class FarmDetailsFragment extends Fragment implements FarmDetailsArticleA
                     zaKupcaOrderFromSpecificFarm.addNarocilo_cene(order.get("ime"), order.get("cena"));
                     zaKupcaOrderFromSpecificFarm.addNarocilo_enote(order.get("ime"), order.get("enota"));
                     zaKupcaOrderFromSpecificFarm.addNarocilo_kolicine(order.get("ime"), order.get("kolicina"));
+                    zaKupcaOrderFromSpecificFarm.addNarocilo_slike(order.get("ime"), order.get("slika"));
                 }
             }
             if (!found) {
@@ -147,6 +136,7 @@ public class FarmDetailsFragment extends Fragment implements FarmDetailsArticleA
         newOrder.addNarocilo_cene(order.get("ime"), order.get("cena"));
         newOrder.addNarocilo_enote(order.get("ime"), order.get("enota"));
         newOrder.addNarocilo_kolicine(order.get("ime"), order.get("kolicina"));
+        newOrder.addNarocilo_slike(order.get("ime"), order.get("slika"));
         appBasket.add(newOrder);
     } // newOrder
 }

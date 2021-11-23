@@ -55,7 +55,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:padding="8dp"
-                android:text="@string/article_between"
+                android:text="@string/dash"
                 android:textColor="@color/blue_normal"
                 android:theme="@style/ThemeOverlay.AppCompat" />
 

@@ -6,6 +6,8 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +23,9 @@ import diplomska.naloga.vselokalno.DataObjects.Narocilo.ZaKupca;
 import diplomska.naloga.vselokalno.R;
 
 public class BasketFragment extends Fragment {
+
+    BasketRecyclerAdapter mAdapter;
+    RecyclerView recyclerView;
 
     public BasketFragment() {
         // Required empty public constructor
@@ -45,18 +50,24 @@ public class BasketFragment extends Fragment {
             TextView priceSumView = rootView.findViewById(R.id.price_sum_tv_BasketFragment);
             priceSumView.setText(String.format("%.2f", calc_sum_price()));
         }
+        recyclerView = rootView.findViewById(R.id.recycler_view_basketFragment);
+        if (recyclerView != null) {
+            mAdapter = new BasketRecyclerAdapter(requireContext());
+            recyclerView.setAdapter(mAdapter);
+            recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        }
         // Clear the basket:
         FloatingActionButton cancelBtn = rootView.findViewById(R.id.cancel_fab_basketFragment);
         cancelBtn.setOnClickListener(v -> {
             appBasket.clear();
-            // TODO: reset adapter.
-        });
+            mAdapter = new BasketRecyclerAdapter(requireContext());
+            recyclerView.setAdapter(mAdapter);
+            recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));        });
         // Proceed with buying:
         FloatingActionButton continueBtn = rootView.findViewById(R.id.buy_fab_basketFragment);
         continueBtn.setOnClickListener(v -> {
             // TODO: Proceed with purchase.
         });
-        // TODO: Recycler adapter
         return rootView;
     }
 
