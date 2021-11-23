@@ -85,4 +85,10 @@
     <string name="hint_kolicine_zaloga">Količina (npr. 10)</string>
     <string name="hint_enote_zaloga">Enote (npr. kg)</string>
     <string name="hint_kolicine_kupovanje">5.1</string>
+    <string name="ko_arica_je_prazna">Košarica je prazna.</string>
+    <string name="_0">0</string>
+    <string name="skupaj">Skupaj:</string>
+    <string name="euro_sign">€</string>
+    <string name="nadaljuj">Nadaljuj</string>
+    <string name="izprazni">Izprazni</string>
 </resources>

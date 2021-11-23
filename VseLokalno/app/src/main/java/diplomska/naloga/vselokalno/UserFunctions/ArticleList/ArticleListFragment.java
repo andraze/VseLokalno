@@ -10,13 +10,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
@@ -25,7 +22,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
-import diplomska.naloga.vselokalno.MainActivity;
 import diplomska.naloga.vselokalno.R;
 
 public class ArticleListFragment extends Fragment implements RecyclerAdapter_FarmArticles.ItemClickListener, RecyclerAdapter_FarmArticles.ArticleDeleteListener, EditArticleFragment.EditArticleRefreshAdapterInterface, NewArticleFragment.NewArticleRefreshAdapterInterface {

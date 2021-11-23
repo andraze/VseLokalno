@@ -13,7 +13,8 @@ import java.util.Map;
  * int opravljeno {0 == v procesu; 1 == uspešno; 2 == neuspešno}
  * Map<String, Object> narocilo_cene ... npr: {"Mleko": 3.5}
  * Map<String, Object> narocilo_enote ... npr: {"Mleko": liter}
- * Map<String, Object> narocilo_kolicine .. npr: {"Mleko": 2}
+ * Map<String, Object> narocilo_kolicine ... npr: {"Mleko": 2}
+ * String povezava_narocil ... povezuje naročilo, ki ga dobi kmetija z naročilom, ki ga izda kupec npr: {Uporabniki/TH2q!6ascHUfj/Narocila/ZgHfbhUUI3749JIO_23_11_2021_19_54_23}
  */
 public class SkupnoNarocilo {
 
@@ -24,6 +25,7 @@ public class SkupnoNarocilo {
     Map<String, String> narocilo_cene;
     Map<String, String> narocilo_enote;
     Map<String, String> narocilo_kolicine;
+    String povezava_narocil;
 
     public SkupnoNarocilo() {
         naslov_dostave = "";
@@ -33,6 +35,15 @@ public class SkupnoNarocilo {
         this.narocilo_cene = new HashMap<>();
         this.narocilo_enote = new HashMap<>();
         this.narocilo_kolicine = new HashMap<>();
+        this.povezava_narocil = "";
+    }
+
+    public String getPovezava_narocil() {
+        return povezava_narocil;
+    }
+
+    public void setPovezava_narocil(String povezava_narocil) {
+        this.povezava_narocil = povezava_narocil;
     }
 
     public void addNarocilo_cene(String articleName, String articlePrice) {

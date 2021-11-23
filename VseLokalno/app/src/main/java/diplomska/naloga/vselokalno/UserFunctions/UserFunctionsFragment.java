@@ -25,6 +25,7 @@ import diplomska.naloga.vselokalno.FarmLookup.List.GlideApp;
 import diplomska.naloga.vselokalno.R;
 import diplomska.naloga.vselokalno.UserFunctions.ArticleList.ArticleListFragment;
 import diplomska.naloga.vselokalno.UserFunctions.ArticleList.EditArticleFragment;
+import diplomska.naloga.vselokalno.UserFunctions.Basket.BasketFragment;
 
 
 public class UserFunctionsFragment extends Fragment {
@@ -85,7 +86,13 @@ public class UserFunctionsFragment extends Fragment {
             if (appUser.isLastnik_kmetije()) {
                 // TODO open active narocila
             } else {
-                // TODO open kosarica
+                BasketFragment basketFragment = BasketFragment.newInstance();
+                FragmentManager fragmentManager = getParentFragmentManager();
+                fragmentManager.beginTransaction()
+                        .setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
+                        .replace(R.id.main_fragment_container, basketFragment)
+                        .addToBackStack(null)
+                        .commit();
             }
         });
         // Nakupovalni seznam / artikli:

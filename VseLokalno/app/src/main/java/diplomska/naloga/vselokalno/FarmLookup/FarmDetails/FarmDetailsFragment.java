@@ -114,12 +114,11 @@ public class FarmDetailsFragment extends Fragment implements FarmDetailsArticleA
     public void onArticleClickListener(int position) {
         BuyArticleFragment buyArticleFragment = BuyArticleFragment.newInstance(mArticlesForBuying.get(position));
         buyArticleFragment.show(getParentFragmentManager(), "Kupi izdelek");
-        buyArticleFragment.setBuyArticleListener(this::callbackBuyArticle_fun);
+        buyArticleFragment.setBuyArticleListener(this);
     } // onArticleClickListener
 
     @Override
     public void callbackBuyArticle_fun(Map<String, String> order) {
-        // TODO: update with farm details ZaKupca + ZaKmetijo.
         if (appBasket.isEmpty()) {
             // New order:
             newOrder(order);
