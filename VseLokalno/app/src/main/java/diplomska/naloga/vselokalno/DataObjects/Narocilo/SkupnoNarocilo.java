@@ -45,6 +45,22 @@ public class SkupnoNarocilo {
         this.narocilo_slike.put(articleName, imagePath);
     }
 
+    public void removeNarocilo_slike(String articleName) {
+        this.narocilo_slike.remove(articleName);
+    }
+
+    public void removeNarocilo_cene(String articleName) {
+        this.narocilo_cene.remove(articleName);
+    }
+
+    public void removeNarocilo_enote(String articleName) {
+        this.narocilo_enote.remove(articleName);
+    }
+
+    public void removeNarocilo_kolicine(String articleName) {
+        this.narocilo_kolicine.remove(articleName);
+    }
+
     public Map<String, String> getNarocilo_slike() {
         return this.narocilo_slike;
     }

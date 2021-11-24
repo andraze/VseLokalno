@@ -4,15 +4,14 @@ import static diplomska.naloga.vselokalno.MainActivity.appBasket;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -22,10 +21,12 @@ import java.util.Objects;
 import diplomska.naloga.vselokalno.DataObjects.Narocilo.ZaKupca;
 import diplomska.naloga.vselokalno.R;
 
-public class BasketFragment extends Fragment {
+public class BasketFragment extends Fragment implements BasketRecyclerAdapter.RemoveItemFromBasketInterface {
 
     BasketRecyclerAdapter mAdapter;
     RecyclerView recyclerView;
+    BasketRecyclerAdapter.RemoveItemFromBasketInterface removeItemFromBasketListener;
+    TextView priceSumView;
 
     public BasketFragment() {
         // Required empty public constructor
@@ -40,19 +41,19 @@ public class BasketFragment extends Fragment {
         super.onCreate(savedInstanceState);
     } // onCreate
 
-    @SuppressLint("DefaultLocale")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_basket, container, false);
+        removeItemFromBasketListener = this;
         if (!appBasket.isEmpty()) { // Basket is not empty:
-            TextView priceSumView = rootView.findViewById(R.id.price_sum_tv_BasketFragment);
-            priceSumView.setText(String.format("%.2f", calc_sum_price()));
+            priceSumView = rootView.findViewById(R.id.price_sum_tv_BasketFragment);
+            calc_sum_price();
         }
         recyclerView = rootView.findViewById(R.id.recycler_view_basketFragment);
         if (recyclerView != null) {
-            mAdapter = new BasketRecyclerAdapter(requireContext());
+            mAdapter = new BasketRecyclerAdapter(requireContext(), removeItemFromBasketListener);
             recyclerView.setAdapter(mAdapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         }
@@ -60,9 +61,10 @@ public class BasketFragment extends Fragment {
         FloatingActionButton cancelBtn = rootView.findViewById(R.id.cancel_fab_basketFragment);
         cancelBtn.setOnClickListener(v -> {
             appBasket.clear();
-            mAdapter = new BasketRecyclerAdapter(requireContext());
+            mAdapter = new BasketRecyclerAdapter(requireContext(), removeItemFromBasketListener);
             recyclerView.setAdapter(mAdapter);
-            recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));        });
+            recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        });
         // Proceed with buying:
         FloatingActionButton continueBtn = rootView.findViewById(R.id.buy_fab_basketFragment);
         continueBtn.setOnClickListener(v -> {
@@ -71,7 +73,8 @@ public class BasketFragment extends Fragment {
         return rootView;
     }
 
-    private double calc_sum_price() {
+    @SuppressLint("DefaultLocale")
+    private void calc_sum_price() {
         double fullSumPrice = 0;
         for (ZaKupca el : appBasket) {
             Map<String, String> numOfUnitsMap = el.getNarocilo_kolicine();
@@ -79,6 +82,16 @@ public class BasketFragment extends Fragment {
                 fullSumPrice += Double.parseDouble(entry.getValue()) * Double.parseDouble(Objects.requireNonNull(numOfUnitsMap.get(entry.getKey())));
             }
         }
-        return fullSumPrice;
+        priceSumView.setText(String.format("%.2f", fullSumPrice));
     }
+
+    @Override
+    public void removeItemFromBasketFun(int position) {
+        calc_sum_price();
+        refreshAdapter(position);
+    } // removeItemFromBasketFun
+
+    public void refreshAdapter(int position) {
+        mAdapter.notifyItemChanged(position);
+    } // refreshAdapter
 }

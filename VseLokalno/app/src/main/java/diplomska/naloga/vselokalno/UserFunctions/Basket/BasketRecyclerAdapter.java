@@ -1,8 +1,8 @@
 package diplomska.naloga.vselokalno.UserFunctions.Basket;
 
 import static diplomska.naloga.vselokalno.MainActivity.appBasket;
-import static diplomska.naloga.vselokalno.MainActivity.makeLogD;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,20 +23,25 @@ import java.util.Map;
 import java.util.Objects;
 
 import diplomska.naloga.vselokalno.DataObjects.Narocilo.ZaKupca;
-import diplomska.naloga.vselokalno.FarmLookup.FarmDetails.FarmDetailsArticleAdapter;
 import diplomska.naloga.vselokalno.FarmLookup.List.GlideApp;
 import diplomska.naloga.vselokalno.R;
 
 public class BasketRecyclerAdapter extends RecyclerView.Adapter<BasketRecyclerAdapter.ViewHolder> {
 
+    public interface RemoveItemFromBasketInterface {
+        public void removeItemFromBasketFun(int position);
+    }
+
     private final String TAG = "BasketRecyclerAdapter";
     LayoutInflater mInflater;
     Context mContext;
     ArrayList<Map<String, String>> mArticles;
+    RemoveItemFromBasketInterface removeItemFromBasketInterface;
 
-    public BasketRecyclerAdapter(Context tempContext) {
+    public BasketRecyclerAdapter(Context tempContext, RemoveItemFromBasketInterface removeItemListener) {
         this.mContext = tempContext;
         this.mInflater = LayoutInflater.from(this.mContext);
+        this.removeItemFromBasketInterface = removeItemListener;
         mArticles = new ArrayList<>();
         for (ZaKupca el : appBasket) {
             Map<String, String> numOfUnitsMap = el.getNarocilo_kolicine();
@@ -76,14 +81,48 @@ public class BasketRecyclerAdapter extends RecyclerView.Adapter<BasketRecyclerAd
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         // Populate views with content:
         Map<String, String> currentArticle = mArticles.get(position);
-        StorageReference imaageRef = FirebaseStorage.getInstance().getReference()
+        StorageReference imageRef = FirebaseStorage.getInstance().getReference()
                 .child(Objects.requireNonNull(currentArticle.get("slika")));
-        GlideApp.with(mContext).load(imaageRef).into(holder.mArticleImage);
+        GlideApp.with(mContext).load(imageRef).into(holder.mArticleImage);
         holder.mArticleAmount_Unit.setText(String.format("%s%s", currentArticle.get("kolicina"), currentArticle.get("enota")));
         holder.mArticleCost.setText(String.format("%s€", currentArticle.get("cena")));
         holder.mArticleName.setText(currentArticle.get("ime"));
         holder.mRemoveArticle.setOnClickListener(v -> {
             // TODO: delete one item.
+            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+            builder.setMessage("Ste prepričani, da želite izbrisati artikel:\n" + currentArticle.get("ime"))
+                    .setTitle("Izbris artikla");
+            builder.setPositiveButton("Ja", (dialog, id) -> {
+                // User clicked OK button:
+                for (int i = 0; i < appBasket.size(); i++) {
+                    ZaKupca el = appBasket.get(i);
+                    Map<String, String> numOfUnitsMap = el.getNarocilo_kolicine();
+                    Map<String, String> priceMap = el.getNarocilo_cene();
+                    Map<String, String> unitMap = el.getNarocilo_enote();
+                    for (Map.Entry<String, String> entry : el.getNarocilo_slike().entrySet()) {
+                        if (entry.getValue().equals(currentArticle.get("slika")) &&
+                                entry.getKey().equals(currentArticle.get("ime")) &&
+                                Objects.equals(numOfUnitsMap.get(entry.getKey()), currentArticle.get("kolicina")) &&
+                                Objects.requireNonNull(priceMap.get(entry.getKey())).equals(String.valueOf(Double.parseDouble(Objects.requireNonNull(currentArticle.get("cena"))) / Double.parseDouble(Objects.requireNonNull(numOfUnitsMap.get(entry.getKey()))))) &&
+                                Objects.requireNonNull(unitMap.get(entry.getKey())).equals(currentArticle.get("enota"))
+                        ) { // This entry.key() article needs to be deleted:
+                            appBasket.get(i).removeNarocilo_slike(currentArticle.get("ime"));
+                            appBasket.get(i).removeNarocilo_cene(currentArticle.get("ime"));
+                            appBasket.get(i).removeNarocilo_enote(currentArticle.get("ime"));
+                            appBasket.get(i).removeNarocilo_kolicine(currentArticle.get("ime"));
+                            break;
+                        }
+                    }
+                }
+                mArticles.remove(position);
+                removeItemFromBasketInterface.removeItemFromBasketFun(position);
+            });
+            builder.setNegativeButton("ne", (dialog, id) -> {
+                // User cancelled the dialog:
+                dialog.cancel();
+            });
+            AlertDialog dialog = builder.create();
+            dialog.show();
         });
         // TODO : Edit one item.
         // holder.itemView.setOnClickListener(v -> onArticleBuyerClickListener.onArticleClickListener(holder.getPosition()));
