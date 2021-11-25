@@ -29,7 +29,11 @@ import diplomska.naloga.vselokalno.R;
 public class BasketRecyclerAdapter extends RecyclerView.Adapter<BasketRecyclerAdapter.ViewHolder> {
 
     public interface RemoveItemFromBasketInterface {
-        public void removeItemFromBasketFun(int position);
+        void removeItemFromBasketFun(int position);
+    }
+
+    public interface BasketArticleClickListener {
+        void onBasketItemClickListener(Map<String, String> article, int position);
     }
 
     private final String TAG = "BasketRecyclerAdapter";
@@ -37,25 +41,27 @@ public class BasketRecyclerAdapter extends RecyclerView.Adapter<BasketRecyclerAd
     Context mContext;
     ArrayList<Map<String, String>> mArticles;
     RemoveItemFromBasketInterface removeItemFromBasketInterface;
+    BasketArticleClickListener mBasketArticleClickListener;
 
-    public BasketRecyclerAdapter(Context tempContext, RemoveItemFromBasketInterface removeItemListener) {
+    public BasketRecyclerAdapter(Context tempContext, RemoveItemFromBasketInterface removeItemListener, BasketArticleClickListener basketArticleClickListener) {
         this.mContext = tempContext;
         this.mInflater = LayoutInflater.from(this.mContext);
         this.removeItemFromBasketInterface = removeItemListener;
+        this.mBasketArticleClickListener = basketArticleClickListener;
         mArticles = new ArrayList<>();
         for (ZaKupca el : appBasket) {
             Map<String, String> numOfUnitsMap = el.getNarocilo_kolicine();
             Map<String, String> imagePaths = el.getNarocilo_slike();
             Map<String, String> unitMap = el.getNarocilo_enote();
+            Map<String, String> storageMap = el.getNarocilo_zaloge();
             for (Map.Entry<String, String> entry : el.getNarocilo_cene().entrySet()) {
                 Map<String, String> newArticle = new HashMap<>();
                 newArticle.put("ime", entry.getKey());
                 newArticle.put("kolicina", numOfUnitsMap.get(entry.getKey()));
-                double price = Double.parseDouble(Objects.requireNonNull(numOfUnitsMap.get(entry.getKey())));
-                price *= Double.parseDouble(entry.getValue());
-                newArticle.put("cena", String.valueOf(price));
+                newArticle.put("cena", entry.getValue());
                 newArticle.put("slika", imagePaths.get(entry.getKey()));
                 newArticle.put("enota", unitMap.get(entry.getKey()));
+                newArticle.put("zaloga", storageMap.get(entry.getKey()));
                 mArticles.add(newArticle);
             }
         }
@@ -85,10 +91,10 @@ public class BasketRecyclerAdapter extends RecyclerView.Adapter<BasketRecyclerAd
                 .child(Objects.requireNonNull(currentArticle.get("slika")));
         GlideApp.with(mContext).load(imageRef).into(holder.mArticleImage);
         holder.mArticleAmount_Unit.setText(String.format("%s%s", currentArticle.get("kolicina"), currentArticle.get("enota")));
-        holder.mArticleCost.setText(String.format("%s€", currentArticle.get("cena")));
+        String totalPriceofArticle = String.valueOf(Double.parseDouble(Objects.requireNonNull(currentArticle.get("cena"))) * Double.parseDouble(Objects.requireNonNull(currentArticle.get("kolicina"))));
+        holder.mArticleCost.setText(String.format("%s€", totalPriceofArticle));
         holder.mArticleName.setText(currentArticle.get("ime"));
-        holder.mRemoveArticle.setOnClickListener(v -> {
-            // TODO: delete one item.
+        holder.mRemoveArticle.setOnClickListener(v -> { // Delete one item:
             AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
             builder.setMessage("Ste prepričani, da želite izbrisati artikel:\n" + currentArticle.get("ime"))
                     .setTitle("Izbris artikla");
@@ -103,13 +109,14 @@ public class BasketRecyclerAdapter extends RecyclerView.Adapter<BasketRecyclerAd
                         if (entry.getValue().equals(currentArticle.get("slika")) &&
                                 entry.getKey().equals(currentArticle.get("ime")) &&
                                 Objects.equals(numOfUnitsMap.get(entry.getKey()), currentArticle.get("kolicina")) &&
-                                Objects.requireNonNull(priceMap.get(entry.getKey())).equals(String.valueOf(Double.parseDouble(Objects.requireNonNull(currentArticle.get("cena"))) / Double.parseDouble(Objects.requireNonNull(numOfUnitsMap.get(entry.getKey()))))) &&
+                                Objects.equals(priceMap.get(entry.getKey()), ((currentArticle.get("cena")))) &&
                                 Objects.requireNonNull(unitMap.get(entry.getKey())).equals(currentArticle.get("enota"))
                         ) { // This entry.key() article needs to be deleted:
                             appBasket.get(i).removeNarocilo_slike(currentArticle.get("ime"));
                             appBasket.get(i).removeNarocilo_cene(currentArticle.get("ime"));
                             appBasket.get(i).removeNarocilo_enote(currentArticle.get("ime"));
                             appBasket.get(i).removeNarocilo_kolicine(currentArticle.get("ime"));
+                            appBasket.get(i).removeNarocilo_zaloge(currentArticle.get("ime"));
                             break;
                         }
                     }
@@ -124,8 +131,8 @@ public class BasketRecyclerAdapter extends RecyclerView.Adapter<BasketRecyclerAd
             AlertDialog dialog = builder.create();
             dialog.show();
         });
-        // TODO : Edit one item.
-        // holder.itemView.setOnClickListener(v -> onArticleBuyerClickListener.onArticleClickListener(holder.getPosition()));
+        // Edit specific article:
+        holder.itemView.setOnClickListener(v -> mBasketArticleClickListener.onBasketItemClickListener(currentArticle, position));
     } // onBindViewHolder
 
     @Override

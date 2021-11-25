@@ -5,7 +5,7 @@
     android:layout_height="match_parent">
 
     <androidx.appcompat.widget.AppCompatImageButton
-        android:id="@+id/article_image_buyArticleFragment"
+        android:id="@+id/article_image_basketItemFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
@@ -24,10 +24,10 @@
         app:shapeAppearanceOverlay="@style/FullRoundedSquare" />
 
     <TextView
-        android:id="@+id/ime_artikel_buyArticleFragment"
+        android:id="@+id/ime_artikel_basketItemFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/article_image_buyArticleFragment"
+        android:layout_below="@id/article_image_basketItemFragment"
         android:layout_alignParentStart="true"
         android:layout_margin="@dimen/dp_16"
         android:maxWidth="200dp"
@@ -36,10 +36,10 @@
         android:textColorHint="@color/blue_normal_low" />
 
     <TextView
-        android:id="@+id/cena_artikel_buyArticleFragment"
+        android:id="@+id/cena_artikel_basketItemFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/ime_artikel_buyArticleFragment"
+        android:layout_below="@id/ime_artikel_basketItemFragment"
         android:layout_alignParentStart="true"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_4"
@@ -53,11 +53,11 @@
         android:id="@+id/dash"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/ime_artikel_buyArticleFragment"
+        android:layout_below="@id/ime_artikel_basketItemFragment"
         android:layout_marginStart="@dimen/dp_4"
         android:layout_marginEnd="@dimen/dp_4"
         android:layout_marginBottom="@dimen/dp_8"
-        android:layout_toEndOf="@id/cena_artikel_buyArticleFragment"
+        android:layout_toEndOf="@id/cena_artikel_basketItemFragment"
         android:maxWidth="200dp"
         android:text="@string/dash"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
@@ -65,10 +65,10 @@
         android:textColorHint="@color/blue_normal_low" />
 
     <TextView
-        android:id="@+id/unit3_buyArticleFragment"
+        android:id="@+id/unit3_basketItemFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/ime_artikel_buyArticleFragment"
+        android:layout_below="@id/ime_artikel_basketItemFragment"
         android:layout_marginStart="@dimen/dp_4"
         android:layout_marginBottom="@dimen/dp_8"
         android:layout_toEndOf="@id/dash"
@@ -82,7 +82,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_toEndOf="@id/article_image_buyArticleFragment"
+        android:layout_toEndOf="@id/article_image_basketItemFragment"
         android:orientation="horizontal">
 
         <View
@@ -91,7 +91,7 @@
             android:layout_weight="1" />
 
         <androidx.appcompat.widget.AppCompatImageButton
-            android:id="@+id/subtract_artikel_buyArticleFragment"
+            android:id="@+id/subtract_artikel_basketItemFragment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/dp_4"
@@ -107,7 +107,7 @@
             android:layout_weight="1" />
 
         <androidx.appcompat.widget.AppCompatImageButton
-            android:id="@+id/add_artikel_buyArticleFragment"
+            android:id="@+id/add_artikel_basketItemFragment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/dp_4"
@@ -129,7 +129,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/lin1"
-        android:layout_toEndOf="@id/article_image_buyArticleFragment"
+        android:layout_toEndOf="@id/article_image_basketItemFragment"
         android:orientation="horizontal">
 
         <View
@@ -138,7 +138,7 @@
             android:layout_weight="3" />
 
         <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/kolicina_artikel_et_buyArticleFragment"
+            android:id="@+id/kolicina_artikel_et_basketItemFragment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/dp_4"
@@ -149,7 +149,7 @@
             android:textColorHint="@color/blue_normal_low" />
 
         <TextView
-            android:id="@+id/unit1_buyArticleFragment"
+            android:id="@+id/unit1_basketItemFragment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/dp_4"
@@ -168,7 +168,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/lin2"
-        android:layout_toEndOf="@id/article_image_buyArticleFragment"
+        android:layout_toEndOf="@id/article_image_basketItemFragment"
         android:gravity="center"
         android:orientation="horizontal">
 
@@ -182,7 +182,7 @@
             android:textColor="@color/blue_light" />
 
         <TextView
-            android:id="@+id/zaloga_buyArticleFragment"
+            android:id="@+id/zaloga_basketItemFragment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/dp_4"
@@ -191,7 +191,7 @@
             android:textColor="@color/blue_light" />
 
         <TextView
-            android:id="@+id/unit2_buyArticleFragment"
+            android:id="@+id/unit2_basketItemFragment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/dp_4"
@@ -204,12 +204,12 @@
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/ime_artikel_buyArticleFragment"
+        android:layout_below="@id/ime_artikel_basketItemFragment"
         android:layout_alignParentEnd="true"
         android:orientation="horizontal">
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/cancel_artikel_fab_buyArticleFragment"
+            android:id="@+id/cancel_artikel_fab_basketItemFragment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/dp_4"
@@ -219,7 +219,7 @@
             app:fabSize="mini" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/buy_artikel_fab_buyArticleFragment"
+            android:id="@+id/buy_artikel_fab_basketItemFragment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/dp_4"

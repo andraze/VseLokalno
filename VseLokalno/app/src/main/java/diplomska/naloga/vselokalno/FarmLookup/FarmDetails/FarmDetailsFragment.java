@@ -120,6 +120,7 @@ public class FarmDetailsFragment extends Fragment implements FarmDetailsArticleA
                     zaKupcaOrderFromSpecificFarm.addNarocilo_enote(order.get("ime"), order.get("enota"));
                     zaKupcaOrderFromSpecificFarm.addNarocilo_kolicine(order.get("ime"), order.get("kolicina"));
                     zaKupcaOrderFromSpecificFarm.addNarocilo_slike(order.get("ime"), order.get("slika"));
+                    zaKupcaOrderFromSpecificFarm.addNarocilo_zaloge(order.get("ime"), order.get("zaloga"));
                 }
             }
             if (!found) {
@@ -137,6 +138,7 @@ public class FarmDetailsFragment extends Fragment implements FarmDetailsArticleA
         newOrder.addNarocilo_enote(order.get("ime"), order.get("enota"));
         newOrder.addNarocilo_kolicine(order.get("ime"), order.get("kolicina"));
         newOrder.addNarocilo_slike(order.get("ime"), order.get("slika"));
+        newOrder.addNarocilo_zaloge(order.get("ime"), order.get("zaloga"));
         appBasket.add(newOrder);
     } // newOrder
 }

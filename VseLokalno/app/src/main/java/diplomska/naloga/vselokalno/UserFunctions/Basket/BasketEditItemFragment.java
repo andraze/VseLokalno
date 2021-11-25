@@ -1,4 +1,4 @@
-package diplomska.naloga.vselokalno.FarmLookup.FarmDetails.ArticleDetails;
+package diplomska.naloga.vselokalno.UserFunctions.Basket;
 
 import static diplomska.naloga.vselokalno.MainActivity.makeLogD;
 
@@ -32,33 +32,29 @@ import diplomska.naloga.vselokalno.DataObjects.DecimalDitgitsInputFilter;
 import diplomska.naloga.vselokalno.FarmLookup.List.GlideApp;
 import diplomska.naloga.vselokalno.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link BuyArticleFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class BuyArticleFragment extends DialogFragment {
+public class BasketEditItemFragment extends DialogFragment {
 
-    public interface BuyArticleCallBack {
-        void callbackBuyArticle_fun(Map<String, String> order);
+    public interface EditBasketArticleCallBack {
+        void callbackEditBasketArticle_fun(Map<String, String> item, int position);
     }
 
-    Map<String, String> newArticleOrder;
-    BuyArticleCallBack mInterfaceBuyArticleCallback;
+    EditBasketArticleCallBack mBasketArticleCallBack;
+    int mPosition;
     Map<String, String> mArticle;
     //    Firebase firestore DB
     FirebaseFirestore db;
     //    TAG
-    String TAG = "BuyArticleFragment";
+    String TAG = "basketItemFragment";
     // Views:
     EditText articleBuyAmountView;
 
-    public BuyArticleFragment() {
+    public BasketEditItemFragment() {
         // Required empty public constructor
     }
 
-    public BuyArticleFragment(Map<String, String> article) {
+    public BasketEditItemFragment(Map<String, String> article, int position) {
         this.mArticle = article;
+        this.mPosition = position;
     }
 
     @Override
@@ -67,8 +63,8 @@ public class BuyArticleFragment extends DialogFragment {
         db = FirebaseFirestore.getInstance();
     } // onStart
 
-    public static BuyArticleFragment newInstance(Map<String, String> specificArticleToBuy) {
-        return new BuyArticleFragment(specificArticleToBuy);
+    public static BasketEditItemFragment newInstance(Map<String, String> specificArticleToBuy, int position) {
+        return new BasketEditItemFragment(specificArticleToBuy, position);
     } // newInstance
 
     @Override
@@ -81,34 +77,35 @@ public class BuyArticleFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_buy_article, container, false);
-        makeLogD(TAG, "Article is: " + mArticle);
+        View rootView = inflater.inflate(R.layout.fragment_basket_item, container, false);
+//        makeLogD(TAG, "Article is: " + mArticle);
         // Article image:
-        ImageView articleImageView = rootView.findViewById(R.id.article_image_buyArticleFragment);
+        ImageView articleImageView = rootView.findViewById(R.id.article_image_basketItemFragment);
         StorageReference imageRef = FirebaseStorage.getInstance().getReference()
-                .child(Objects.requireNonNull(mArticle.get("slika_artikel")));
+                .child(Objects.requireNonNull(mArticle.get("slika")));
         GlideApp.with(requireContext()).load(imageRef).into(articleImageView);
         // Article name:
-        TextView articleNameView = rootView.findViewById(R.id.ime_artikel_buyArticleFragment);
-        articleNameView.setText(mArticle.get("ime_artikel"));
+        TextView articleNameView = rootView.findViewById(R.id.ime_artikel_basketItemFragment);
+        articleNameView.setText(mArticle.get("ime"));
         // Article price:
-        TextView articlePriceView = rootView.findViewById(R.id.cena_artikel_buyArticleFragment);
-        articlePriceView.setText(mArticle.get("cena_artikel"));
+        TextView articlePriceView = rootView.findViewById(R.id.cena_artikel_basketItemFragment);
+        articlePriceView.setText(mArticle.get("cena"));
         // Article units:
-        TextView unit1View = rootView.findViewById(R.id.unit1_buyArticleFragment);
-        unit1View.setText(mArticle.get("enota_artikel"));
-        TextView unit2View = rootView.findViewById(R.id.unit2_buyArticleFragment);
-        unit2View.setText(mArticle.get("enota_artikel"));
-        TextView unit3View = rootView.findViewById(R.id.unit3_buyArticleFragment);
-        unit3View.setText(mArticle.get("enota_artikel"));
+        TextView unit1View = rootView.findViewById(R.id.unit1_basketItemFragment);
+        unit1View.setText(mArticle.get("enota"));
+        TextView unit2View = rootView.findViewById(R.id.unit2_basketItemFragment);
+        unit2View.setText(mArticle.get("enota"));
+        TextView unit3View = rootView.findViewById(R.id.unit3_basketItemFragment);
+        unit3View.setText(mArticle.get("enota"));
         // Article buying amount:
-        articleBuyAmountView = rootView.findViewById(R.id.kolicina_artikel_et_buyArticleFragment);
+        articleBuyAmountView = rootView.findViewById(R.id.kolicina_artikel_et_basketItemFragment);
         articleBuyAmountView.setFilters(new InputFilter[]{new DecimalDitgitsInputFilter(5, 2)});
+        articleBuyAmountView.setText(mArticle.get("kolicina"));
         // Article stock:
-        TextView articleStockView = rootView.findViewById(R.id.zaloga_buyArticleFragment);
-        articleStockView.setText(mArticle.get("zaloga_artikel"));
+        TextView articleStockView = rootView.findViewById(R.id.zaloga_basketItemFragment);
+        articleStockView.setText(mArticle.get("zaloga"));
         // Decrease buying amount:
-        AppCompatImageButton decreaseAmountBtn = rootView.findViewById(R.id.subtract_artikel_buyArticleFragment);
+        AppCompatImageButton decreaseAmountBtn = rootView.findViewById(R.id.subtract_artikel_basketItemFragment);
         decreaseAmountBtn.setOnClickListener(v -> {
             String currentAmountString = articleBuyAmountView.getText().toString();
             if (currentAmountString.isEmpty() || Double.parseDouble(currentAmountString) < 0.01) {
@@ -120,7 +117,7 @@ public class BuyArticleFragment extends DialogFragment {
             }
         });
         // Increase buying amount:
-        AppCompatImageButton increaseAmountBtn = rootView.findViewById(R.id.add_artikel_buyArticleFragment);
+        AppCompatImageButton increaseAmountBtn = rootView.findViewById(R.id.add_artikel_basketItemFragment);
         increaseAmountBtn.setOnClickListener(v -> {
             String currentAmountString = articleBuyAmountView.getText().toString();
             if (currentAmountString.isEmpty()) {
@@ -130,11 +127,11 @@ public class BuyArticleFragment extends DialogFragment {
             currentAmountDouble += 0.1;
             articleBuyAmountView.setText(String.format("%.2f", currentAmountDouble));
         });
-        // Cancel buying article:
-        FloatingActionButton cancel = rootView.findViewById(R.id.cancel_artikel_fab_buyArticleFragment);
+        // Cancel editing article:
+        FloatingActionButton cancel = rootView.findViewById(R.id.cancel_artikel_fab_basketItemFragment);
         cancel.setOnClickListener(v -> this.dismiss());
         // Accept article:
-        FloatingActionButton acceptArticleBtn = rootView.findViewById(R.id.buy_artikel_fab_buyArticleFragment);
+        FloatingActionButton acceptArticleBtn = rootView.findViewById(R.id.buy_artikel_fab_basketItemFragment);
         acceptArticleBtn.setOnClickListener(v -> {
             String buyingAmountString = articleBuyAmountView.getText().toString();
             // Check if custemer trying to buy 0:
@@ -144,18 +141,12 @@ public class BuyArticleFragment extends DialogFragment {
             } else {
                 // Check if stock is big enough:
                 double buyingAmountDouble = Double.parseDouble(buyingAmountString);
-                if (Double.parseDouble(Objects.requireNonNull(mArticle.get("zaloga_artikel"))) < buyingAmountDouble) {
+                if (Double.parseDouble(Objects.requireNonNull(mArticle.get("zaloga"))) < buyingAmountDouble) {
                     articleStockView.setTextColor(getResources().getColor(R.color.red_normal));
                     Toast.makeText(requireContext(), "Količina je večja kot je na zalogi.", Toast.LENGTH_SHORT).show();
                 } else {
-                    newArticleOrder = new HashMap<>();
-                    newArticleOrder.put("ime", mArticle.get("ime_artikel"));
-                    newArticleOrder.put("kolicina", buyingAmountString);
-                    newArticleOrder.put("cena", mArticle.get("cena_artikel"));
-                    newArticleOrder.put("enota", mArticle.get("enota_artikel"));
-                    newArticleOrder.put("slika", mArticle.get("slika_artikel"));
-                    newArticleOrder.put("zaloga", mArticle.get("zaloga_artikel"));
-                    mInterfaceBuyArticleCallback.callbackBuyArticle_fun(newArticleOrder);
+                    mArticle.put("nova_kolicina", buyingAmountString);
+                    mBasketArticleCallBack.callbackEditBasketArticle_fun(mArticle, mPosition);
                     this.dismiss();
                 }
             }
@@ -163,11 +154,11 @@ public class BuyArticleFragment extends DialogFragment {
         return rootView;
     } // onCreateView
 
-    public void setBuyArticleListener(BuyArticleCallBack listener) {
-        this.mInterfaceBuyArticleCallback = listener;
+    public void setEditBasketrticleListener(EditBasketArticleCallBack listener) {
+        this.mBasketArticleCallBack = listener;
     } // setEditArticleListener
 
-    public BuyArticleCallBack getBuyArticleListener() {
-        return this.mInterfaceBuyArticleCallback;
+    public EditBasketArticleCallBack getEditBasketrticleListener() {
+        return this.mBasketArticleCallBack;
     } // getEditArticleListener
 }

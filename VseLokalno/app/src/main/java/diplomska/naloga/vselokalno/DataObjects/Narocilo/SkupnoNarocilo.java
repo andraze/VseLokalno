@@ -15,6 +15,7 @@ import java.util.Map;
  * Map<String, String> narocilo_enote ... npr: {"Mleko": liter}
  * Map<String, String> narocilo_kolicine ... npr: {"Mleko": 2}
  * Mao<String, String> narocilo_slike ... pot do slike na firebase storage
+ * Map<String, String> narocilo_zaloge
  * String povezava_narocil ... povezuje naročilo, ki ga dobi kmetija z naročilom, ki ga izda kupec npr: {Uporabniki/TH2q!6ascHUfj/Narocila/ZgHfbhUUI3749JIO_23_11_2021_19_54_23}
  */
 public class SkupnoNarocilo {
@@ -27,6 +28,7 @@ public class SkupnoNarocilo {
     Map<String, String> narocilo_enote;
     Map<String, String> narocilo_kolicine;
     Map<String, String> narocilo_slike;
+    Map<String, String> narocilo_zaloge;
     String povezava_narocil;
 
     public SkupnoNarocilo() {
@@ -38,7 +40,24 @@ public class SkupnoNarocilo {
         this.narocilo_enote = new HashMap<>();
         this.narocilo_kolicine = new HashMap<>();
         this.narocilo_slike = new HashMap<>();
+        this.narocilo_zaloge = new HashMap<>();
         this.povezava_narocil = "";
+    }
+
+    public Map<String, String> getNarocilo_zaloge() {
+        return narocilo_zaloge;
+    }
+
+    public void setNarocilo_zaloge(Map<String, String> narocilo_zaloge) {
+        this.narocilo_zaloge = narocilo_zaloge;
+    }
+
+    public void addNarocilo_zaloge(String articleName, String imagePath) {
+        this.narocilo_zaloge.put(articleName, imagePath);
+    }
+
+    public void setNarocilo_slike(Map<String, String> narocilo_slike) {
+        this.narocilo_slike = narocilo_slike;
     }
 
     public void addNarocilo_slike(String articleName, String imagePath) {
@@ -51,6 +70,10 @@ public class SkupnoNarocilo {
 
     public void removeNarocilo_cene(String articleName) {
         this.narocilo_cene.remove(articleName);
+    }
+
+    public void removeNarocilo_zaloge(String articleName) {
+        this.narocilo_zaloge.remove(articleName);
     }
 
     public void removeNarocilo_enote(String articleName) {
