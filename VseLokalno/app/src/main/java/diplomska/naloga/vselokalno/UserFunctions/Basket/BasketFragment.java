@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,6 +22,7 @@ import java.util.Objects;
 import diplomska.naloga.vselokalno.DataObjects.Narocilo.ZaKupca;
 import diplomska.naloga.vselokalno.FarmLookup.FarmDetails.ArticleDetails.BuyArticleFragment;
 import diplomska.naloga.vselokalno.R;
+import diplomska.naloga.vselokalno.UserFunctions.Basket.BuyingOrder.OrderingFragment;
 
 public class BasketFragment extends Fragment implements BasketRecyclerAdapter.RemoveItemFromBasketInterface, BasketRecyclerAdapter.BasketArticleClickListener, BasketEditItemFragment.EditBasketArticleCallBack {
 
@@ -72,7 +74,13 @@ public class BasketFragment extends Fragment implements BasketRecyclerAdapter.Re
         // Proceed with buying:
         FloatingActionButton continueBtn = rootView.findViewById(R.id.buy_fab_basketFragment);
         continueBtn.setOnClickListener(v -> {
-            // TODO: Proceed with purchase.
+            OrderingFragment orderingFragment = OrderingFragment.newInstance();
+            FragmentManager fragmentManager = getParentFragmentManager();
+            fragmentManager.beginTransaction()
+                    .setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
+                    .replace(R.id.main_fragment_container, orderingFragment)
+                    .addToBackStack(null)
+                    .commit();
         });
         return rootView;
     }

@@ -2,6 +2,7 @@ package diplomska.naloga.vselokalno;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -15,8 +16,11 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.ismaeldivita.chipnavigation.ChipNavigationBar;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -61,6 +65,10 @@ public class MainActivity extends AppCompatActivity {
     public static ArrayList<Map<String, String>> allFarmsDataShort;
     // Orders for buyer:
     public static ArrayList<ZaKupca> appBasket;
+    // Shared preferences file:
+    private static final String sharedPrefFile = "app_basket_shared_preferences_filename";
+    static SharedPreferences mySharedPreferences;
+    public static final String mAppBasketSharedPrefKey = "shared_preferences_key";
 
     @SuppressLint("NonConstantResourceId")
     @Override
@@ -68,11 +76,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-
+        // Initialise the shared preferences:
+        mySharedPreferences = getSharedPreferences(sharedPrefFile, MODE_PRIVATE);
         // Initialise the firebase authentication:
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
-        makeLogD(TAG, "(onStart) current user: " + currentUser);
+        // makeLogD(TAG, "(onCreate) current user: " + currentUser);
         // Initialise the firebase firestore:
         db = FirebaseFirestore.getInstance();
         // Initialise the firebase storage:
@@ -104,7 +113,19 @@ public class MainActivity extends AppCompatActivity {
         });
         // Check if user is signed in (non-null) and update UI accordingly.
         updateUI(currentUser);
-    }// onCreate
+    } // onCreate
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        saveAppBasket();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        loadAppBasket();
+    }
 
     private void updateUI(FirebaseUser currentUser) {
         if (currentUser == null) {
@@ -116,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
         } else
             // Refresh user data.
             getUserData();
-    }// updateUI
+    } // updateUI
 
     private void getUserData() {
         DocumentReference docRef = db.collection("Uporabniki").document(currentUser.getUid());
@@ -218,5 +239,23 @@ public class MainActivity extends AppCompatActivity {
         } else
             makeLogW(TAG, "(openFragment) ERROR! fragmentToOpen == null!");
     } // openMap
+
+    public static void saveAppBasket() {
+        Gson gson = new Gson();
+        String appBasketJsonString = gson.toJson(appBasket);
+        SharedPreferences.Editor editor = mySharedPreferences.edit();
+        editor.putString(mAppBasketSharedPrefKey, appBasketJsonString);
+        editor.apply();
+    } // saveAppBasket
+
+    public static void loadAppBasket() {
+        String jsonAppBasketTemp = mySharedPreferences.getString(mAppBasketSharedPrefKey, "");
+        if (!jsonAppBasketTemp.isEmpty()) {
+            Gson gson = new Gson();
+            Type type = new TypeToken<ArrayList<ZaKupca>>() {
+            }.getType();
+            appBasket = gson.fromJson(jsonAppBasketTemp, type);
+        }
+    } // loadAppBasket
 
 }
