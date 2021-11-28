@@ -14,4 +14,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="background_white">#ededed</color>
     <color name="gray">#d0d0d0</color>
+    <color name="disabled_btn_gray">#E2E2E2</color>
 </resources>
