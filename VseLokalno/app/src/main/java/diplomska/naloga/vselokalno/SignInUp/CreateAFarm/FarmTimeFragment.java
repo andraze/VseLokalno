@@ -57,58 +57,58 @@ public class FarmTimeFragment extends Fragment {
         pon.setOnClickListener(v -> {
             pon.toggle();
             if (pon.isChecked())
-                weeklyTimeline.put("pon", selectedTimes);
+                weeklyTimeline.put("Pon", selectedTimes);
             else
-                weeklyTimeline.remove("pon");
+                weeklyTimeline.remove("Pon");
 
         });
         CheckedTextView tor = rootView.findViewById(R.id.tor);
         tor.setOnClickListener(v -> {
             tor.toggle();
             if (tor.isChecked())
-                weeklyTimeline.put("tor", selectedTimes);
+                weeklyTimeline.put("Tor", selectedTimes);
             else
-                weeklyTimeline.remove("tor");
+                weeklyTimeline.remove("Tor");
         });
         CheckedTextView sre = rootView.findViewById(R.id.sre);
         sre.setOnClickListener(v -> {
             sre.toggle();
             if (sre.isChecked())
-                weeklyTimeline.put("sre", selectedTimes);
+                weeklyTimeline.put("Sre", selectedTimes);
             else
-                weeklyTimeline.remove("sre");
+                weeklyTimeline.remove("Sre");
         });
         CheckedTextView cet = rootView.findViewById(R.id.cet);
         cet.setOnClickListener(v -> {
             cet.toggle();
             if (cet.isChecked())
-                weeklyTimeline.put("cet", selectedTimes);
+                weeklyTimeline.put("Čet", selectedTimes);
             else
-                weeklyTimeline.remove("cet");
+                weeklyTimeline.remove("Čet");
         });
         CheckedTextView pet = rootView.findViewById(R.id.pet);
         pet.setOnClickListener(v -> {
             pet.toggle();
             if (pet.isChecked())
-                weeklyTimeline.put("pet", selectedTimes);
+                weeklyTimeline.put("Pet", selectedTimes);
             else
-                weeklyTimeline.remove("pet");
+                weeklyTimeline.remove("Pet");
         });
         CheckedTextView sob = rootView.findViewById(R.id.sob);
         sob.setOnClickListener(v -> {
             sob.toggle();
             if (sob.isChecked())
-                weeklyTimeline.put("sob", selectedTimes);
+                weeklyTimeline.put("Sob", selectedTimes);
             else
-                weeklyTimeline.remove("sob");
+                weeklyTimeline.remove("Sob");
         });
         CheckedTextView ned = rootView.findViewById(R.id.ned);
         ned.setOnClickListener(v -> {
             ned.toggle();
             if (ned.isChecked())
-                weeklyTimeline.put("ned", selectedTimes);
+                weeklyTimeline.put("Ned", selectedTimes);
             else
-                weeklyTimeline.remove("ned");
+                weeklyTimeline.remove("Ned");
         });
         //        Cancel
         FloatingActionButton cancelBtn = rootView.findViewById(R.id.pop_to_choser_btn);

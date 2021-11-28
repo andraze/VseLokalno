@@ -18,7 +18,7 @@ import java.util.Map;
  * public String naslov_kmetije
  * public String naslov_dostave
  * public String opis_kmetije
- * public Map<String, boolean[14]> cas_prevzema ... npr: {"pon": ["10:00-11:00", "11:00-12:00"]}
+ * public Map<String, ArrayList<Boolean> cas_prevzema ... npr: {"pon": ["10:00-11:00", "11:00-12:00"]}
  * public Map<String, String> koordinate_kmetije ... npr: {"lat": 45.65154123, "lan": 22.85636531}
  * public ArrayList<Narocilo> narocila ... vsebuje objekt Narocilo ki je podrazred tega razreda
  * public ArrayList<Map<String, String>> artikli

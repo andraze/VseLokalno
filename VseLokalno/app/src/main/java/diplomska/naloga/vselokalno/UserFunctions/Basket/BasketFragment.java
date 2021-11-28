@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.Objects;
 
 import diplomska.naloga.vselokalno.DataObjects.Narocilo.ZaKupca;
-import diplomska.naloga.vselokalno.FarmLookup.FarmDetails.ArticleDetails.BuyArticleFragment;
 import diplomska.naloga.vselokalno.R;
 import diplomska.naloga.vselokalno.UserFunctions.Basket.BuyingOrder.OrderingFragment;
 
@@ -45,6 +44,7 @@ public class BasketFragment extends Fragment implements BasketRecyclerAdapter.Re
         super.onCreate(savedInstanceState);
     } // onCreate
 
+    @SuppressLint("DefaultLocale")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -52,8 +52,8 @@ public class BasketFragment extends Fragment implements BasketRecyclerAdapter.Re
         View rootView = inflater.inflate(R.layout.fragment_basket, container, false);
         removeItemFromBasketListener = this;
         mBasketArticleClickListener = this;
+        priceSumView = rootView.findViewById(R.id.price_sum_tv_BasketFragment);
         if (!appBasket.isEmpty()) { // Basket is not empty:
-            priceSumView = rootView.findViewById(R.id.price_sum_tv_BasketFragment);
             calc_sum_price();
         }
         recyclerView = rootView.findViewById(R.id.recycler_view_basketFragment);
@@ -66,7 +66,7 @@ public class BasketFragment extends Fragment implements BasketRecyclerAdapter.Re
         FloatingActionButton cancelBtn = rootView.findViewById(R.id.cancel_fab_basketFragment);
         cancelBtn.setOnClickListener(v -> {
             appBasket.clear();
-            calc_sum_price();
+            priceSumView.setText("0.0");
             mAdapter = new BasketRecyclerAdapter(requireContext(), removeItemFromBasketListener, mBasketArticleClickListener);
             recyclerView.setAdapter(mAdapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
@@ -74,12 +74,12 @@ public class BasketFragment extends Fragment implements BasketRecyclerAdapter.Re
         // Proceed with buying:
         FloatingActionButton continueBtn = rootView.findViewById(R.id.buy_fab_basketFragment);
         continueBtn.setOnClickListener(v -> {
-            OrderingFragment orderingFragment = OrderingFragment.newInstance();
+            OrderingFragment orderingFragment = OrderingFragment.newInstance(0);
             FragmentManager fragmentManager = getParentFragmentManager();
             fragmentManager.beginTransaction()
                     .setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
                     .replace(R.id.main_fragment_container, orderingFragment)
-                    .addToBackStack(null)
+                    .addToBackStack("ProceedToBuying")
                     .commit();
         });
         return rootView;
@@ -142,5 +142,3 @@ public class BasketFragment extends Fragment implements BasketRecyclerAdapter.Re
         }
     }
 }
-
-// TODO: update article not working!
