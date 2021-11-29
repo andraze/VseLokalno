@@ -2,6 +2,7 @@ package diplomska.naloga.vselokalno.UserFunctions;
 
 import static diplomska.naloga.vselokalno.MainActivity.appFarm;
 import static diplomska.naloga.vselokalno.MainActivity.appUser;
+import static diplomska.naloga.vselokalno.MainActivity.bottomNavigation;
 import static diplomska.naloga.vselokalno.MainActivity.userID;
 
 import android.os.Bundle;
@@ -53,6 +54,12 @@ public class UserFunctionsFragment extends Fragment {
     } // onCreate
 
     @Override
+    public void onResume() {
+        bottomNavigation.setVisibility(View.VISIBLE);
+        super.onResume();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -83,6 +90,7 @@ public class UserFunctionsFragment extends Fragment {
         // Košarica / Naročila:
         kosarica_narocilaLinearLayout = rootView.findViewById(R.id.narocilo_kosarica_userFunctionsFragment);
         kosarica_narocilaLinearLayout.setOnClickListener(l -> {
+            bottomNavigation.setVisibility(View.GONE);
             if (appUser.isLastnik_kmetije()) {
                 // TODO open active narocila
             } else {
@@ -98,6 +106,7 @@ public class UserFunctionsFragment extends Fragment {
         // Nakupovalni seznam / artikli:
         seznam_artikliLinearLayout = rootView.findViewById(R.id.artikli_nakupovalniSeznam_userFunctionsFragment);
         seznam_artikliLinearLayout.setOnClickListener(l -> {
+            bottomNavigation.setVisibility(View.GONE);
             if (appUser.isLastnik_kmetije()) {
                 articleListFragment = ArticleListFragment.newInstance();
                 FragmentManager fragmentManager = getParentFragmentManager();
@@ -113,11 +122,13 @@ public class UserFunctionsFragment extends Fragment {
         // Zelje:
         zeljeLinearLayout = rootView.findViewById(R.id.zelje_userFunctionsFragment);
         zeljeLinearLayout.setOnClickListener(l -> {
+            bottomNavigation.setVisibility(View.GONE);
             // TODO: open zelje
         });
         // Zgodovina:
         zgodovinaLinearLayout = rootView.findViewById(R.id.zgodovina_userFunctionsFragment);
         zgodovinaLinearLayout.setOnClickListener(l -> {
+            bottomNavigation.setVisibility(View.GONE);
             // TODO: open history of orders
         });
         return rootView;

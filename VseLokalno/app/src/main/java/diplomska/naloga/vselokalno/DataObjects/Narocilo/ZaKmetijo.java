@@ -34,4 +34,8 @@ public class ZaKmetijo extends SkupnoNarocilo {
     public void setIme_narocnika(String ime_narocnika) {
         this.ime_narocnika = ime_narocnika;
     }
+
+    public String getPovezavo(String idKmetije) {
+        return idKmetije + "#" + id_narocnika + "#" + this.getDatum_narocila();
+    }
 }

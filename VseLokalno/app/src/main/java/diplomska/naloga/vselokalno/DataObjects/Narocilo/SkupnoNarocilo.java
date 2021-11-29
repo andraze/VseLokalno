@@ -7,8 +7,8 @@ import java.util.Map;
 
 /**
  * Skupno narocilo je objekt, ki ima osnovne podatke o narocilu.
- * Timestamp datum_dostave
- * Timestamp datum_narocila
+ * String datum_dostave
+ * String datum_narocila
  * String naslov_dostave
  * int opravljeno {0 == v procesu; 1 == uspešno; 2 == neuspešno}
  * Map<String, String> narocilo_cene ... npr: {"Mleko": 3.5}
@@ -16,12 +16,12 @@ import java.util.Map;
  * Map<String, String> narocilo_kolicine ... npr: {"Mleko": 2}
  * Mao<String, String> narocilo_slike ... pot do slike na firebase storage
  * Map<String, String> narocilo_zaloge
- * String povezava_narocil ... povezuje naročilo, ki ga dobi kmetija z naročilom, ki ga izda kupec npr: {Uporabniki/TH2q!6ascHUfj/Narocila/ZgHfbhUUI3749JIO_23_11_2021_19_54_23}
+ * Narocili sta povezani (za kmetijo={Kmetije/ID_kmetije/Naročila/ID_kmetije#ID_kupca_#datum_narocila} za kupca={Uporabniki/ID_uporabnika/Naročila/ID_kupca#ID_kmetije#datum_narocila}
  */
 public class SkupnoNarocilo {
 
-    Timestamp datum_dostave;
-    Timestamp datum_narocila;
+    String datum_dostave;
+    String datum_narocila;
     String naslov_dostave;
     int opravljeno;
     Map<String, String> narocilo_cene;
@@ -29,19 +29,17 @@ public class SkupnoNarocilo {
     Map<String, String> narocilo_kolicine;
     Map<String, String> narocilo_slike;
     Map<String, String> narocilo_zaloge;
-    String povezava_narocil;
 
     public SkupnoNarocilo() {
         naslov_dostave = "";
-        datum_dostave = null;
-        datum_narocila = null;
+        datum_dostave = "";
+        datum_narocila = "";
         opravljeno = -1;
         this.narocilo_cene = new HashMap<>();
         this.narocilo_enote = new HashMap<>();
         this.narocilo_kolicine = new HashMap<>();
         this.narocilo_slike = new HashMap<>();
         this.narocilo_zaloge = new HashMap<>();
-        this.povezava_narocil = "";
     }
 
     public Map<String, String> getNarocilo_zaloge() {
@@ -88,14 +86,6 @@ public class SkupnoNarocilo {
         return this.narocilo_slike;
     }
 
-    public String getPovezava_narocil() {
-        return povezava_narocil;
-    }
-
-    public void setPovezava_narocil(String povezava_narocil) {
-        this.povezava_narocil = povezava_narocil;
-    }
-
     public void addNarocilo_cene(String articleName, String articlePrice) {
         this.narocilo_cene.put(articleName, articlePrice);
     }
@@ -132,19 +122,19 @@ public class SkupnoNarocilo {
         this.narocilo_kolicine = narocilo_kolicine;
     }
 
-    public Timestamp getDatum_dostave() {
+    public String getDatum_dostave() {
         return datum_dostave;
     }
 
-    public void setDatum_dostave(Timestamp datum_dostave) {
+    public void setDatum_dostave(String datum_dostave) {
         this.datum_dostave = datum_dostave;
     }
 
-    public Timestamp getDatum_narocila() {
+    public String getDatum_narocila() {
         return datum_narocila;
     }
 
-    public void setDatum_narocila(Timestamp datum_narocila) {
+    public void setDatum_narocila(String datum_narocila) {
         this.datum_narocila = datum_narocila;
     }
 

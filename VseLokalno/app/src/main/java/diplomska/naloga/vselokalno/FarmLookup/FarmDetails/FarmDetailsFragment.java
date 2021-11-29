@@ -134,6 +134,7 @@ public class FarmDetailsFragment extends Fragment implements FarmDetailsArticleA
         ZaKupca newOrder = new ZaKupca();
         newOrder.setIme_kmetije(farmOfInterest.getIme_kmetije());
         newOrder.setId_kmetije(mFarm_id);
+        newOrder.setNaslov_dostave(farmOfInterest.getNaslov_dostave());
         newOrder.addNarocilo_cene(order.get("ime"), order.get("cena"));
         newOrder.addNarocilo_enote(order.get("ime"), order.get("enota"));
         newOrder.addNarocilo_kolicine(order.get("ime"), order.get("kolicina"));

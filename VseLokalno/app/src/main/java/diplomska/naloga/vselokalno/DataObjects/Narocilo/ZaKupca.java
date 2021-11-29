@@ -34,4 +34,8 @@ public class ZaKupca extends SkupnoNarocilo {
     public void setIme_kmetije(String ime_kmetije) {
         this.ime_kmetije = ime_kmetije;
     }
+
+    public String getPovezavo(String idKupca) {
+        return idKupca + "#" + id_kmetije + "#" + this.getDatum_narocila();
+    }
 }

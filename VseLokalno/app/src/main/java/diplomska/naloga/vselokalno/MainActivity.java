@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
     //    Firebase storage:
     public FirebaseStorage storage;
     //    Bottom navigation:
-    public ChipNavigationBar bottomNavigation;
+    public static ChipNavigationBar bottomNavigation;
     //    Fragments:
     private MapFragment mapFragment;
     private ListFragment listFragment;

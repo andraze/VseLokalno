@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -74,13 +75,17 @@ public class BasketFragment extends Fragment implements BasketRecyclerAdapter.Re
         // Proceed with buying:
         FloatingActionButton continueBtn = rootView.findViewById(R.id.buy_fab_basketFragment);
         continueBtn.setOnClickListener(v -> {
-            OrderingFragment orderingFragment = OrderingFragment.newInstance(0);
-            FragmentManager fragmentManager = getParentFragmentManager();
-            fragmentManager.beginTransaction()
-                    .setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
-                    .replace(R.id.main_fragment_container, orderingFragment)
-                    .addToBackStack("ProceedToBuying")
-                    .commit();
+            if (appBasket.isEmpty()) {
+                Toast.makeText(requireContext(), "Košarica je prazna.", Toast.LENGTH_SHORT).show();
+            } else {
+                OrderingFragment orderingFragment = OrderingFragment.newInstance(0);
+                FragmentManager fragmentManager = getParentFragmentManager();
+                fragmentManager.beginTransaction()
+                        .setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
+                        .replace(R.id.main_fragment_container, orderingFragment)
+                        .addToBackStack("ProceedToBuying")
+                        .commit();
+            }
         });
         return rootView;
     }
@@ -90,6 +95,10 @@ public class BasketFragment extends Fragment implements BasketRecyclerAdapter.Re
         double fullSumPrice = 0;
         for (ZaKupca el : appBasket) {
             Map<String, String> numOfUnitsMap = el.getNarocilo_kolicine();
+            if (numOfUnitsMap.isEmpty()) {
+                appBasket.remove(el);
+                continue;
+            }
             for (Map.Entry<String, String> entry : el.getNarocilo_cene().entrySet()) {
                 fullSumPrice += Double.parseDouble(entry.getValue()) * Double.parseDouble(Objects.requireNonNull(numOfUnitsMap.get(entry.getKey())));
             }

@@ -2,7 +2,12 @@ package diplomska.naloga.vselokalno.UserFunctions.Basket.BuyingOrder;
 
 import static diplomska.naloga.vselokalno.MainActivity.allTimes;
 import static diplomska.naloga.vselokalno.MainActivity.appBasket;
+import static diplomska.naloga.vselokalno.MainActivity.appUser;
+import static diplomska.naloga.vselokalno.MainActivity.bottomNavigation;
 import static diplomska.naloga.vselokalno.MainActivity.makeLogD;
+import static diplomska.naloga.vselokalno.MainActivity.makeLogW;
+import static diplomska.naloga.vselokalno.MainActivity.userID;
+import static diplomska.naloga.vselokalno.SignInUp.SignInUpActivity.userData;
 
 import android.annotation.SuppressLint;
 import android.graphics.drawable.ColorDrawable;
@@ -32,6 +37,8 @@ import java.util.Date;
 import java.util.Objects;
 
 import diplomska.naloga.vselokalno.DataObjects.Kmetija;
+import diplomska.naloga.vselokalno.DataObjects.Narocilo.ZaKmetijo;
+import diplomska.naloga.vselokalno.DataObjects.Narocilo.ZaKupca;
 import diplomska.naloga.vselokalno.R;
 
 public class OrderingFragment extends Fragment implements OrderRecyclerAdapter.OrderSelectDateListener {
@@ -127,11 +134,14 @@ public class OrderingFragment extends Fragment implements OrderRecyclerAdapter.O
             } else if (indexTimeSelected == -1) {
                 Toast.makeText(requireContext(), "Najprej izberite možno uro dostave.", Toast.LENGTH_SHORT).show();
             } else {
+                setDateOfPickup();
                 if (farmNumber + 1 == appBasket.size()) {
-                    // TODO: Finish order.
-                    makeLogD(TAG, appBasket.get(0).getDatum_dostave().toString());
+                    for (int i = 0; i < appBasket.size(); i++) {
+                        finishOrder(i);
+                    }
+                    appBasket.clear();
+                    getParentFragmentManager().popBackStack("ProceedToBuying", FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 } else {
-                    setDateOfPickup();
                     OrderingFragment orderingFragment = OrderingFragment.newInstance(farmNumber + 1);
                     FragmentManager fragmentManager = getParentFragmentManager();
                     fragmentManager.beginTransaction()
@@ -156,10 +166,45 @@ public class OrderingFragment extends Fragment implements OrderRecyclerAdapter.O
         return rootView;
     }
 
+    private void finishOrder(int index) {
+        ZaKupca narociloZaKupca = appBasket.get(index);
+        ZaKmetijo narociloZaKmetijo = new ZaKmetijo();
+        narociloZaKmetijo.setDatum_narocila(narociloZaKupca.getDatum_narocila());
+        narociloZaKmetijo.setDatum_dostave(narociloZaKupca.getDatum_dostave());
+        narociloZaKmetijo.setId_narocnika(userID);
+        narociloZaKmetijo.setIme_narocnika(appUser.getIme_uporabnika() + " " + appUser.getPriimek_uporabnika());
+        narociloZaKmetijo.setNarocilo_cene(narociloZaKupca.getNarocilo_cene());
+        narociloZaKmetijo.setNarocilo_enote(narociloZaKupca.getNarocilo_enote());
+        narociloZaKmetijo.setNarocilo_kolicine(narociloZaKupca.getNarocilo_kolicine());
+        narociloZaKmetijo.setNarocilo_slike(narociloZaKupca.getNarocilo_slike());
+        narociloZaKmetijo.setNarocilo_zaloge(narociloZaKupca.getNarocilo_zaloge());
+        narociloZaKmetijo.setNaslov_dostave(narociloZaKupca.getNaslov_dostave());
+        narociloZaKmetijo.setOpravljeno(0);
+        narociloZaKupca.setOpravljeno(0);
+        db.collection("Uporabniki").document(userID).collection("Naročila").document(narociloZaKupca.getPovezavo(userID)).
+                set(narociloZaKupca).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                makeLogD(TAG, "(finishOrder) user order created!");
+            } else {
+                makeLogW(TAG, "(finishOrder) " + task.getException());
+            }
+        });
+        db.collection("Kmetije").document(narociloZaKupca.getId_kmetije()).collection("Naročila").document(narociloZaKmetijo.getPovezavo(narociloZaKupca.getId_kmetije())).
+                set(narociloZaKmetijo).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+//                makeLogD(TAG, "(finishOrder) farm order created!");
+            } else {
+//                makeLogW(TAG, "(finishOrder) " + task.getException());
+            }
+        });
+    }
+
     @SuppressLint("SimpleDateFormat")
     private void setDateOfPickup() {
         Date date = new Date();
-        appBasket.get(farmNumber).setDatum_narocila(new Timestamp(date));
+        String temp = new SimpleDateFormat("dd-MM-yyyy hh:mm").format(date);
+        makeLogD(TAG, temp);
+        appBasket.get(farmNumber).setDatum_narocila(new SimpleDateFormat("dd-MM-yyyy hh:mm").format(date));
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         calendar.add(Calendar.DATE, indexDaySelected);
@@ -168,17 +213,12 @@ public class OrderingFragment extends Fragment implements OrderRecyclerAdapter.O
         String dateTime = "";
         for (int i = 0; i < allTimeViews.size(); i++) {
             if (allTimeViews.get(i).getId() == indexTimeSelected) {
-                dateTime = allTimes[i] + ":0.0";
+                dateTime = allTimes[i];
                 break;
             }
         }
-        DateFormat dateFormatOut = new SimpleDateFormat("dd-MM-yyy mm:hh");
-        try {
-            Date dateOut = dateFormatOut.parse(dateCalendar + " " + dateTime);
-            appBasket.get(farmNumber).setDatum_dostave(new Timestamp(Objects.requireNonNull(dateOut)));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        makeLogD(TAG, dateCalendar + " " + dateTime);
+        appBasket.get(farmNumber).setDatum_dostave(dateCalendar + " " + dateTime);
     }
 
     public void selectTimeOrder(View view) {
