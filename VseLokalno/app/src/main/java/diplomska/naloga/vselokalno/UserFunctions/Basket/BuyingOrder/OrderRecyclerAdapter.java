@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -56,16 +57,22 @@ public class OrderRecyclerAdapter extends RecyclerView.Adapter<OrderRecyclerAdap
         holder.dateNum.setText(dateTable[1]);
         if (position == 0) {
             holder.itemView.setBackgroundColor(mContext.getResources().getColor(R.color.blue_light, null));
-            holder.itemView.setElevation(0);
+            holder.itemView.setElevation(1);
             holder.dayName.setTextColor(mContext.getResources().getColor(R.color.white));
             holder.dateNum.setTextColor(mContext.getResources().getColor(R.color.white));
+            holder.itemView.setOnClickListener(v -> {
+                Toast.makeText(mContext, "Danes prevzem ni mogoč.", Toast.LENGTH_SHORT).show();
+            });
         } else if (!cas_prevzemaKmetije.containsKey(dateTable[0])) { // Date not available for pickup.
             holder.itemView.setBackgroundColor(mContext.getResources().getColor(R.color.red_light, null));
-            holder.itemView.setElevation(0);
+            holder.itemView.setElevation(1);
             holder.dayName.setTextColor(mContext.getResources().getColor(R.color.white));
             holder.dateNum.setTextColor(mContext.getResources().getColor(R.color.white));
-        }
-        holder.itemView.setOnClickListener(v -> orderSelectDateListener.onOrderSelectDateListener(position, holder.itemView, holder.dayName, holder.dateNum));
+            holder.itemView.setOnClickListener(v -> {
+                Toast.makeText(mContext, "Ta dan prevzem ni mogoč.", Toast.LENGTH_SHORT).show();
+            });
+        } else
+            holder.itemView.setOnClickListener(v -> orderSelectDateListener.onOrderSelectDateListener(position, holder.itemView, holder.dayName, holder.dateNum));
     } // onBindViewHolder
 
     @Override
@@ -118,6 +125,7 @@ public class OrderRecyclerAdapter extends RecyclerView.Adapter<OrderRecyclerAdap
         calendar.setTime(date);
         calendar.add(Calendar.DATE, x);
         String[] returnTable = new String[2];
+        date = calendar.getTime();
         String temp = new SimpleDateFormat("E").format(date);
         returnTable[0] = getSloDayName(temp);
         returnTable[1] = new SimpleDateFormat("d").format(date);

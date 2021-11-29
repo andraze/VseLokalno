@@ -58,9 +58,11 @@
         android:background="@color/blue_normal_low" />
 
     <androidx.recyclerview.widget.RecyclerView
+        android:layout_height="wrap_content"
         android:id="@+id/recycler_view_date_OrderingFragment"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/dp_4" />
 
     <View
         android:layout_width="match_parent"
@@ -69,299 +71,299 @@
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_4"
         android:background="@color/blue_normal_low" />
-    
+
     <androidx.appcompat.widget.LinearLayoutCompat
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_4"
+        android:layout_weight="1"
+        android:orientation="horizontal">
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/time_7_8"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/dp_4"
-                    android:backgroundTint="@color/white"
-                    android:elevation="4dp"
-                    android:stateListAnimator="@null"
-                    android:text="@string/_07_00_08_00"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                    android:textColor="@color/blue_normal" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/time_7_8"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/dp_4"
+            android:backgroundTint="@color/disabled_btn_gray"
+            android:stateListAnimator="@null"
+            android:text="@string/_07_00_08_00"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="@color/blue_normal" />
 
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1" />
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/time_8_9"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/dp_4"
-                    android:backgroundTint="@color/white"
-                    android:elevation="4dp"
-                    android:stateListAnimator="@null"
-                    android:text="@string/_08_00_09_00"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                    android:textColor="@color/blue_normal" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/time_8_9"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/dp_4"
+            android:backgroundTint="@color/disabled_btn_gray"
+            android:stateListAnimator="@null"
+            android:text="@string/_08_00_09_00"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="@color/blue_normal" />
 
-            </androidx.appcompat.widget.LinearLayoutCompat>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginStart="@dimen/dp_16"
-                android:layout_marginEnd="@dimen/dp_16"
-                android:background="@color/blue_normal_low" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:background="@color/blue_normal_low" />
 
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_4"
+        android:layout_weight="1"
+        android:orientation="horizontal">
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/time_9_10"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/dp_4"
-                    android:backgroundTint="@color/white"
-                    android:elevation="4dp"
-                    android:stateListAnimator="@null"
-                    android:text="@string/_09_00_10_00"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                    android:textColor="@color/blue_normal" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/time_9_10"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/dp_4"
+            android:backgroundTint="@color/disabled_btn_gray"
+            android:stateListAnimator="@null"
+            android:text="@string/_09_00_10_00"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="@color/blue_normal" />
 
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1" />
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/time_10_11"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/dp_4"
-                    android:backgroundTint="@color/white"
-                    android:elevation="4dp"
-                    android:stateListAnimator="@null"
-                    android:text="@string/_10_00_11_00"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                    android:textColor="@color/blue_normal" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/time_10_11"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/dp_4"
+            android:backgroundTint="@color/disabled_btn_gray"
+            android:stateListAnimator="@null"
+            android:text="@string/_10_00_11_00"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="@color/blue_normal" />
 
-            </androidx.appcompat.widget.LinearLayoutCompat>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginStart="@dimen/dp_16"
-                android:layout_marginEnd="@dimen/dp_16"
-                android:background="@color/blue_normal_low" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:background="@color/blue_normal_low" />
 
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_4"
+        android:layout_weight="1"
+        android:orientation="horizontal">
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/time_11_12"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/dp_4"
-                    android:backgroundTint="@color/white"
-                    android:elevation="4dp"
-                    android:stateListAnimator="@null"
-                    android:text="@string/_11_00_12_00"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                    android:textColor="@color/blue_normal" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/time_11_12"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/dp_4"
+            android:backgroundTint="@color/disabled_btn_gray"
+            android:stateListAnimator="@null"
+            android:text="@string/_11_00_12_00"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="@color/blue_normal" />
 
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1" />
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/time_12_13"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/dp_4"
-                    android:backgroundTint="@color/white"
-                    android:elevation="4dp"
-                    android:stateListAnimator="@null"
-                    android:text="@string/_12_00_13_00"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                    android:textColor="@color/blue_normal" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/time_12_13"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/dp_4"
+            android:backgroundTint="@color/disabled_btn_gray"
+            android:stateListAnimator="@null"
+            android:text="@string/_12_00_13_00"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="@color/blue_normal" />
 
-            </androidx.appcompat.widget.LinearLayoutCompat>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_marginStart="@dimen/dp_16"
-                android:layout_marginEnd="@dimen/dp_16"
-                android:layout_height="1dp"
-                android:background="@color/blue_normal_low" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:background="@color/blue_normal_low" />
 
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_4"
+        android:layout_weight="1"
+        android:orientation="horizontal">
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/time_13_14"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/dp_4"
-                    android:backgroundTint="@color/white"
-                    android:elevation="4dp"
-                    android:stateListAnimator="@null"
-                    android:text="@string/_13_00_14_00"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                    android:textColor="@color/blue_normal" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/time_13_14"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/dp_4"
+            android:backgroundTint="@color/disabled_btn_gray"
+            android:stateListAnimator="@null"
+            android:text="@string/_13_00_14_00"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="@color/blue_normal" />
 
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1" />
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/time_14_15"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/dp_4"
-                    android:backgroundTint="@color/white"
-                    android:elevation="4dp"
-                    android:stateListAnimator="@null"
-                    android:text="@string/_14_00_15_00"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                    android:textColor="@color/blue_normal" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/time_14_15"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/dp_4"
+            android:backgroundTint="@color/disabled_btn_gray"
+            android:stateListAnimator="@null"
+            android:text="@string/_14_00_15_00"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="@color/blue_normal" />
 
-            </androidx.appcompat.widget.LinearLayoutCompat>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginStart="@dimen/dp_16"
-                android:layout_marginEnd="@dimen/dp_16"
-                android:background="@color/blue_normal_low" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:background="@color/blue_normal_low" />
 
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_4"
+        android:layout_weight="1"
+        android:orientation="horizontal">
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/time_15_16"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/dp_4"
-                    android:backgroundTint="@color/white"
-                    android:elevation="4dp"
-                    android:stateListAnimator="@null"
-                    android:text="@string/_15_00_16_00"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                    android:textColor="@color/blue_normal" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/time_15_16"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/dp_4"
+            android:backgroundTint="@color/disabled_btn_gray"
+            android:stateListAnimator="@null"
+            android:text="@string/_15_00_16_00"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="@color/blue_normal" />
 
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1" />
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/time_16_17"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/dp_4"
-                    android:backgroundTint="@color/white"
-                    android:elevation="4dp"
-                    android:stateListAnimator="@null"
-                    android:text="@string/_16_00_17_00"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                    android:textColor="@color/blue_normal" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/time_16_17"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/dp_4"
+            android:backgroundTint="@color/disabled_btn_gray"
+            android:stateListAnimator="@null"
+            android:text="@string/_16_00_17_00"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="@color/blue_normal" />
 
-            </androidx.appcompat.widget.LinearLayoutCompat>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginStart="@dimen/dp_16"
-                android:layout_marginEnd="@dimen/dp_16"
-                android:background="@color/blue_normal_low" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:background="@color/blue_normal_low" />
 
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_4"
+        android:layout_weight="1"
+        android:orientation="horizontal">
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/time_17_18"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/dp_4"
-                    android:backgroundTint="@color/white"
-                    android:elevation="4dp"
-                    android:stateListAnimator="@null"
-                    android:text="@string/_17_00_18_00"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                    android:textColor="@color/blue_normal" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/time_17_18"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/dp_4"
+            android:backgroundTint="@color/disabled_btn_gray"
+            android:stateListAnimator="@null"
+            android:text="@string/_17_00_18_00"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="@color/blue_normal" />
 
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1" />
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/time_18_19"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/dp_4"
-                    android:backgroundTint="@color/white"
-                    android:elevation="4dp"
-                    android:stateListAnimator="@null"
-                    android:text="@string/_18_00_19_00"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                    android:textColor="@color/blue_normal" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/time_18_19"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/dp_4"
+            android:backgroundTint="@color/disabled_btn_gray"
+            android:stateListAnimator="@null"
+            android:text="@string/_18_00_19_00"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="@color/blue_normal" />
 
-            </androidx.appcompat.widget.LinearLayoutCompat>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginStart="@dimen/dp_16"
-                android:layout_marginEnd="@dimen/dp_16"
-                android:background="@color/blue_normal_low" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:background="@color/blue_normal_low" />
 
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_4"
+        android:layout_weight="1"
+        android:orientation="horizontal">
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/time_19_20"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/dp_4"
-                    android:backgroundTint="@color/white"
-                    android:elevation="4dp"
-                    android:stateListAnimator="@null"
-                    android:text="@string/_19_00_20_00"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                    android:textColor="@color/blue_normal" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/time_19_20"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/dp_4"
+            android:backgroundTint="@color/disabled_btn_gray"
+            android:stateListAnimator="@null"
+            android:text="@string/_19_00_20_00"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="@color/blue_normal" />
 
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1" />
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/time_20_21"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/dp_4"
-                    android:backgroundTint="@color/white"
-                    android:elevation="4dp"
-                    android:stateListAnimator="@null"
-                    android:text="@string/_20_00_21_00"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                    android:textColor="@color/blue_normal" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/time_20_21"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/dp_4"
+            android:backgroundTint="@color/disabled_btn_gray"
+            android:stateListAnimator="@null"
+            android:text="@string/_20_00_21_00"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="@color/blue_normal" />
 
-            </androidx.appcompat.widget.LinearLayoutCompat>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
 </androidx.appcompat.widget.LinearLayoutCompat>
