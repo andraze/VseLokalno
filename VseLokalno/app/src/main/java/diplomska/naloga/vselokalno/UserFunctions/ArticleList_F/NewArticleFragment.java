@@ -1,4 +1,4 @@
-package diplomska.naloga.vselokalno.UserFunctions.ArticleList;
+package diplomska.naloga.vselokalno.UserFunctions.ArticleList_F;
 
 import static android.app.Activity.RESULT_OK;
 import static diplomska.naloga.vselokalno.MainActivity.appFarm;
@@ -14,7 +14,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
 
 import android.provider.MediaStore;
 import android.view.LayoutInflater;

@@ -1,4 +1,4 @@
-package diplomska.naloga.vselokalno.UserFunctions.ArticleList;
+package diplomska.naloga.vselokalno.UserFunctions.ArticleList_F;
 
 import static android.app.Activity.RESULT_OK;
 import static diplomska.naloga.vselokalno.MainActivity.appFarm;

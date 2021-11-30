@@ -1,16 +1,13 @@
-package diplomska.naloga.vselokalno.UserFunctions.Basket.BuyingOrder;
+package diplomska.naloga.vselokalno.UserFunctions.Basket_U.BuyingOrder;
 
 import static diplomska.naloga.vselokalno.MainActivity.allTimes;
 import static diplomska.naloga.vselokalno.MainActivity.appBasket;
 import static diplomska.naloga.vselokalno.MainActivity.appUser;
-import static diplomska.naloga.vselokalno.MainActivity.bottomNavigation;
 import static diplomska.naloga.vselokalno.MainActivity.makeLogD;
 import static diplomska.naloga.vselokalno.MainActivity.makeLogW;
 import static diplomska.naloga.vselokalno.MainActivity.userID;
-import static diplomska.naloga.vselokalno.SignInUp.SignInUpActivity.userData;
 
 import android.annotation.SuppressLint;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,16 +21,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
-import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
 import java.util.Objects;
 
 import diplomska.naloga.vselokalno.DataObjects.Kmetija;
@@ -191,12 +186,44 @@ public class OrderingFragment extends Fragment implements OrderRecyclerAdapter.O
         });
         db.collection("Kmetije").document(narociloZaKupca.getId_kmetije()).collection("Naročila").document(narociloZaKmetijo.getPovezavo(narociloZaKupca.getId_kmetije())).
                 set(narociloZaKmetijo).addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
+//            if (task.isSuccessful()) {
 //                makeLogD(TAG, "(finishOrder) farm order created!");
-            } else {
+//            } else {
 //                makeLogW(TAG, "(finishOrder) " + task.getException());
-            }
+//            }
         });
+        syncArticlesInFarm(index);
+        db.collection("Kmetije").document(narociloZaKupca.getId_kmetije()).
+                set(farmOfInterest).addOnCompleteListener(task -> {
+//            if (task.isSuccessful()) {
+//                makeLogD(TAG, "(finishOrder) farm order created!");
+//            } else {
+//                makeLogW(TAG, "(finishOrder) " + task.getException());
+//            }
+        });
+    }
+
+    private void syncArticlesInFarm(int index) {
+        ZaKupca zaKupca = appBasket.get(index);
+        ArrayList<Map<String, String>> farmArticles = farmOfInterest.getArtikli();
+        Map<String, String> cene = zaKupca.getNarocilo_cene();
+        Map<String, String> slike = zaKupca.getNarocilo_slike();
+        Map<String, String> enote = zaKupca.getNarocilo_enote();
+        Map<String, String> zaloge = zaKupca.getNarocilo_zaloge();
+        for (Map.Entry<String, String> kolicine : zaKupca.getNarocilo_kolicine().entrySet()) {
+            for (Map<String, String> oneArticle : farmArticles) {
+                if (kolicine.getKey().equals(oneArticle.get("ime_artikel")) &&
+                        Objects.equals(cene.get(kolicine.getKey()), oneArticle.get("cena_artikel")) &&
+                        Objects.equals(enote.get(kolicine.getKey()), oneArticle.get("enota_artikel")) &&
+                        Objects.equals(slike.get(kolicine.getKey()), oneArticle.get("slika_artikel")) &&
+                        Objects.equals(zaloge.get(kolicine.getKey()), oneArticle.get("zaloga_artikel"))) {
+                    oneArticle.put("zaloga_artikel",
+                            String.valueOf(Double.parseDouble(Objects.requireNonNull(zaloge.get(kolicine.getKey()))) - Double.parseDouble(kolicine.getValue())));
+                    break;
+                }
+            }
+        }
+        farmOfInterest.setArtikli(farmArticles);
     }
 
     @SuppressLint("SimpleDateFormat")

@@ -9,6 +9,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 
 import diplomska.naloga.vselokalno.DataObjects.Narocilo.SkupnoNarocilo;
+import diplomska.naloga.vselokalno.DataObjects.Narocilo.ZaKmetijo;
+import diplomska.naloga.vselokalno.DataObjects.Narocilo.ZaKupca;
 
 import static diplomska.naloga.vselokalno.SignInUp.SignInUpActivity.userData;
 
@@ -17,7 +19,7 @@ import static diplomska.naloga.vselokalno.SignInUp.SignInUpActivity.userData;
  * public String ime_uporabnika
  * public String priimek_uporabnika
  * public boolean lastnik_kmetije ... {true == kmetovalec; false == kupec}
- * public ArrayList<Narocilo> narocila ... vsebuje objekt Narocilo ki je podrazred tega razreda
+ * public ArrayList<ZaKupca> aktivnaNaročila ... TODO: Vsebuje vsa aktivna naročila
  * private String password
  */
 public class User {
@@ -33,7 +35,7 @@ public class User {
     public String ime_uporabnika;
     public String priimek_uporabnika;
     public boolean lastnik_kmetije;
-    public ArrayList<Narocilo> narocila;
+    public ArrayList<ZaKupca> aktivnaNarocila;
     private String password;
     boolean use_default_pic;
 
@@ -43,7 +45,7 @@ public class User {
         this.priimek_uporabnika = "";
         this.password = "";
         this.lastnik_kmetije = false;
-        this.narocila = new ArrayList<>();
+        this.aktivnaNarocila = new ArrayList<>();
         this.use_default_pic = true;
     }
 
@@ -95,36 +97,19 @@ public class User {
         this.lastnik_kmetije = lastnik_kmetije;
     }
 
-    public ArrayList<Narocilo> getNarocila() {
-        return narocila;
+    public ArrayList<ZaKupca> getAktivnaNarocila() {
+        return aktivnaNarocila;
     }
 
-    public void setNarocila(ArrayList<Narocilo> narocila) {
-        this.narocila = narocila;
+    public void setAktivnaNarocila(ArrayList<ZaKupca> narocila) {
+        this.aktivnaNarocila = narocila;
     }
 
-    public void addNarocila(Narocilo narocilo) {
-        this.narocila.add(narocilo);
+    public void addAktivnaNarocila(ZaKupca narocilo) {
+        this.aktivnaNarocila.add(narocilo);
     }
 
-    /**
-     * Narocilo je objekt, ki ima osnovne podatke o naročilu, ki jih lahko vidi kupec. V firestoru so shranjena v dokumentu Uporabniki/{$id_uporabnika}
-     * Podeduje vse metode in spremenljivke od razreda SkupnoNarocilo.
-     * public String ime_kmetije
-     */
-    public static class Narocilo extends SkupnoNarocilo {
-        public String ime_kmetije;
-
-        public Narocilo() {
-            this.ime_kmetije = "";
-        }
-
-        public String getIme_kmetije() {
-            return ime_kmetije;
-        }
-
-        public void setIme_kmetije(String ime_kmetije) {
-            this.ime_kmetije = ime_kmetije;
-        }
+    public void removeAktivnaNarocila(ZaKupca narocilo) {
+        this.aktivnaNarocila.remove(narocilo);
     }
 }

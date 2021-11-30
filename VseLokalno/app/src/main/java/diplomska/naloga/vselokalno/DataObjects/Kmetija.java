@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import org.jetbrains.annotations.NotNull;
 
 import diplomska.naloga.vselokalno.DataObjects.Narocilo.SkupnoNarocilo;
+import diplomska.naloga.vselokalno.DataObjects.Narocilo.ZaKmetijo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,7 +21,7 @@ import java.util.Map;
  * public String opis_kmetije
  * public Map<String, ArrayList<Boolean> cas_prevzema ... npr: {"pon": ["10:00-11:00", "11:00-12:00"]}
  * public Map<String, String> koordinate_kmetije ... npr: {"lat": 45.65154123, "lan": 22.85636531}
- * public ArrayList<Narocilo> narocila ... vsebuje objekt Narocilo ki je podrazred tega razreda
+ * public ArrayList<ZaKmetijo> narocila ... TODO: vsebuje aktivna naročila.
  * public ArrayList<Map<String, String>> artikli
  */
 public class Kmetija {
@@ -38,7 +39,7 @@ public class Kmetija {
     public String opis_kmetije;
     public Map<String, ArrayList<Boolean>> cas_prevzema;
     public Map<String, String> koordinate_kmetije;
-    public ArrayList<Narocilo> narocila;
+    public ArrayList<ZaKmetijo> aktivnaNarocila;
     public ArrayList<Map<String, String>> artikli;
 
     public Kmetija() {
@@ -48,7 +49,7 @@ public class Kmetija {
         this.opis_kmetije = "";
         this.cas_prevzema = new HashMap<>();
         this.koordinate_kmetije = new HashMap<>();
-        this.narocila = new ArrayList<>();
+        this.aktivnaNarocila = new ArrayList<>();
         this.artikli = new ArrayList<>();
     }
 
@@ -100,16 +101,20 @@ public class Kmetija {
         this.koordinate_kmetije = koordinate_kmetije;
     }
 
-    public ArrayList<Narocilo> getNarocila() {
-        return narocila;
+    public ArrayList<ZaKmetijo> getAktivnaNarocila() {
+        return aktivnaNarocila;
     }
 
-    public void setNarocila(ArrayList<Narocilo> narocila) {
-        this.narocila = narocila;
+    public void setAktivnaNarocila(ArrayList<ZaKmetijo> narocila) {
+        this.aktivnaNarocila = narocila;
     }
 
-    public void addNarocila(Narocilo narocilo) {
-        this.narocila.add(narocilo);
+    public void addAktivnaNarocila(ZaKmetijo narocilo) {
+        this.aktivnaNarocila.add(narocilo);
+    }
+
+    public void removeAktivnaNarocila(ZaKmetijo narocilo) {
+        this.aktivnaNarocila.remove(narocilo);
     }
 
     public ArrayList<Map<String, String>> getArtikli() {
@@ -127,36 +132,4 @@ public class Kmetija {
     public void removeArtikel(int position) {
         this.artikli.remove(position);
     }
-
-    /**
-     * Narocilo je objekt, ki ima osnovne podatke o naročilu, ki jih lahko vidi lastnik kmetije. V firestoru so shranjena v dokumentu Kmetije/{$id_kmetije}
-     * Podeduje vse metode in spremenljivke od razreda SkupnoNarocilo.
-     * public String ime_narocnika
-     */
-    public static class Narocilo extends SkupnoNarocilo {
-        public String ime_narocnika;
-        public String uid_narocnika;
-
-        public Narocilo() {
-            this.ime_narocnika = "";
-            this.uid_narocnika = "";
-        }
-
-        public String getUid_narocnika() {
-            return uid_narocnika;
-        }
-
-        public void setUid_narocnika(String uid_narocnika) {
-            this.uid_narocnika = uid_narocnika;
-        }
-
-        public String getIme_narocnika() {
-            return ime_narocnika;
-        }
-
-        public void setIme_narocnika(String ime_narocnika) {
-            this.ime_narocnika = ime_narocnika;
-        }
-    }
-
 }

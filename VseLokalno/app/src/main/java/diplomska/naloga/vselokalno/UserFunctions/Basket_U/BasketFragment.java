@@ -1,4 +1,4 @@
-package diplomska.naloga.vselokalno.UserFunctions.Basket;
+package diplomska.naloga.vselokalno.UserFunctions.Basket_U;
 
 import static diplomska.naloga.vselokalno.MainActivity.appBasket;
 
@@ -22,7 +22,7 @@ import java.util.Objects;
 
 import diplomska.naloga.vselokalno.DataObjects.Narocilo.ZaKupca;
 import diplomska.naloga.vselokalno.R;
-import diplomska.naloga.vselokalno.UserFunctions.Basket.BuyingOrder.OrderingFragment;
+import diplomska.naloga.vselokalno.UserFunctions.Basket_U.BuyingOrder.OrderingFragment;
 
 public class BasketFragment extends Fragment implements BasketRecyclerAdapter.RemoveItemFromBasketInterface, BasketRecyclerAdapter.BasketArticleClickListener, BasketEditItemFragment.EditBasketArticleCallBack {
 
@@ -54,7 +54,7 @@ public class BasketFragment extends Fragment implements BasketRecyclerAdapter.Re
         removeItemFromBasketListener = this;
         mBasketArticleClickListener = this;
         priceSumView = rootView.findViewById(R.id.price_sum_tv_BasketFragment);
-        if (!appBasket.isEmpty()) { // Basket is not empty:
+        if (!appBasket.isEmpty()) { // Basket_U is not empty:
             calc_sum_price();
         }
         recyclerView = rootView.findViewById(R.id.recycler_view_basketFragment);

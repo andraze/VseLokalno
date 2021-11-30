@@ -24,9 +24,8 @@ import java.text.MessageFormat;
 import de.hdodenhof.circleimageview.CircleImageView;
 import diplomska.naloga.vselokalno.FarmLookup.List.GlideApp;
 import diplomska.naloga.vselokalno.R;
-import diplomska.naloga.vselokalno.UserFunctions.ArticleList.ArticleListFragment;
-import diplomska.naloga.vselokalno.UserFunctions.ArticleList.EditArticleFragment;
-import diplomska.naloga.vselokalno.UserFunctions.Basket.BasketFragment;
+import diplomska.naloga.vselokalno.UserFunctions.ArticleList_F.ArticleListFragment;
+import diplomska.naloga.vselokalno.UserFunctions.Basket_U.BasketFragment;
 
 
 public class UserFunctionsFragment extends Fragment {
@@ -55,7 +54,8 @@ public class UserFunctionsFragment extends Fragment {
 
     @Override
     public void onResume() {
-        bottomNavigation.setVisibility(View.VISIBLE);
+        if (!appUser.isLastnik_kmetije())
+            bottomNavigation.setVisibility(View.VISIBLE);
         super.onResume();
     }
 

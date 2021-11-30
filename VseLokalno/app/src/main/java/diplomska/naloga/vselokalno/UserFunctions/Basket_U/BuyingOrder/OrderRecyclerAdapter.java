@@ -1,4 +1,4 @@
-package diplomska.naloga.vselokalno.UserFunctions.Basket.BuyingOrder;
+package diplomska.naloga.vselokalno.UserFunctions.Basket_U.BuyingOrder;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

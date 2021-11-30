@@ -1,4 +1,4 @@
-package diplomska.naloga.vselokalno.UserFunctions.ArticleList;
+package diplomska.naloga.vselokalno.UserFunctions.ArticleList_F;
 
 import static diplomska.naloga.vselokalno.MainActivity.makeLogD;
 
@@ -12,7 +12,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,7 +25,6 @@ import java.util.Map;
 import java.util.Objects;
 
 import diplomska.naloga.vselokalno.FarmLookup.List.GlideApp;
-import diplomska.naloga.vselokalno.MainActivity;
 import diplomska.naloga.vselokalno.R;
 
 /***

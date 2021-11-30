@@ -39,6 +39,7 @@ public class FarmDetailsFragment extends Fragment implements FarmDetailsArticleA
     public FarmDetailsArticleAdapter mAdapter;
     public TextView mFarmName;
     public ImageView mFarmImage;
+    public ImageView mUserImage;
     public static FarmDetailsArticleAdapter.OnArticleBuyerClickListener mArticleBuyerClickListener;
 
     public FarmDetailsFragment() {
@@ -72,6 +73,7 @@ public class FarmDetailsFragment extends Fragment implements FarmDetailsArticleA
         mArticleBuyerClickListener = this;
         mFarmName = rootView.findViewById(R.id.farm_name_text_view_FarmDetailsFragment);
         mFarmImage = rootView.findViewById(R.id.farm_image_view_FarmDetailsFragment);
+        mUserImage = rootView.findViewById(R.id.profile_image_view_FarmDetailsFragment);
         mRecyclerView = rootView.findViewById(R.id.recycler_view_FarmDetailsFragment);
         if (getArguments() != null) {
             mFarm_id = getArguments().getString(FARM_ID);
@@ -83,7 +85,7 @@ public class FarmDetailsFragment extends Fragment implements FarmDetailsArticleA
                     mFarmName.setText(farmOfInterest.getIme_kmetije());
                     StorageReference imageRef = FirebaseStorage.getInstance().getReference()
                             .child("Uporabniške profilke/" + mFarm_id);
-                    GlideApp.with(requireContext()).load(imageRef).into(mFarmImage);
+                    GlideApp.with(requireContext()).load(imageRef).into(mUserImage);
 //                    Fill the recycler view with articles:
                     mArticlesForBuying = farmOfInterest.getArtikli();
                     if (mRecyclerView != null) {
@@ -95,6 +97,10 @@ public class FarmDetailsFragment extends Fragment implements FarmDetailsArticleA
                 }
             });
         }
+        mUserImage.setOnClickListener(v -> {
+            ShowFarmDescriptionFragment showFarmDescriptionFragment = ShowFarmDescriptionFragment.newInstance(farmOfInterest);
+            showFarmDescriptionFragment.show(getParentFragmentManager(), "Podrobnosti kmetije");
+        });
         return rootView;
     } // onCreateView
 

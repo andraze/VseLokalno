@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".FarmLookup.FarmDetails.ShowFarmDescriptionFragment">
+
+    <ImageView
+        android:id="@+id/farm_image_View_ShowFarmDescriptionFragment"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:contentDescription="@string/slika_kmetije"
+        android:scaleType="centerCrop"
+        android:src="@drawable/no_image_placeholder" />
+
+    <TextView
+        android:id="@+id/farm_address_view_ShowFarmDescriptionFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/farm_image_View_ShowFarmDescriptionFragment"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginBottom="@dimen/dp_4"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        android:textColor="@color/blue_light" />
+
+    <TextView
+        android:id="@+id/farm_name_view_ShowFarmDescriptionFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/farm_address_view_ShowFarmDescriptionFragment"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginBottom="@dimen/dp_4"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textColor="@color/blue_normal" />
+
+    <TextView
+        android:id="@+id/farm_description_view_ShowFarmDescriptionFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/farm_name_view_ShowFarmDescriptionFragment"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginBottom="@dimen/dp_4"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="@color/blue_normal" />
+
+</RelativeLayout>

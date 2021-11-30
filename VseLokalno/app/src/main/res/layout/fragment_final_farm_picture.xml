@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_32"
         android:layout_marginBottom="@dimen/dp_32"
-        android:text="@string/prilo_i_fotografijo_kmetije"
+        android:text="@string/prilo_i_profilno_sliko"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         android:textColor="@color/blue_normal" />
 
