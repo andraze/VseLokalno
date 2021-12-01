@@ -152,8 +152,10 @@ public class MainActivity extends AppCompatActivity {
                         makeLogD(TAG, "(getUserData) success, got user:\n" + appUser.toString());
                         if (appUser.isLastnik_kmetije())
                             getUserFarm();
-                        else
+                        else {
                             getAllFarmData();
+                            findViewById(R.id.bottom_nav).setVisibility(View.VISIBLE);
+                        }
                     } else {
                         makeLogW(TAG, "(getUserData) User came back NULL!");
                     }
@@ -168,7 +170,6 @@ public class MainActivity extends AppCompatActivity {
                     appFarm = documentSnapshot.toObject(Kmetija.class);
                     if (appFarm != null) {
                         makeLogD(TAG, "(getUserFarm) success, got farm:\n" + appFarm.toString());
-                        findViewById(R.id.bottom_nav).setVisibility(View.GONE);
                         openFragment(2);
                     } else {
                         makeLogW(TAG, "(getUserFarm) Farm came back NULL!");

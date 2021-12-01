@@ -3,6 +3,7 @@ package diplomska.naloga.vselokalno.UserFunctions;
 import static diplomska.naloga.vselokalno.MainActivity.appFarm;
 import static diplomska.naloga.vselokalno.MainActivity.appUser;
 import static diplomska.naloga.vselokalno.MainActivity.bottomNavigation;
+import static diplomska.naloga.vselokalno.MainActivity.makeLogD;
 import static diplomska.naloga.vselokalno.MainActivity.userID;
 
 import android.os.Bundle;
@@ -37,6 +38,7 @@ public class UserFunctionsFragment extends Fragment {
     LinearLayoutCompat zgodovinaLinearLayout;
     // Fragment:
     ArticleListFragment articleListFragment;
+    private final String TAG = "UserFunctionsFragment";
 
 
     public UserFunctionsFragment() {

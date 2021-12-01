@@ -126,27 +126,27 @@ public class FINALFarmPictureFragment extends Fragment {
         if (!photo_changed) {
 //            Skip saving image
             makeUser(user);
-            return;
-        }
-        try {
+        } else {
+            try {
 //            Save to cloud storage
-            FirebaseStorage storage = FirebaseStorage.getInstance();
+                FirebaseStorage storage = FirebaseStorage.getInstance();
 //            Create a storage reference from the app
-            StorageReference storageRef = storage.getReference();
-            StorageReference imagesRef = storageRef.child("Uporabniške profilke/" + user.getUid());
-            UploadTask uploadTask = imagesRef.putFile(imageURI);
+                StorageReference storageRef = storage.getReference();
+                StorageReference imagesRef = storageRef.child("Uporabniške profilke/" + user.getUid());
+                UploadTask uploadTask = imagesRef.putFile(imageURI);
 //            Register observers to listen for when the download is done or if it fails
-            uploadTask.addOnFailureListener(exception -> {
+                uploadTask.addOnFailureListener(exception -> {
 //                Handle unsuccessful uploads
-                makeLogW(TAG, "(updateUI) " + exception);
-                Toast.makeText(requireContext(), "Prišlo je do napake! Poskusite ponovno.", Toast.LENGTH_SHORT).show();
-            }).addOnSuccessListener(taskSnapshot -> {
-                userData.setUse_default_pic(false);
+                    makeLogW(TAG, "(updateUI) " + exception);
+                    Toast.makeText(requireContext(), "Prišlo je do napake! Poskusite ponovno.", Toast.LENGTH_SHORT).show();
+                }).addOnSuccessListener(taskSnapshot -> {
+                    userData.setUse_default_pic(false);
 //                Make user
-                makeUser(user);
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
+                    makeUser(user);
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     } // updateUI
 

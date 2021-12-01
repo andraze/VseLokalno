@@ -1,6 +1,8 @@
 package diplomska.naloga.vselokalno.FarmLookup.FarmDetails;
 
+import static diplomska.naloga.vselokalno.MainActivity.allFarmsDataShort;
 import static diplomska.naloga.vselokalno.MainActivity.appBasket;
+import static diplomska.naloga.vselokalno.MainActivity.makeLogD;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -16,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageException;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
@@ -85,8 +88,8 @@ public class FarmDetailsFragment extends Fragment implements FarmDetailsArticleA
                     mFarmName.setText(farmOfInterest.getIme_kmetije());
                     StorageReference imageRef = FirebaseStorage.getInstance().getReference()
                             .child("Uporabniške profilke/" + mFarm_id);
-                    GlideApp.with(requireContext()).load(imageRef).into(mUserImage);
-//                    Fill the recycler view with articles:
+                    GlideApp.with(requireContext()).load(imageRef).error(R.drawable.default_profile_picture).into(mUserImage);
+                    //                    Fill the recycler view with articles:
                     mArticlesForBuying = farmOfInterest.getArtikli();
                     if (mRecyclerView != null) {
                         mAdapter = new FarmDetailsArticleAdapter(requireContext(), farmOfInterest.getArtikli(),

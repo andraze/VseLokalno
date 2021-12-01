@@ -16,8 +16,8 @@
             android:layout_height="200dp"
             android:layout_width="match_parent"
             android:contentDescription="@string/slika_kmetije"
-            android:scaleType="fitCenter"
-            android:src="@drawable/no_image_placeholder" />
+            android:scaleType="centerCrop"
+            android:src="@drawable/default_background_picture" />
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/profile_image_view_FarmDetailsFragment"
@@ -27,8 +27,9 @@
             android:layout_marginTop="-32dp"
             android:clickable="true"
             android:elevation="2dp"
-            android:src="@drawable/ic_default_profile_picture"
+            android:focusable="true"
             app:civ_border_color="@color/white"
+            android:src="@drawable/default_profile_picture"
             app:civ_border_width="3dp" />
 
         <View

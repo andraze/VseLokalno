@@ -75,18 +75,21 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         makeLogD(TAG, "(onBindViewHolder) showing farm: " + currentFarm.get("ime_kmetije"));
         // Populate the textviews with data.
         holder.mNaslovText.setText(currentFarm.get("ime_kmetije"));
-        // Reference to an image file in Cloud Storage
-        StorageReference imageRef = FirebaseStorage.getInstance().getReference()
-                .child("Uporabniške profilke/" + currentFarm.get("id_kmetije"));
+        StorageReference imageRef = null;
+        if (currentFarm.containsKey("slika_kmetije")) {
+            // Reference to an image file in Cloud Storage
+            imageRef = FirebaseStorage.getInstance().getReference()
+                    .child("Ozadja kmetije/" + currentFarm.get("id_kmetije"));
 //        makeLogD(TAG, "(onBindViewHolder) storage reference: " + imageRef.toString());
-        GlideApp.with(mContext).load(imageRef).into(holder.mImage);
-
+            GlideApp.with(mContext).load(imageRef).into(holder.mImage);
+        }
+        StorageReference finalImageRef = imageRef;
         holder.itemView.setOnClickListener(v -> ItemClickListener.onItemClick(
                 holder.getAdapterPosition(),
                 currentFarm,
                 holder.mNaslovText,
                 holder.mImage,
-                imageRef
+                finalImageRef
         ));
     } // onBindViewHolder
 

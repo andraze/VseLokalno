@@ -41,6 +41,7 @@ public class Kmetija {
     public Map<String, String> koordinate_kmetije;
     public ArrayList<ZaKmetijo> aktivnaNarocila;
     public ArrayList<Map<String, String>> artikli;
+    boolean use_default_pic;
 
     public Kmetija() {
         this.ime_kmetije = "";
@@ -51,6 +52,15 @@ public class Kmetija {
         this.koordinate_kmetije = new HashMap<>();
         this.aktivnaNarocila = new ArrayList<>();
         this.artikli = new ArrayList<>();
+        this.use_default_pic = true;
+    }
+
+    public boolean isUse_default_pic() {
+        return use_default_pic;
+    }
+
+    public void setUse_default_pic(boolean use_default_pic) {
+        this.use_default_pic = use_default_pic;
     }
 
     public String getIme_kmetije() {

@@ -100,7 +100,11 @@ public class ArticleListFragment extends Fragment implements RecyclerAdapter_Far
         updates.put("artikli", FieldValue.arrayRemove(articleForRemoval));
         docRef.update(updates).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                refreshAdapter(position);
+                mAdapter = new RecyclerAdapter_FarmArticles(requireContext(), appFarm.getArtikli(),
+                        requireActivity().getSupportFragmentManager(), mItemClickListener, mArticleDeleteListener);
+                mRecyclerView.setAdapter(mAdapter);
+                mRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+//                refreshAdapter(position);
                 makeLogD(TAG, "(deleteArticle) Article remove successful!");
             } else
                 makeLogW(TAG, "(deleteArticle) ERROR\n" + task.getException());
