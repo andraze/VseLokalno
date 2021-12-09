@@ -95,7 +95,7 @@ public class RecyclerAdapter_FarmArticles extends RecyclerView.Adapter<RecyclerA
         GlideApp.with(mContext).load(imageRef).into(holder.mSlikaArtikel);
 
         if (Double.parseDouble(Objects.requireNonNull(currentArtikel.get("zaloga_artikel"))) == 0) {
-            holder.mRelLayout.setBackground(mContext.getDrawable(R.drawable.stock_run_out_background_article));
+            holder.mRelLayout.setBackground(mContext.getDrawable(R.drawable.error_background_border));
         }
 
         holder.mDeleteFab.setOnClickListener(view -> {

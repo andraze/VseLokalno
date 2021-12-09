@@ -26,7 +26,7 @@
             android:layout_weight="1"
             android:text="@string/kosarica"
             android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:textColor="@color/blue_normal" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -91,7 +91,7 @@
                     android:id="@+id/price_sum_tv_BasketFragment"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/_0"
+                    android:text="@string/_0_0"
                     android:textAppearance="@style/TextAppearance.AppCompat.Display1"
                     android:textColor="@color/blue_normal" />
 

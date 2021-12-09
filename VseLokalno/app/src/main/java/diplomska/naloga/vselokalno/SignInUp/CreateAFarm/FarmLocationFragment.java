@@ -10,7 +10,6 @@ import androidx.fragment.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,7 +18,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Objects;
 
-import diplomska.naloga.vselokalno.DataObjects.Kmetija;
+import diplomska.naloga.vselokalno.DataObjects.Farm;
 import diplomska.naloga.vselokalno.DataObjects.User;
 import diplomska.naloga.vselokalno.R;
 
@@ -70,7 +69,7 @@ public class FarmLocationFragment extends Fragment {
         FloatingActionButton cancelBtn = rootView.findViewById(R.id.pop_to_choser_btn);
         cancelBtn.setOnClickListener(v -> {
             userData = new User();
-            farmData = new Kmetija();
+            farmData = new Farm();
             requireActivity().getSupportFragmentManager().popBackStack("chooser_stage", FragmentManager.POP_BACK_STACK_INCLUSIVE);
         });
         //        Switch

@@ -25,6 +25,7 @@ import java.text.MessageFormat;
 import de.hdodenhof.circleimageview.CircleImageView;
 import diplomska.naloga.vselokalno.FarmLookup.List.GlideApp;
 import diplomska.naloga.vselokalno.R;
+import diplomska.naloga.vselokalno.UserFunctions.ActiveOrders_FU.ActiveOrdersListFragment;
 import diplomska.naloga.vselokalno.UserFunctions.ArticleList_F.ArticleListFragment;
 import diplomska.naloga.vselokalno.UserFunctions.Basket_U.BasketFragment;
 
@@ -85,41 +86,43 @@ public class UserFunctionsFragment extends Fragment {
         if (appUser.isLastnik_kmetije()) {
             // Change some text if farm owner:
             TextView kosaricaVNarocila = rootView.findViewById(R.id.tv_kosarica_userFunctions);
-            kosaricaVNarocila.setText(R.string.narocila);
-            TextView seznamVArtikli = rootView.findViewById(R.id.tv_seznam_userFunctions);
-            seznamVArtikli.setText(R.string.artikli);
+            kosaricaVNarocila.setText(R.string.artikli);
+//            TextView seznamVArtikli = rootView.findViewById(R.id.tv_seznam_userFunctions);
+//            seznamVArtikli.setText(R.string.narocila);
         }
-        // Košarica / Naročila:
+        // Košarica / artikli:
         kosarica_narocilaLinearLayout = rootView.findViewById(R.id.narocilo_kosarica_userFunctionsFragment);
         kosarica_narocilaLinearLayout.setOnClickListener(l -> {
             bottomNavigation.setVisibility(View.GONE);
-            if (appUser.isLastnik_kmetije()) {
-                // TODO open active narocila
+            if (appUser.isLastnik_kmetije()) { // ?
+                articleListFragment = ArticleListFragment.newInstance();
+                FragmentManager fragmentManager = getParentFragmentManager();
+                fragmentManager.beginTransaction()
+                        .setCustomAnimations(R.anim.fade_in, R.anim.fade_out, R.anim.fade_in, R.anim.fade_out)
+                        .replace(R.id.main_fragment_container, articleListFragment)
+                        .addToBackStack(null)
+                        .commit();
             } else {
                 BasketFragment basketFragment = BasketFragment.newInstance();
                 FragmentManager fragmentManager = getParentFragmentManager();
                 fragmentManager.beginTransaction()
-                        .setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
+                        .setCustomAnimations(R.anim.fade_in, R.anim.fade_out, R.anim.fade_in, R.anim.fade_out)
                         .replace(R.id.main_fragment_container, basketFragment)
                         .addToBackStack(null)
                         .commit();
             }
         });
-        // Nakupovalni seznam / artikli:
+        // Aktivna naročila / Aktivna naročila:
         seznam_artikliLinearLayout = rootView.findViewById(R.id.artikli_nakupovalniSeznam_userFunctionsFragment);
         seznam_artikliLinearLayout.setOnClickListener(l -> {
             bottomNavigation.setVisibility(View.GONE);
-            if (appUser.isLastnik_kmetije()) {
-                articleListFragment = ArticleListFragment.newInstance();
-                FragmentManager fragmentManager = getParentFragmentManager();
-                fragmentManager.beginTransaction()
-                        .setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
-                        .replace(R.id.main_fragment_container, articleListFragment)
-                        .addToBackStack(null)
-                        .commit();
-            } else {
-                // TODO open nakupovalni seznam
-            }
+            ActiveOrdersListFragment activeOrdersListFragment = ActiveOrdersListFragment.newInstance();
+            FragmentManager fragmentManager = getParentFragmentManager();
+            fragmentManager.beginTransaction()
+                    .setCustomAnimations(R.anim.fade_in, R.anim.fade_out, R.anim.fade_in, R.anim.fade_out)
+                    .replace(R.id.main_fragment_container, activeOrdersListFragment)
+                    .addToBackStack(null)
+                    .commit();
         });
         // Zelje:
         zeljeLinearLayout = rootView.findViewById(R.id.zelje_userFunctionsFragment);

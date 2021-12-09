@@ -142,7 +142,7 @@ public class EditArticleFragment extends DialogFragment {
                         FirebaseStorage storage = FirebaseStorage.getInstance();
                         // Create a storage reference from the app
                         StorageReference storageRef = storage.getReference();
-                        String path = "Slike artiklov/" + userID + "/" + articleName.getText().toString() + "_" + uniqueString;
+                        String path = "Slike artiklov/" + userID + "/" + mArticle.get("id_artikel");
                         StorageReference imagesRefDelete = storageRef.child(Objects.requireNonNull(mArticle.get("slika_artikel")));
                         imagesRefDelete.delete().addOnFailureListener(e -> makeLogW(TAG, "(onCreateView)\n" + e.getMessage()));
                         StorageReference imagesRef = storageRef.child(Objects.requireNonNull(path));

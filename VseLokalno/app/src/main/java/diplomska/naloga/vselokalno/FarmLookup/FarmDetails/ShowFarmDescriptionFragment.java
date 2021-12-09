@@ -11,23 +11,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import diplomska.naloga.vselokalno.DataObjects.Kmetija;
+import diplomska.naloga.vselokalno.DataObjects.Farm;
 import diplomska.naloga.vselokalno.R;
 
 public class ShowFarmDescriptionFragment extends DialogFragment {
 
-    Kmetija farmOfInterest;
+    Farm farmOfInterest;
 
     public ShowFarmDescriptionFragment() {
         // Required empty public constructor
     }
 
     @SuppressLint("ValidFragment")
-    public ShowFarmDescriptionFragment(Kmetija farm) {
+    public ShowFarmDescriptionFragment(Farm farm) {
         this.farmOfInterest = farm;
     }
 
-    public static ShowFarmDescriptionFragment newInstance(Kmetija farm) {
+    public static ShowFarmDescriptionFragment newInstance(Farm farm) {
         return new ShowFarmDescriptionFragment(farm);
     }
 

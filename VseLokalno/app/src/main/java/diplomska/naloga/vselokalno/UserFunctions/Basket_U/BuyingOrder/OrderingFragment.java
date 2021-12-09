@@ -31,7 +31,7 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
 
-import diplomska.naloga.vselokalno.DataObjects.Kmetija;
+import diplomska.naloga.vselokalno.DataObjects.Farm;
 import diplomska.naloga.vselokalno.DataObjects.Narocilo.ZaKmetijo;
 import diplomska.naloga.vselokalno.DataObjects.Narocilo.ZaKupca;
 import diplomska.naloga.vselokalno.R;
@@ -42,7 +42,7 @@ public class OrderingFragment extends Fragment implements OrderRecyclerAdapter.O
     // Current farm index:
     private int farmNumber;
     // current farm object:
-    Kmetija farmOfInterest;
+    Farm farmOfInterest;
     // Time and day selected:
     private int indexTimeSelected = -1;
     private int indexDaySelected = -1;
@@ -129,28 +129,32 @@ public class OrderingFragment extends Fragment implements OrderRecyclerAdapter.O
             } else if (indexTimeSelected == -1) {
                 Toast.makeText(requireContext(), "Najprej izberite možno uro dostave.", Toast.LENGTH_SHORT).show();
             } else {
-                setDateOfPickup();
-                if (farmNumber + 1 == appBasket.size()) {
-                    for (int i = 0; i < appBasket.size(); i++) {
-                        finishOrder(i);
+                if (checkStorageCurrentStorage()) {
+                    setDateOfPickup();
+                    if (farmNumber + 1 == appBasket.size()) {
+                        for (int i = 0; i < appBasket.size(); i++) {
+                            finishOrder(i);
+                        }
+                        appBasket.clear();
+                        getParentFragmentManager().popBackStack("ProceedToBuying", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                    } else {
+                        OrderingFragment orderingFragment = OrderingFragment.newInstance(farmNumber + 1);
+                        FragmentManager fragmentManager = getParentFragmentManager();
+                        fragmentManager.beginTransaction()
+                                .setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
+                                .replace(R.id.main_fragment_container, orderingFragment)
+                                .addToBackStack(null)
+                                .commit();
                     }
-                    appBasket.clear();
-                    getParentFragmentManager().popBackStack("ProceedToBuying", FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 } else {
-                    OrderingFragment orderingFragment = OrderingFragment.newInstance(farmNumber + 1);
-                    FragmentManager fragmentManager = getParentFragmentManager();
-                    fragmentManager.beginTransaction()
-                            .setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
-                            .replace(R.id.main_fragment_container, orderingFragment)
-                            .addToBackStack(null)
-                            .commit();
+                    Toast.makeText(requireContext(), "Prišlo je do težave z zalogo nekaterih artiklov, preverite ponudbo in ponovno naročite.", Toast.LENGTH_LONG).show();
                 }
             }
         });
         availableDaysRecyclerView = rootView.findViewById(R.id.recycler_view_date_OrderingFragment);
         DocumentReference farmDocReference = db.collection("Kmetije").document(appBasket.get(farmNumber).getId_kmetije());
         farmDocReference.get().addOnSuccessListener(documentSnapshot -> {
-            farmOfInterest = documentSnapshot.toObject(Kmetija.class);
+            farmOfInterest = documentSnapshot.toObject(Farm.class);
             if (farmOfInterest != null) {
                 makeLogD(TAG, "Got farm: " + farmOfInterest);
                 mAdapter = new OrderRecyclerAdapter(requireContext(), farmNumber, mOrderSelectDateListener, farmOfInterest);
@@ -159,6 +163,32 @@ public class OrderingFragment extends Fragment implements OrderRecyclerAdapter.O
             }
         });
         return rootView;
+    }
+
+    private boolean checkStorageCurrentStorage() {
+        boolean returnValue = true;
+        ZaKupca order = appBasket.get(farmNumber);
+        ArrayList<Map<String, String>> articles = farmOfInterest.getArtikli();
+        for (Map.Entry<String, String> kolicine : order.getNarocilo_kolicine().entrySet()) {
+            boolean doesnt_exist_anymore = true;
+            for (Map<String, String> oneArticle : articles) {
+                if (kolicine.getKey().equals(oneArticle.get("id_artikel"))) {
+                    doesnt_exist_anymore = false;
+                    order.addNarocilo_zaloge(kolicine.getKey(), oneArticle.get("zaloga_artikel"));
+                    double zalogaTemp = Double.parseDouble(Objects.requireNonNull(oneArticle.get("zaloga_artikel")));
+                    double kolicinaTemp = Double.parseDouble(kolicine.getValue());
+                    if (zalogaTemp >= 0 && zalogaTemp < kolicinaTemp) {
+                        returnValue = false;
+                    }
+                    break;
+                }
+            }
+            if (doesnt_exist_anymore) {
+                order.addNarocilo_zaloge(kolicine.getKey(), "0");
+                returnValue = false;
+            }
+        }
+        return returnValue;
     }
 
     private void finishOrder(int index) {
@@ -174,49 +204,43 @@ public class OrderingFragment extends Fragment implements OrderRecyclerAdapter.O
         narociloZaKmetijo.setNarocilo_slike(narociloZaKupca.getNarocilo_slike());
         narociloZaKmetijo.setNarocilo_zaloge(narociloZaKupca.getNarocilo_zaloge());
         narociloZaKmetijo.setNaslov_dostave(narociloZaKupca.getNaslov_dostave());
+        narociloZaKmetijo.setNarocilo_imena(narociloZaKupca.getNarocilo_imena());
         narociloZaKmetijo.setOpravljeno(0);
         narociloZaKupca.setOpravljeno(0);
-        db.collection("Uporabniki").document(userID).collection("Naročila").document(narociloZaKupca.getPovezavo(userID)).
-                set(narociloZaKupca).addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                makeLogD(TAG, "(finishOrder) user order created!");
-            } else {
-                makeLogW(TAG, "(finishOrder) " + task.getException());
-            }
-        });
-        db.collection("Kmetije").document(narociloZaKupca.getId_kmetije()).collection("Naročila").document(narociloZaKmetijo.getPovezavo(narociloZaKupca.getId_kmetije())).
-                set(narociloZaKmetijo).addOnCompleteListener(task -> {
+//        db.collection("Uporabniki").document(userID).collection("Naročila").document(narociloZaKupca.getPovezavo(userID)).
+//                set(narociloZaKupca).addOnCompleteListener(task -> {
+//            if (task.isSuccessful()) {
+//                makeLogD(TAG, "(finishOrder) user order created!");
+//            } else {
+//                makeLogW(TAG, "(finishOrder) " + task.getException());
+//            }
+//        });
+//        db.collection("Kmetije").document(narociloZaKupca.getId_kmetije()).collection("Naročila").document(narociloZaKmetijo.getPovezavo(narociloZaKupca.getId_kmetije())).
+//                set(narociloZaKmetijo).addOnCompleteListener(task -> {
 //            if (task.isSuccessful()) {
 //                makeLogD(TAG, "(finishOrder) farm order created!");
 //            } else {
 //                makeLogW(TAG, "(finishOrder) " + task.getException());
 //            }
-        });
+//        });
         syncArticlesInFarm(index);
+        farmOfInterest.addAktivnaNarocila(narociloZaKmetijo);
         db.collection("Kmetije").document(narociloZaKupca.getId_kmetije()).
                 set(farmOfInterest).addOnCompleteListener(task -> {
-//            if (task.isSuccessful()) {
-//                makeLogD(TAG, "(finishOrder) farm order created!");
-//            } else {
-//                makeLogW(TAG, "(finishOrder) " + task.getException());
-//            }
+
         });
+        appUser.addAktivnaNarocila(narociloZaKupca);
+        db.collection("Uporabniki").document(userID)
+                .set(appUser);
     }
 
     private void syncArticlesInFarm(int index) {
         ZaKupca zaKupca = appBasket.get(index);
         ArrayList<Map<String, String>> farmArticles = farmOfInterest.getArtikli();
-        Map<String, String> cene = zaKupca.getNarocilo_cene();
-        Map<String, String> slike = zaKupca.getNarocilo_slike();
-        Map<String, String> enote = zaKupca.getNarocilo_enote();
         Map<String, String> zaloge = zaKupca.getNarocilo_zaloge();
         for (Map.Entry<String, String> kolicine : zaKupca.getNarocilo_kolicine().entrySet()) {
             for (Map<String, String> oneArticle : farmArticles) {
-                if (kolicine.getKey().equals(oneArticle.get("ime_artikel")) &&
-                        Objects.equals(cene.get(kolicine.getKey()), oneArticle.get("cena_artikel")) &&
-                        Objects.equals(enote.get(kolicine.getKey()), oneArticle.get("enota_artikel")) &&
-                        Objects.equals(slike.get(kolicine.getKey()), oneArticle.get("slika_artikel")) &&
-                        Objects.equals(zaloge.get(kolicine.getKey()), oneArticle.get("zaloga_artikel"))) {
+                if (kolicine.getKey().equals(oneArticle.get("id_artikel"))) {
                     oneArticle.put("zaloga_artikel",
                             String.valueOf(Double.parseDouble(Objects.requireNonNull(zaloge.get(kolicine.getKey()))) - Double.parseDouble(kolicine.getValue())));
                     break;
@@ -229,14 +253,14 @@ public class OrderingFragment extends Fragment implements OrderRecyclerAdapter.O
     @SuppressLint("SimpleDateFormat")
     private void setDateOfPickup() {
         Date date = new Date();
-        String temp = new SimpleDateFormat("dd-MM-yyyy hh:mm").format(date);
+        String temp = new SimpleDateFormat("E dd-MM-yyyy HH:mm").format(date);
         makeLogD(TAG, temp);
-        appBasket.get(farmNumber).setDatum_narocila(new SimpleDateFormat("dd-MM-yyyy hh:mm").format(date));
+        appBasket.get(farmNumber).setDatum_narocila(new SimpleDateFormat("E dd-MM-yyyy HH:mm").format(date));
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         calendar.add(Calendar.DATE, indexDaySelected);
         date = calendar.getTime();
-        String dateCalendar = new SimpleDateFormat("dd-MM-yyyy").format(date);
+        String dateCalendar = new SimpleDateFormat("E dd-MM-yyyy").format(date);
         String dateTime = "";
         for (int i = 0; i < allTimeViews.size(); i++) {
             if (allTimeViews.get(i).getId() == indexTimeSelected) {

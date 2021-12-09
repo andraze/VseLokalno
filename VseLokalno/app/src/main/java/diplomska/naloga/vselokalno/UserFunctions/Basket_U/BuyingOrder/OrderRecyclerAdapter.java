@@ -1,5 +1,7 @@
 package diplomska.naloga.vselokalno.UserFunctions.Basket_U.BuyingOrder;
 
+import static diplomska.naloga.vselokalno.MainActivity.getSloDayName;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -17,7 +19,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 
-import diplomska.naloga.vselokalno.DataObjects.Kmetija;
+import diplomska.naloga.vselokalno.DataObjects.Farm;
 import diplomska.naloga.vselokalno.R;
 
 public class OrderRecyclerAdapter extends RecyclerView.Adapter<OrderRecyclerAdapter.ViewHolder> {
@@ -26,9 +28,6 @@ public class OrderRecyclerAdapter extends RecyclerView.Adapter<OrderRecyclerAdap
         void onOrderSelectDateListener(int numOfDaysFromToday, View v, TextView t1, TextView t2);
     }
 
-    String[] dayNamesEng = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
-    String[] dayNamesSlo = {"Pon", "Tor", "Sre", "Čet", "Pet", "Sob", "Ned"};
-
     OrderSelectDateListener orderSelectDateListener;
     private final String TAG = "OrderRecyclerAdapter";
     LayoutInflater mInflater;
@@ -36,7 +35,7 @@ public class OrderRecyclerAdapter extends RecyclerView.Adapter<OrderRecyclerAdap
     int farmNumber;
     Map<String, ArrayList<Boolean>> cas_prevzemaKmetije;
 
-    public OrderRecyclerAdapter(Context tempContext, int farmNum, OrderSelectDateListener tempListener, Kmetija k) {
+    public OrderRecyclerAdapter(Context tempContext, int farmNum, OrderSelectDateListener tempListener, Farm k) {
         this.mContext = tempContext;
         this.farmNumber = farmNum;
         this.mInflater = LayoutInflater.from(this.mContext);
@@ -108,15 +107,6 @@ public class OrderRecyclerAdapter extends RecyclerView.Adapter<OrderRecyclerAdap
         } // ViewHolder
 
     } // ViewHolder
-
-    public String getSloDayName(String engDayName) {
-        for (int i = 0; i < dayNamesEng.length; i++) {
-            if (dayNamesEng[i].equals(engDayName)) {
-                return dayNamesSlo[i];
-            }
-        }
-        return "";
-    }
 
     @SuppressLint("SimpleDateFormat")
     public String[] addXDays(int x) {

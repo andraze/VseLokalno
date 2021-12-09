@@ -2,6 +2,7 @@ package diplomska.naloga.vselokalno.UserFunctions.Basket_U;
 
 import static diplomska.naloga.vselokalno.MainActivity.appBasket;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -54,14 +55,16 @@ public class BasketRecyclerAdapter extends RecyclerView.Adapter<BasketRecyclerAd
             Map<String, String> imagePaths = el.getNarocilo_slike();
             Map<String, String> unitMap = el.getNarocilo_enote();
             Map<String, String> storageMap = el.getNarocilo_zaloge();
-            for (Map.Entry<String, String> entry : el.getNarocilo_cene().entrySet()) {
+            Map<String, String> priceMap = el.getNarocilo_cene();
+            for (Map.Entry<String, String> entry : el.getNarocilo_imena().entrySet()) {
                 Map<String, String> newArticle = new HashMap<>();
-                newArticle.put("ime", entry.getKey());
+                newArticle.put("ime", entry.getValue());
                 newArticle.put("kolicina", numOfUnitsMap.get(entry.getKey()));
-                newArticle.put("cena", entry.getValue());
+                newArticle.put("cena", priceMap.get(entry.getKey()));
                 newArticle.put("slika", imagePaths.get(entry.getKey()));
                 newArticle.put("enota", unitMap.get(entry.getKey()));
                 newArticle.put("zaloga", storageMap.get(entry.getKey()));
+                newArticle.put("id", entry.getKey());
                 mArticles.add(newArticle);
             }
         }
@@ -83,6 +86,7 @@ public class BasketRecyclerAdapter extends RecyclerView.Adapter<BasketRecyclerAd
         return new BasketRecyclerAdapter.ViewHolder(mInflater.inflate(R.layout.basket_item, parent, false));
     } // onCreateViewHolder
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         // Populate views with content:
@@ -102,21 +106,14 @@ public class BasketRecyclerAdapter extends RecyclerView.Adapter<BasketRecyclerAd
                 // User clicked OK button:
                 for (int i = 0; i < appBasket.size(); i++) {
                     ZaKupca el = appBasket.get(i);
-                    Map<String, String> numOfUnitsMap = el.getNarocilo_kolicine();
-                    Map<String, String> priceMap = el.getNarocilo_cene();
-                    Map<String, String> unitMap = el.getNarocilo_enote();
-                    for (Map.Entry<String, String> entry : el.getNarocilo_slike().entrySet()) {
-                        if (entry.getValue().equals(currentArticle.get("slika")) &&
-                                entry.getKey().equals(currentArticle.get("ime")) &&
-                                Objects.equals(numOfUnitsMap.get(entry.getKey()), currentArticle.get("kolicina")) &&
-                                Objects.equals(priceMap.get(entry.getKey()), ((currentArticle.get("cena")))) &&
-                                Objects.requireNonNull(unitMap.get(entry.getKey())).equals(currentArticle.get("enota"))
-                        ) { // This entry.key() article needs to be deleted:
-                            appBasket.get(i).removeNarocilo_slike(currentArticle.get("ime"));
-                            appBasket.get(i).removeNarocilo_cene(currentArticle.get("ime"));
-                            appBasket.get(i).removeNarocilo_enote(currentArticle.get("ime"));
-                            appBasket.get(i).removeNarocilo_kolicine(currentArticle.get("ime"));
-                            appBasket.get(i).removeNarocilo_zaloge(currentArticle.get("ime"));
+                    for (Map.Entry<String, String> entry : el.getNarocilo_imena().entrySet()) {
+                        if (entry.getKey().equals(currentArticle.get("id"))) { // This entry.key() article needs to be deleted:
+                            appBasket.get(i).removeNarocilo_slike(currentArticle.get("id"));
+                            appBasket.get(i).removeNarocilo_cene(currentArticle.get("id"));
+                            appBasket.get(i).removeNarocilo_enote(currentArticle.get("id"));
+                            appBasket.get(i).removeNarocilo_kolicine(currentArticle.get("id"));
+                            appBasket.get(i).removeNarocilo_zaloge(currentArticle.get("id"));
+                            appBasket.get(i).removeNarocilo_imena(currentArticle.get("id"));
                             break;
                         }
                     }
@@ -131,6 +128,14 @@ public class BasketRecyclerAdapter extends RecyclerView.Adapter<BasketRecyclerAd
             AlertDialog dialog = builder.create();
             dialog.show();
         });
+        double kolicinaTemp = Double.parseDouble(Objects.requireNonNull(currentArticle.get("kolicina")));
+        double zalogaTemp = Double.parseDouble(Objects.requireNonNull(currentArticle.get("zaloga")));
+        if (zalogaTemp >= 0 && zalogaTemp < kolicinaTemp) {
+            holder.itemView.setBackground(mContext.getResources().getDrawable(R.drawable.error_background_border));
+//            holder.itemView.setBackgroundColor(mContext.getResources().getColor(R.color.red_light));
+        } else
+            holder.itemView.setBackgroundResource(0);
+//            holder.itemView.setBackgroundColor(mContext.getResources().getColor(R.color.white));
         // Edit specific article:
         holder.itemView.setOnClickListener(v -> mBasketArticleClickListener.onBasketItemClickListener(currentArticle, position));
     } // onBindViewHolder

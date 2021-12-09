@@ -14,17 +14,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Kmetija ima isti ID kot uporanik, ki je lastnil kmetije.
+ * Farm ima isti ID kot uporanik, ki je lastnil kmetije.
  * public String ime_kmetije
  * public String naslov_kmetije
  * public String naslov_dostave
  * public String opis_kmetije
  * public Map<String, ArrayList<Boolean> cas_prevzema ... npr: {"pon": ["10:00-11:00", "11:00-12:00"]}
  * public Map<String, String> koordinate_kmetije ... npr: {"lat": 45.65154123, "lan": 22.85636531}
- * public ArrayList<ZaKmetijo> narocila ... TODO: vsebuje aktivna naročila.
+ * public ArrayList<ZaKmetijo> aktivnaNarocila ... TODO: vsebuje aktivna naročila.
  * public ArrayList<Map<String, String>> artikli
  */
-public class Kmetija {
+public class Farm {
 
     @NonNull
     @NotNull
@@ -43,7 +43,7 @@ public class Kmetija {
     public ArrayList<Map<String, String>> artikli;
     boolean use_default_pic;
 
-    public Kmetija() {
+    public Farm() {
         this.ime_kmetije = "";
         this.naslov_kmetije = "";
         this.naslov_dostave = "";

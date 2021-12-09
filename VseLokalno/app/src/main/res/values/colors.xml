@@ -15,4 +15,7 @@
     <color name="background_white">#ededed</color>
     <color name="gray">#d0d0d0</color>
     <color name="disabled_btn_gray">#E2E2E2</color>
+    <color name="yellow_dark">#6E6B32</color>
+    <color name="yellow_normal">#ADA850</color>
+    <color name="yellow_light">#FAF373</color>
 </resources>

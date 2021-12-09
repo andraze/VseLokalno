@@ -129,18 +129,9 @@ public class BasketFragment extends Fragment implements BasketRecyclerAdapter.Re
         // Find item in appBasket and replace with new values:
         for (int i = 0; i < appBasket.size(); i++) {
             ZaKupca el = appBasket.get(i);
-            Map<String, String> numOfUnitsMap = el.getNarocilo_kolicine();
-            Map<String, String> priceMap = el.getNarocilo_cene();
-            Map<String, String> unitMap = el.getNarocilo_enote();
-            for (Map.Entry<String, String> entry : el.getNarocilo_slike().entrySet()) {
-                if (entry.getValue().equals(item.get("slika")) &&
-                        entry.getKey().equals(item.get("ime")) &&
-                        Objects.equals(numOfUnitsMap.get(entry.getKey()), item.get("kolicina")) &&
-//                        Objects.requireNonNull(priceMap.get(entry.getKey())).equals(String.valueOf(Double.parseDouble(Objects.requireNonNull(item.get("cena"))) / Double.parseDouble(Objects.requireNonNull(numOfUnitsMap.get(entry.getKey()))))) &&
-                        Objects.requireNonNull(priceMap.get(entry.getKey())).equals(item.get("cena")) &&
-                        Objects.requireNonNull(unitMap.get(entry.getKey())).equals(item.get("enota"))
-                ) { // This entry.key() article needs to be updated:
-                    appBasket.get(i).addNarocilo_kolicine(item.get("ime"), item.get("nova_kolicina"));
+            for (Map.Entry<String, String> entry : el.getNarocilo_kolicine().entrySet()) {
+                if (Objects.equals(item.get("id"), entry.getKey())) { // This entry.key() article needs to be updated:
+                    appBasket.get(i).addNarocilo_kolicine(entry.getKey(), item.get("nova_kolicina"));
                     mAdapter = new BasketRecyclerAdapter(requireContext(), removeItemFromBasketListener, mBasketArticleClickListener);
                     recyclerView.setAdapter(mAdapter);
                     recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));

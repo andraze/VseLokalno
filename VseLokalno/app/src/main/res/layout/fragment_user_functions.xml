@@ -105,7 +105,7 @@
             android:layout_weight="1"
             android:text="@string/kosarica"
             android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:textColor="@color/blue_normal" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -123,7 +123,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/dp_16"
-            android:src="@drawable/ic_seznam" />
+            android:src="@drawable/ic_active_orders" />
 
         <View
             android:layout_width="1dp"
@@ -136,9 +136,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="1"
-            android:text="@string/seznam"
+            android:text="@string/narocila"
             android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:textColor="@color/blue_normal" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -170,7 +170,7 @@
             android:layout_weight="1"
             android:text="@string/zelje"
             android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:textColor="@color/blue_normal" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -202,7 +202,7 @@
             android:layout_weight="1"
             android:text="@string/zgodovina"
             android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:textColor="@color/blue_normal" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>

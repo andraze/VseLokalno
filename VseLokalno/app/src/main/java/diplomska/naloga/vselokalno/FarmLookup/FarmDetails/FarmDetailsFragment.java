@@ -1,8 +1,6 @@
 package diplomska.naloga.vselokalno.FarmLookup.FarmDetails;
 
-import static diplomska.naloga.vselokalno.MainActivity.allFarmsDataShort;
 import static diplomska.naloga.vselokalno.MainActivity.appBasket;
-import static diplomska.naloga.vselokalno.MainActivity.makeLogD;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -18,13 +16,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageException;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.Map;
 
-import diplomska.naloga.vselokalno.DataObjects.Kmetija;
+import diplomska.naloga.vselokalno.DataObjects.Farm;
 import diplomska.naloga.vselokalno.DataObjects.Narocilo.ZaKupca;
 import diplomska.naloga.vselokalno.FarmLookup.FarmDetails.ArticleDetails.BuyArticleFragment;
 import diplomska.naloga.vselokalno.FarmLookup.List.GlideApp;
@@ -36,7 +33,7 @@ public class FarmDetailsFragment extends Fragment implements FarmDetailsArticleA
     private static final String FARM_ID = "farm_id";
     private String mFarm_id;
     private FirebaseFirestore db;
-    Kmetija farmOfInterest;
+    Farm farmOfInterest;
     ArrayList<Map<String, String>> mArticlesForBuying;
     public RecyclerView mRecyclerView;
     public FarmDetailsArticleAdapter mAdapter;
@@ -82,7 +79,7 @@ public class FarmDetailsFragment extends Fragment implements FarmDetailsArticleA
             mFarm_id = getArguments().getString(FARM_ID);
             DocumentReference farmDocReference = db.collection("Kmetije").document(mFarm_id);
             farmDocReference.get().addOnSuccessListener(documentSnapshot -> {
-                farmOfInterest = documentSnapshot.toObject(Kmetija.class);
+                farmOfInterest = documentSnapshot.toObject(Farm.class);
 //                Got specific farm:
                 if (farmOfInterest != null) {
                     mFarmName.setText(farmOfInterest.getIme_kmetije());
@@ -125,11 +122,12 @@ public class FarmDetailsFragment extends Fragment implements FarmDetailsArticleA
                 if (zaKupcaOrderFromSpecificFarm.getId_kmetije().equals(mFarm_id)) {
                     // Update order:
                     found = true;
-                    zaKupcaOrderFromSpecificFarm.addNarocilo_cene(order.get("ime"), order.get("cena"));
-                    zaKupcaOrderFromSpecificFarm.addNarocilo_enote(order.get("ime"), order.get("enota"));
-                    zaKupcaOrderFromSpecificFarm.addNarocilo_kolicine(order.get("ime"), order.get("kolicina"));
-                    zaKupcaOrderFromSpecificFarm.addNarocilo_slike(order.get("ime"), order.get("slika"));
-                    zaKupcaOrderFromSpecificFarm.addNarocilo_zaloge(order.get("ime"), order.get("zaloga"));
+                    zaKupcaOrderFromSpecificFarm.addNarocilo_imena(order.get("id"), order.get("ime"));
+                    zaKupcaOrderFromSpecificFarm.addNarocilo_cene(order.get("id"), order.get("cena"));
+                    zaKupcaOrderFromSpecificFarm.addNarocilo_enote(order.get("id"), order.get("enota"));
+                    zaKupcaOrderFromSpecificFarm.addNarocilo_kolicine(order.get("id"), order.get("kolicina"));
+                    zaKupcaOrderFromSpecificFarm.addNarocilo_slike(order.get("id"), order.get("slika"));
+                    zaKupcaOrderFromSpecificFarm.addNarocilo_zaloge(order.get("id"), order.get("zaloga"));
                 }
             }
             if (!found) {
@@ -144,11 +142,12 @@ public class FarmDetailsFragment extends Fragment implements FarmDetailsArticleA
         newOrder.setIme_kmetije(farmOfInterest.getIme_kmetije());
         newOrder.setId_kmetije(mFarm_id);
         newOrder.setNaslov_dostave(farmOfInterest.getNaslov_dostave());
-        newOrder.addNarocilo_cene(order.get("ime"), order.get("cena"));
-        newOrder.addNarocilo_enote(order.get("ime"), order.get("enota"));
-        newOrder.addNarocilo_kolicine(order.get("ime"), order.get("kolicina"));
-        newOrder.addNarocilo_slike(order.get("ime"), order.get("slika"));
-        newOrder.addNarocilo_zaloge(order.get("ime"), order.get("zaloga"));
+        newOrder.addNarocilo_imena(order.get("id"), order.get("ime"));
+        newOrder.addNarocilo_cene(order.get("id"), order.get("cena"));
+        newOrder.addNarocilo_enote(order.get("id"), order.get("enota"));
+        newOrder.addNarocilo_kolicine(order.get("id"), order.get("kolicina"));
+        newOrder.addNarocilo_slike(order.get("id"), order.get("slika"));
+        newOrder.addNarocilo_zaloge(order.get("id"), order.get("zaloga"));
         appBasket.add(newOrder);
     } // newOrder
 }

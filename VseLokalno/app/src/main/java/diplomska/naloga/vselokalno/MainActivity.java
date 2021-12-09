@@ -15,22 +15,31 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.ismaeldivita.chipnavigation.ChipNavigationBar;
 
+import org.json.JSONException;
+
 import java.lang.reflect.Type;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Map;
+import java.util.Objects;
 
 import diplomska.naloga.vselokalno.DataObjects.AllFarms;
-import diplomska.naloga.vselokalno.DataObjects.Kmetija;
+import diplomska.naloga.vselokalno.DataObjects.Farm;
 import diplomska.naloga.vselokalno.DataObjects.Narocilo.ZaKupca;
 import diplomska.naloga.vselokalno.DataObjects.User;
 import diplomska.naloga.vselokalno.FarmLookup.List.ListFragment;
 import diplomska.naloga.vselokalno.FarmLookup.Map.MapFragment;
 import diplomska.naloga.vselokalno.SignInUp.SignInUpActivity;
+import diplomska.naloga.vselokalno.UserFunctions.ActiveOrders_FU.ActiveOrdersListFragment;
 import diplomska.naloga.vselokalno.UserFunctions.UserFunctionsFragment;
 
 
@@ -41,25 +50,27 @@ public class MainActivity extends AppCompatActivity {
     //    Firebase AUTH:
     private FirebaseAuth mAuth;
     //    Firebase user:
-    public FirebaseUser currentUser;
+    public static FirebaseUser currentUser;
     //    App user:
     public static String userID = "";
     public static User appUser;
     //    users farm:
-    public static Kmetija appFarm;
+    public static Farm appFarm;
     //    Firestore:
     public FirebaseFirestore db;
     //    Firebase storage:
     public FirebaseStorage storage;
+    //    Firebase messaging:
+    FirebaseMessaging firebaseMessaging;
+    final String fcmTopic = "active_orders_update";
+    public MyPostRequestSender myPostRequestSender;
     //    Bottom navigation:
     public static ChipNavigationBar bottomNavigation;
     //    Fragments:
     private MapFragment mapFragment;
     private ListFragment listFragment;
     private UserFunctionsFragment userFunctionsFragment;
-    //    Other variables:
-    public static final String[] allTimesFull = {"07:00-08:00", "08:00-09:00", "09:00-10:00", "10:00-11:00", "11:00-12:00", "12:00-13:00", "13:00-14:00",
-            "14:00-15:00", "15:00-16:00", "16:00-17:00", "17:00-18:00", "18:00-19:00", "19:00-20:00", "20:00-21:00"};
+    private String GoToFragment;
     public static final String[] allTimes = {"07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00",
             "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00"};
     public static final int[] timeIDs = {R.id.time_7_8, R.id.time_8_9, R.id.time_9_10, R.id.time_10_11, R.id.time_11_12, R.id.time_12_13, R.id.time_13_14,
@@ -71,26 +82,34 @@ public class MainActivity extends AppCompatActivity {
     private static final String sharedPrefFile = "app_basket_shared_preferences_filename";
     static SharedPreferences mySharedPreferences;
     public static final String mAppBasketSharedPrefKey = "shared_preferences_key";
+    // Translate day names:
+    public static final String[] dayNamesEng = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
+    public static final String[] dayNamesSlo = {"Pon", "Tor", "Sre", "Čet", "Pet", "Sob", "Ned"};
+    ListenerRegistration userDataListener = null;
+    ListenerRegistration farmDataListener = null;
 
     @SuppressLint("NonConstantResourceId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
+        GoToFragment = getIntent().getStringExtra("OpenFragment");
         // Initialise the shared preferences:
         mySharedPreferences = getSharedPreferences(sharedPrefFile, MODE_PRIVATE);
         // Initialise the firebase authentication:
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
-        // makeLogD(TAG, "(onCreate) current user: " + currentUser);
-        // Initialise the firebase firestore:
+        // Initialise the firebase Firestore:
         db = FirebaseFirestore.getInstance();
         // Initialise the firebase storage:
         storage = FirebaseStorage.getInstance();
+        // Firebase messaging subscribe to notification topic:
+        firebaseMessaging = FirebaseMessaging.getInstance();
+        firebaseMessaging.subscribeToTopic(fcmTopic);
+        myPostRequestSender = new MyPostRequestSender(this);
         // Initialise the app user and app farm and app basket:
         appUser = new User();
-        appFarm = new Kmetija();
+        appFarm = new Farm();
         appBasket = new ArrayList<>();
         // Use the bottom navigation:
         bottomNavigation = findViewById(R.id.bottom_nav);
@@ -113,6 +132,12 @@ public class MainActivity extends AppCompatActivity {
                     break;
             }
         });
+        // Send test request:
+//        try {
+//            myPostRequestSender.sendRequest("Test", "Test", "Test");
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
         // Check if user is signed in (non-null) and update UI accordingly.
         updateUI(currentUser);
     } // onCreate
@@ -121,27 +146,85 @@ public class MainActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         saveAppBasket();
+        stopDataListeners();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         loadAppBasket();
+        if (currentUser != null)
+            startDataListeners();
     }
 
     private void updateUI(FirebaseUser currentUser) {
         if (currentUser == null) {
 //            Send to login/sign up page.
             makeLogD(TAG, "(updateUI) sending user to SignInUpActivity.");
+            firebaseMessaging.unsubscribeFromTopic(fcmTopic);
             Intent loginIntent = new Intent(this, SignInUpActivity.class);
             startActivity(loginIntent);
             finish();
-        } else
-            // Refresh user data.
+        } else {
+            // Refresh user data and navigate to relative fragments.
             getUserData();
+            startDataListeners();
+        }
     } // updateUI
 
-    private void getUserData() {
+    public void startDataListeners() {
+        if (userDataListener == null)
+            setUserDataListener();
+        else if (appUser != null && appUser.isLastnik_kmetije() && farmDataListener == null)
+            setFarmDataListener();
+    } // setDataListener
+
+    public void stopDataListeners() {
+        if (userDataListener != null) {
+            userDataListener.remove();
+            userDataListener = null;
+        }
+        if (farmDataListener != null) {
+            farmDataListener.remove();
+            farmDataListener = null;
+        }
+    }
+
+    public void setUserDataListener() {
+        DocumentReference docRef = FirebaseFirestore.getInstance().collection("Uporabniki").document(currentUser.getUid());
+        userDataListener = docRef.addSnapshotListener((snapshot, e) -> {
+            if (e != null) {
+                Log.w(TAG, "(setUserDataListener) Listen failed.", e);
+                return;
+            }
+            if (snapshot != null && snapshot.exists()) {
+                appUser = snapshot.toObject(User.class);
+                makeLogD(TAG, "(setUserDataListener) success, got user:\n" + Objects.requireNonNull(appUser).toString());
+                if (appUser.isLastnik_kmetije() && farmDataListener == null)
+                    setFarmDataListener();
+            } else {
+                makeLogD(TAG, "Current data: null");
+            }
+        });
+    } // setUserDataListener
+
+    public void setFarmDataListener() {
+        DocumentReference docRef = FirebaseFirestore.getInstance().collection("Kmetije").document(currentUser.getUid());
+        farmDataListener = docRef.addSnapshotListener((snapshot, e) -> {
+            if (e != null) {
+                Log.w(TAG, "(setFarmDataListener) Listen failed.", e);
+                return;
+            }
+            if (snapshot != null && snapshot.exists()) {
+                appFarm = snapshot.toObject(Farm.class);
+                makeLogD(TAG, "(setFarmDataListener) success, got farm:\n" + Objects.requireNonNull(appFarm).toString());
+            } else {
+                makeLogW(TAG, "(setFarmDataListener) Farm came back NULL!");
+            }
+        });
+    } // setFarmDataListener
+
+    private void getUserData() { // Get user data only once and open relative fragments (for onCreate)
         DocumentReference docRef = db.collection("Uporabniki").document(currentUser.getUid());
         docRef.get()
                 .addOnFailureListener(e -> makeLogW(TAG, "(getUserData) ERROR getting document user.\n" + e.getMessage()))
@@ -162,12 +245,12 @@ public class MainActivity extends AppCompatActivity {
                 });
     } // getUserData
 
-    private void getUserFarm() {
+    private void getUserFarm() { // Get farm data only once and open relative fragments (for onCreate)
         DocumentReference docRef = db.collection("Kmetije").document(currentUser.getUid());
         docRef.get()
                 .addOnFailureListener(e -> makeLogW(TAG, "(getUserFarm) ERROR getting document user.\n" + e.getMessage()))
                 .addOnSuccessListener(documentSnapshot -> {
-                    appFarm = documentSnapshot.toObject(Kmetija.class);
+                    appFarm = documentSnapshot.toObject(Farm.class);
                     if (appFarm != null) {
                         makeLogD(TAG, "(getUserFarm) success, got farm:\n" + appFarm.toString());
                         openFragment(2);
@@ -220,6 +303,13 @@ public class MainActivity extends AppCompatActivity {
     } // signOut
 
     public void openFragment(int id) {
+//        if (GoToFragment != null) {
+//            switch (GoToFragment) {
+//                case "UserFunctionsFragment":
+//                    id = 2;
+//                    break;
+//            }
+//        }
         Fragment fragmentToOpen = null;
         switch (id) {
             case 0:
@@ -241,6 +331,7 @@ public class MainActivity extends AppCompatActivity {
                     .commit();
         } else
             makeLogW(TAG, "(openFragment) ERROR! fragmentToOpen == null!");
+
     } // openMap
 
     public static void saveAppBasket() {
@@ -261,4 +352,24 @@ public class MainActivity extends AppCompatActivity {
         }
     } // loadAppBasket
 
+    public static String getSloDayName(String engDayName) {
+        for (int i = 0; i < dayNamesEng.length; i++) {
+            if (dayNamesEng[i].equals(engDayName)) {
+                return dayNamesSlo[i];
+            }
+        }
+        return "";
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    public static String getFullDateSlo(String date) {
+        try {
+            Date tempDate = new SimpleDateFormat("E dd-MM-yyyy HH:mm").parse(date);
+            String dayNameEng = new SimpleDateFormat("E").format(Objects.requireNonNull(tempDate));
+            return getSloDayName(dayNameEng) + " " + new SimpleDateFormat("dd-MM-yyyy HH:mm").format(tempDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return "";
+    } // getFullDateSlo
 }

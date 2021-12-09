@@ -128,6 +128,7 @@ public class NewArticleFragment extends DialogFragment {
                             makeLogW(TAG, "(onCreateView) " + exception);
                             Toast.makeText(requireContext(), "Prišlo je do napake! Poskusite ponovno.", Toast.LENGTH_SHORT).show();
                         }).addOnSuccessListener(taskSnapshot -> {
+                            newArticle.put("id_artikel", articleName.getText().toString() + "_" + uniqueString);
                             newArticle.put("slika_artikel", path);
                             newArticle.put("ime_artikel", articleName.getText().toString());
                             newArticle.put("cena_artikel", articlePrice.getText().toString());
@@ -153,6 +154,8 @@ public class NewArticleFragment extends DialogFragment {
                 } else {
                     String path = "Slike artiklov/default_article_image.png";
                     newArticle.put("slika_artikel", path);
+                    long uniqueString = System.currentTimeMillis();
+                    newArticle.put("id_artikel", articleName.getText().toString() + "_" + uniqueString);
                     newArticle.put("ime_artikel", articleName.getText().toString());
                     newArticle.put("cena_artikel", articlePrice.getText().toString());
                     newArticle.put("enota_artikel", articleUnit.getText().toString());

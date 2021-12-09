@@ -153,6 +153,7 @@ public class BuyArticleFragment extends DialogFragment {
                     newArticleOrder.put("enota", mArticle.get("enota_artikel"));
                     newArticleOrder.put("slika", mArticle.get("slika_artikel"));
                     newArticleOrder.put("zaloga", mArticle.get("zaloga_artikel"));
+                    newArticleOrder.put("id", mArticle.get("id_artikel"));
                     mInterfaceBuyArticleCallback.callbackBuyArticle_fun(newArticleOrder);
                     this.dismiss();
                 }

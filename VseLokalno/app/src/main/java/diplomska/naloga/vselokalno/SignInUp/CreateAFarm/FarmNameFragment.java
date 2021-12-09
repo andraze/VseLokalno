@@ -16,10 +16,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Objects;
 
-import diplomska.naloga.vselokalno.DataObjects.Kmetija;
+import diplomska.naloga.vselokalno.DataObjects.Farm;
 import diplomska.naloga.vselokalno.DataObjects.User;
 import diplomska.naloga.vselokalno.R;
-import diplomska.naloga.vselokalno.SignInUp.SignUp.UserPasswordFragment;
 
 import static diplomska.naloga.vselokalno.SignInUp.SignInUpActivity.farmData;
 import static diplomska.naloga.vselokalno.SignInUp.SignInUpActivity.userData;
@@ -52,7 +51,7 @@ public class FarmNameFragment extends Fragment {
         FloatingActionButton cancelBtn = rootView.findViewById(R.id.pop_to_choser_btn);
         cancelBtn.setOnClickListener(v -> {
             userData = new User();
-            farmData = new Kmetija();
+            farmData = new Farm();
             requireActivity().getSupportFragmentManager().popBackStack("chooser_stage", FragmentManager.POP_BACK_STACK_INCLUSIVE);
         });
         //        Next
