@@ -84,6 +84,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginEnd="@dimen/dp_4"
             android:fontFamily="@font/roboto_light_family"
             android:text="@string/euro"
             android:textColor="@color/blue_normal"

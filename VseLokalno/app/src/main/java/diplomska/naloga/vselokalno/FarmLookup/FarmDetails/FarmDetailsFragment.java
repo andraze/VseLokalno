@@ -119,6 +119,7 @@ public class FarmDetailsFragment extends Fragment implements FarmDetailsCategory
         currentFarmArticles = new ArrayList<>();
         db.collection("Kmetije").document(Objects.requireNonNull(mCurrentFarm_short.get("id_kmetije")))
                 .collection("Artikli")
+                .whereGreaterThan("article_storage", 0.1)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {

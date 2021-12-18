@@ -30,12 +30,12 @@ public class MyPostRequestSender {
         mQueue = Volley.newRequestQueue(mContext);
     }
 
-    public void sendRequest(String mOrderID, String userID_to_notify, String mNew_status) throws JSONException {
+    public void sendRequest(String mOrderID, String userID_to_notify, String statusNum) throws JSONException {
         JSONObject data = new JSONObject();
 //        data.put("ID_from", "");
         data.put("ID_to", userID_to_notify);
         data.put("ID_order", mOrderID);
-        data.put("new_status", mNew_status);
+        data.put("status_number", statusNum);
 
         JSONObject requestJson = new JSONObject();
         requestJson.put("to", to_key);
@@ -60,7 +60,7 @@ public class MyPostRequestSender {
 // Send test request:
 //        MyPostRequestSender myPostRequestSender = new MyPostRequestSender(getContext());
 //        try {
-//            myPostRequestSender.sendRequest("Test", "Test", "Test");
+//            myPostRequestSender.sendRequest("Test", "Test", "Test", "Test");
 //        } catch (JSONException e) {
 //            e.printStackTrace();
 //        }

@@ -135,6 +135,10 @@ public class EditArticleFragment extends Fragment implements ImageCropper.ImageC
         // Stock size:
         EditText stockQuantity = rootView.findViewById(R.id.article_storage);
         stockQuantity.setText(String.format("%.2f", currentArticle.getArticle_storage()));
+        if (currentArticle.getArticle_storage() < 0.1)
+            stockQuantity.setTextColor(getResources().getColor(R.color.red_normal));
+        else if (currentArticle.getArticle_storage() < 1)
+            stockQuantity.setTextColor(getResources().getColor(R.color.yellow_normal));
         // Save button:
         AppCompatButton saveArticle = rootView.findViewById(R.id.save_article);
         saveArticle.setOnClickListener(view -> {
@@ -148,6 +152,14 @@ public class EditArticleFragment extends Fragment implements ImageCropper.ImageC
             else if (stockQuantity.getText().toString().isEmpty())
                 Toast.makeText(requireContext(), "Omejite zalogo artikla.", Toast.LENGTH_SHORT).show();
             else { // All data is present
+                try { // Try to parse the numbers:
+                    Double.parseDouble(articlePrice.getText().toString());
+                    Double.parseDouble(stockQuantity.getText().toString());
+                }
+                catch(NumberFormatException e) {
+                    Toast.makeText(requireContext(), "Cena in zaloga morata biti številki.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 currentArticle.setArticle_name(articleName.getText().toString());
                 currentArticle.setArticle_price(Double.parseDouble(articlePrice.getText().toString()));
                 currentArticle.setArticle_unit(articleUnit.getText().toString());

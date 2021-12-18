@@ -9,6 +9,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -72,13 +73,23 @@ public class RecyclerAdapter_FarmCategories extends RecyclerView.Adapter<Recycle
         // Populate the textviews with data.
         holder.mCategoryName.setText(currentCategory.getCategory_name());
         ArrayList<String> articleIDs = new ArrayList<>();
+        boolean low_on_stock = false;
+        boolean out_of_stock = false;
         for (Article article : appArticles) {
-            if (articleIDs.size() == 3)
-                break;
             if (article.getCategory_id().equals(currentCategory.getCategory_id()) &&
-                    article.isPicture())
-                articleIDs.add(article.getArticle_id());
+                    article.isPicture()) {
+                if (articleIDs.size() < 3)
+                    articleIDs.add(article.getArticle_id());
+                if (article.getArticle_storage() < 0.1)
+                    out_of_stock = true;
+                else if (article.getArticle_storage() < 1)
+                    low_on_stock = true;
+            }
         }
+        if (out_of_stock)
+            holder.statusLayout.setBackground(mContext.getResources().getDrawable(R.drawable.error_background_border));
+        else if (low_on_stock)
+            holder.statusLayout.setBackground(mContext.getResources().getDrawable(R.drawable.warning_background_border));
         switch (articleIDs.size()) {
             case 3:
                 StorageReference imageRef3 = FirebaseStorage.getInstance().getReference()
@@ -94,6 +105,7 @@ public class RecyclerAdapter_FarmCategories extends RecyclerView.Adapter<Recycle
                 GlideApp.with(mContext).load(imageRef1).into(holder.mImagePreview1);
                 break;
         }
+
         holder.itemView.setOnClickListener(v -> categoryClickListener.onItemClick(currentCategory));
     } // onBindViewHolder
 
@@ -118,6 +130,7 @@ public class RecyclerAdapter_FarmCategories extends RecyclerView.Adapter<Recycle
         private final CircleImageView mImagePreview1;
         private final CircleImageView mImagePreview2;
         private final CircleImageView mImagePreview3;
+        private final LinearLayout statusLayout;
 
         /**
          * Constructor for the ViewHolder, used in onCreateViewHolder().
@@ -131,6 +144,7 @@ public class RecyclerAdapter_FarmCategories extends RecyclerView.Adapter<Recycle
             mImagePreview1 = itemView.findViewById(R.id.article_image1);
             mImagePreview2 = itemView.findViewById(R.id.article_image2);
             mImagePreview3 = itemView.findViewById(R.id.article_image3);
+            statusLayout = itemView.findViewById(R.id.article_linLayout_recyclerAdapter);
         } // ViewHolder
 
     } // ViewHolder

@@ -11,7 +11,7 @@
     app:cardElevation="4dp">
 
     <LinearLayout
-        android:id="@+id/article_relLayout_recyclerAdapter"
+        android:id="@+id/article_linLayout_recyclerAdapter"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">

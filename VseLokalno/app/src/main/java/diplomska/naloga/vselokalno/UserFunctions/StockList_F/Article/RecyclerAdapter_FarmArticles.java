@@ -2,7 +2,6 @@ package diplomska.naloga.vselokalno.UserFunctions.StockList_F.Article;
 
 import static diplomska.naloga.vselokalno.MainActivity.appArticles;
 import static diplomska.naloga.vselokalno.MainActivity.makeLogD;
-import static diplomska.naloga.vselokalno.MainActivity.makeLogW;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -10,14 +9,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -100,11 +97,11 @@ public class RecyclerAdapter_FarmArticles extends RecyclerView.Adapter<RecyclerA
         }
 
         if (currentArtikel.getArticle_storage() <= 0.1) {
-            holder.mRelLayout.setBackground(mContext.getDrawable(R.drawable.error_background_border));
+            holder.mStatusLayout.setBackground(mContext.getDrawable(R.drawable.error_background_border));
         }
 
         if (currentArtikel.getArticle_storage() <= 1 && currentArtikel.getArticle_storage() > 0.1) {
-            holder.mRelLayout.setBackground(mContext.getDrawable(R.drawable.warning_background_border));
+            holder.mStatusLayout.setBackground(mContext.getDrawable(R.drawable.warning_background_border));
         }
 
         holder.itemView.setOnClickListener(v -> ItemClickListener.onItemClick(currentArtikel));
@@ -131,7 +128,7 @@ public class RecyclerAdapter_FarmArticles extends RecyclerView.Adapter<RecyclerA
         private final TextView mCenaArtikel;
         private final TextView mEnotaArtikel;
         private final CircleImageView mSlikaArtikel;
-        private final RelativeLayout mRelLayout;
+        private final LinearLayout mStatusLayout;
 
         /**
          * Constructor for the ViewHolder, used in onCreateViewHolder().
@@ -145,7 +142,7 @@ public class RecyclerAdapter_FarmArticles extends RecyclerView.Adapter<RecyclerA
             mCenaArtikel = itemView.findViewById(R.id.cena_artikel);
             mEnotaArtikel = itemView.findViewById(R.id.enota_artikel);
             mSlikaArtikel = itemView.findViewById(R.id.slika_artikla);
-            mRelLayout = itemView.findViewById(R.id.article_relLayout_recyclerAdapter);
+            mStatusLayout = itemView.findViewById(R.id.lin_layout);
         } // ViewHolder
 
     } // ViewHolder

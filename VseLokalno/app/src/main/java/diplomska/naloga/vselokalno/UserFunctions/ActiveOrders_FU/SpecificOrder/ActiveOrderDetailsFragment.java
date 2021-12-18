@@ -21,9 +21,12 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import org.json.JSONException;
+
 import diplomska.naloga.vselokalno.DataObjects.Article;
 import diplomska.naloga.vselokalno.DataObjects.GlideApp;
 import diplomska.naloga.vselokalno.DataObjects.Order;
+import diplomska.naloga.vselokalno.OrderNotifications.MyPostRequestSender;
 import diplomska.naloga.vselokalno.R;
 
 public class ActiveOrderDetailsFragment extends Fragment {
@@ -145,6 +148,18 @@ public class ActiveOrderDetailsFragment extends Fragment {
     private void updateOrderFun(int newStatus) {
         // Preparation:
         mCurrentOrder.setOpravljeno(newStatus);
+        MyPostRequestSender myPostRequestSender = new MyPostRequestSender(requireContext());
+        String status_message = String.valueOf(mCurrentOrder.getOpravljeno());
+        String idTo;
+        if (appUser.isLastnik_kmetije())
+            idTo = mCurrentOrder.getId_kupca();
+        else
+            idTo = mCurrentOrder.getId_kmetije();
+        try {
+            myPostRequestSender.sendRequest(mCurrentOrder.getId_order(), idTo, status_message);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         // Buyer update:
         db.collection("Uporabniki").document(mCurrentOrder.getId_kupca())
                 .collection("Aktivna Naročila").document(mCurrentOrder.getId_order())

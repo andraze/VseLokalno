@@ -1,7 +1,6 @@
 package diplomska.naloga.vselokalno.UserFunctions.Basket_U.BuyingOrder;
 
 import static diplomska.naloga.vselokalno.MainActivity.allTimes;
-import static diplomska.naloga.vselokalno.MainActivity.appActiveOrders;
 import static diplomska.naloga.vselokalno.MainActivity.appBasket;
 import static diplomska.naloga.vselokalno.MainActivity.appUser;
 import static diplomska.naloga.vselokalno.MainActivity.makeLogD;
@@ -9,6 +8,7 @@ import static diplomska.naloga.vselokalno.MainActivity.makeLogW;
 import static diplomska.naloga.vselokalno.MainActivity.userID;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,7 +36,6 @@ import java.util.Objects;
 import diplomska.naloga.vselokalno.DataObjects.Article;
 import diplomska.naloga.vselokalno.DataObjects.Farm;
 import diplomska.naloga.vselokalno.DataObjects.Order;
-import diplomska.naloga.vselokalno.MainActivity;
 import diplomska.naloga.vselokalno.OrderNotifications.MyPostRequestSender;
 import diplomska.naloga.vselokalno.R;
 
@@ -133,24 +132,32 @@ public class OrderingFragment extends Fragment implements OrderRecyclerAdapter.O
             } else if (indexTimeSelected == -1) {
                 Toast.makeText(requireContext(), "Najprej izberite možno uro dostave.", Toast.LENGTH_SHORT).show();
             } else {
-                // TODO: check they really want to order this!
-                if (checkCurrentStorage()) {
-                    setDateOfPickup();
-                    finishOrder(farmNumber);
-                    if (farmNumber + 1 == appBasket.size()) {
-                        appBasket.clear();
-                        getParentFragmentManager().popBackStack("ProceedToBuying", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+                builder.setMessage("Ste prepričani, da želite poslati naročilo?")
+                        .setTitle("Pošlji naročilo");
+                // Add the buttons
+                builder.setPositiveButton("Da", (dialog, id) -> {
+                    if (checkCurrentStorage()) {
+                        setDateOfPickup();
+                        finishOrder(farmNumber);
+                        if (farmNumber + 1 == appBasket.size()) {
+                            appBasket.clear();
+                            getParentFragmentManager().popBackStack("ProceedToBuying", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                        } else {
+                            OrderingFragment orderingFragment = OrderingFragment.newInstance(farmNumber + 1);
+                            FragmentManager fragmentManager = getParentFragmentManager();
+                            fragmentManager.beginTransaction()
+                                    .setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
+                                    .replace(R.id.main_fragment_container, orderingFragment)
+                                    .commit();
+                        }
                     } else {
-                        OrderingFragment orderingFragment = OrderingFragment.newInstance(farmNumber + 1);
-                        FragmentManager fragmentManager = getParentFragmentManager();
-                        fragmentManager.beginTransaction()
-                                .setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
-                                .replace(R.id.main_fragment_container, orderingFragment)
-                                .commit();
+                        Toast.makeText(requireContext(), "Prišlo je do težave z zalogo nekaterih artiklov, preverite ponudbo in ponovno naročite.", Toast.LENGTH_LONG).show();
                     }
-                } else {
-                    Toast.makeText(requireContext(), "Prišlo je do težave z zalogo nekaterih artiklov, preverite ponudbo in ponovno naročite.", Toast.LENGTH_LONG).show();
-                }
+                });
+                builder.setNegativeButton("Ne", (dialog, id) -> dialog.cancel());
+                AlertDialog dialog = builder.create();
+                dialog.show();
             }
         });
         availableDaysRecyclerView = rootView.findViewById(R.id.recycler_view_date_OrderingFragment);
@@ -214,12 +221,28 @@ public class OrderingFragment extends Fragment implements OrderRecyclerAdapter.O
         String uniqueString = String.valueOf(System.currentTimeMillis());
         String orderID = userID + "#" + order.getId_kmetije() + "#" + uniqueString;
         order.setId_order(orderID);
+        StringBuilder extraStatus = new StringBuilder();
+        boolean out_of_stock = false;
+        boolean low_on_stock = false;
+        for (Article article : order.getOrdered_articles()) {
+            if (out_of_stock && low_on_stock)
+                break;
+            if (article.getArticle_storage() - article.getArticle_buying_amount() < 1 && !low_on_stock) {
+                low_on_stock = true;
+                extraStatus.append("#1");
+            }
+            if (article.getArticle_storage() - article.getArticle_buying_amount() < 0.1 && !out_of_stock) {
+                out_of_stock = true;
+                extraStatus.append("#4");
+            }
+        }
         // Update storages for every article ordered.
         syncArticlesInFarm(index, 0);
         // Send "New order" notification:
         MyPostRequestSender myPostRequestSender = new MyPostRequestSender(requireContext());
+        String status_message = String.valueOf(order.getOpravljeno()) + extraStatus;
         try {
-            myPostRequestSender.sendRequest(order.getId_order(), order.getId_kmetije(), String.valueOf(order.getOpravljeno()));
+            myPostRequestSender.sendRequest(order.getId_order(), order.getId_kmetije(), status_message);
         } catch (JSONException e) {
             e.printStackTrace();
         }
