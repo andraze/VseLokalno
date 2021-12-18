@@ -28,6 +28,7 @@ import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
@@ -61,6 +62,8 @@ public class MainActivity extends AppCompatActivity {
     public static Farm appFarm;
     // Active orders:
     public static ArrayList<Order> appActiveOrders;
+    // Order history:
+    public static ArrayList<Order> appOrderHistory;
     //    Firestore:
     public FirebaseFirestore db;
     //    Firebase storage:
@@ -93,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String[] dayNamesEng = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
     public static final String[] dayNamesSlo = {"Pon", "Tor", "Sre", "Čet", "Pet", "Sob", "Ned"};
     ListenerRegistration activeOrdersListener = null;
+    static ListenerRegistration orderHistoryListener = null;
     ListenerRegistration farmArticlesListener = null;
     ListenerRegistration farmCategoriesListener = null;
     // For image cropping:
@@ -180,6 +184,7 @@ public class MainActivity extends AppCompatActivity {
     public void startActiveOrdersListeners() {
         if (appUser != null && !appUser.getIme_uporabnika().equals("") && activeOrdersListener == null && !userID.isEmpty()) {
             setActiveOrdersListener(appUser.isLastnik_kmetije());
+            setOrderHistoryListener();
         }
     } // startActiveOrdersListeners
 
@@ -195,6 +200,10 @@ public class MainActivity extends AppCompatActivity {
         if (farmCategoriesListener != null) {
             farmCategoriesListener.remove();
             farmCategoriesListener = null;
+        }
+        if (orderHistoryListener != null) {
+            orderHistoryListener.remove();
+            orderHistoryListener = null;
         }
     }
 
@@ -219,9 +228,70 @@ public class MainActivity extends AppCompatActivity {
                         appActiveOrders.add(doc.toObject(Order.class));
                     }
                     Collections.reverse(appActiveOrders);
-                    Log.d(TAG, "(setActiveOrdersListener) Current articles: " + appActiveOrders);
+                    checkStageOfActiveOrders();
+                    Log.d(TAG, "(setActiveOrdersListener) Current orders: " + appActiveOrders);
                 });
     } // setActiveOrdersListener
+
+    private void checkStageOfActiveOrders() {
+        for (Order order : appActiveOrders) {
+            if (order.getOpravljeno() == 3)
+                sendOrderToHistory(order);
+            if (orderPickupPassed(order))
+                sendOrderToHistory(order);
+        }
+    } // checkStageOfActiveOrders
+
+    @SuppressLint("SimpleDateFormat")
+    private boolean orderPickupPassed(Order order) {
+//        if (todayDate.after(historyDate))
+        try {
+            Date dateOfPickup = new SimpleDateFormat("E dd-MM-yyyy HH:mm").parse(order.getDatum_prevzema());
+            Date todayDate = new Date();
+            if (todayDate.after(dateOfPickup))
+                //TODO preveč točno!!!
+                return true;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    private void sendOrderToHistory(Order order) {
+        if (appUser.isLastnik_kmetije()) { // We have a farmer:
+            db.collection("Kmetije").document(currentUser.getUid())
+                    .collection("Aktivna Naročila").document(order.getId_order()).delete();
+            db.collection("Kmetije").document(currentUser.getUid())
+                    .collection("Zgodovina Naročil").document(order.getId_order()).set(order);
+        } else { // We have a buyer:
+            db.collection("Uporabniki").document(currentUser.getUid())
+                    .collection("Aktivna Naročila").document(order.getId_order()).delete();
+            db.collection("Uporabniki").document(currentUser.getUid())
+                    .collection("Zgodovina Naročil").document(order.getId_order()).set(order);
+        }
+    } // sendOrderToHistory
+
+    public void setOrderHistoryListener() {
+        CollectionReference colRef;
+        if (appUser.isLastnik_kmetije()) { // We have a farmer:
+            colRef = FirebaseFirestore.getInstance().collection("Kmetije").document(currentUser.getUid())
+                    .collection("Zgodovina Naročil");
+        } else // We have a buyer:
+            colRef = FirebaseFirestore.getInstance().collection("Uporabniki").document(currentUser.getUid())
+                    .collection("Zgodovina Naročil");
+        orderHistoryListener = colRef
+                .addSnapshotListener((value, e) -> {
+                    if (e != null) {
+                        Log.w(TAG, "(setActiveOrdersListener) Listen failed.", e);
+                        return;
+                    }
+                    appOrderHistory = new ArrayList<>();
+                    for (QueryDocumentSnapshot doc : Objects.requireNonNull(value)) {
+                        appOrderHistory.add(doc.toObject(Order.class));
+                    }
+                    Collections.reverse(appOrderHistory);
+                });
+    } // setOrderHistoryListener
 
     private void getUserData() { // Get user data only once and open relative fragments (for onCreate)
         DocumentReference docRef = db.collection("Uporabniki").document(currentUser.getUid());

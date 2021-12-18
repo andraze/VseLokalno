@@ -274,8 +274,6 @@ public class OrderingFragment extends Fragment implements OrderRecyclerAdapter.O
     @SuppressLint("SimpleDateFormat")
     private void setDateOfPickup() {
         Date date = new Date();
-        String temp = new SimpleDateFormat("E dd-MM-yyyy HH:mm").format(date);
-        makeLogD(TAG, temp);
         appBasket.get(farmNumber).setDatum_narocila(new SimpleDateFormat("E dd-MM-yyyy HH:mm").format(date));
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);

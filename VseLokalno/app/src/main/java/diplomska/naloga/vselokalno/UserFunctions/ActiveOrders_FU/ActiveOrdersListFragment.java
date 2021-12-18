@@ -1,7 +1,6 @@
 package diplomska.naloga.vselokalno.UserFunctions.ActiveOrders_FU;
 
 import static diplomska.naloga.vselokalno.MainActivity.appActiveOrders;
-import static diplomska.naloga.vselokalno.MainActivity.makeLogD;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,8 +13,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
-import java.util.ArrayList;
 
 import diplomska.naloga.vselokalno.DataObjects.Order;
 import diplomska.naloga.vselokalno.R;
@@ -55,11 +52,8 @@ public class ActiveOrdersListFragment extends Fragment implements ActiveOrdersRe
         activeOrdersRecyclerView.setAdapter(adapter);
         activeOrdersRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         pullToRefresh = rootView.findViewById(R.id.swipe_refresh_layout_activeOrderListFragment);
-        pullToRefresh.setOnRefreshListener(() -> {
-            makeLogD(TAG, "Data refreshing started ...");
-            makeLogD(TAG, "(onCompleteRefresh) Data refreshing complete!");
-            refreshData(); // Refreshing data...
-        });
+        // Refreshing data...
+        pullToRefresh.setOnRefreshListener(this::refreshData);
         return rootView;
     } // onCreateView
 

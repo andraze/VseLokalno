@@ -109,7 +109,7 @@ public class ActiveOrderDetailsFragment extends Fragment {
                     .setTitle("Preklic naročila");
             // Add the buttons
             builder.setPositiveButton("Da", (dialog, id) -> {
-                updateOrderFun(3); // 3 == order is canceled.
+                cancelOrder(); // 3 == order is canceled.
             });
             builder.setNegativeButton("Ne", (dialog, id) -> dialog.cancel());
             AlertDialog dialog = builder.create();
@@ -135,7 +135,7 @@ public class ActiveOrderDetailsFragment extends Fragment {
                 // Add the buttons
                 builder.setPositiveButton("Da", (dialog, id) -> {
                     // User clicked OK button
-                    updateOrderFun(2); // 2 == order is approved.
+                    acceptOrder(); // 2 == order is approved.
                 });
                 builder.setNegativeButton("Ne", (dialog, id) -> dialog.cancel());
                 AlertDialog dialog = builder.create();
@@ -145,9 +145,9 @@ public class ActiveOrderDetailsFragment extends Fragment {
         return rootView;
     }
 
-    private void updateOrderFun(int newStatus) {
+    private void acceptOrder() {
         // Preparation:
-        mCurrentOrder.setOpravljeno(newStatus);
+        mCurrentOrder.setOpravljeno(2);
         MyPostRequestSender myPostRequestSender = new MyPostRequestSender(requireContext());
         String status_message = String.valueOf(mCurrentOrder.getOpravljeno());
         String idTo;
@@ -167,6 +167,40 @@ public class ActiveOrderDetailsFragment extends Fragment {
         // Farmer update:
         db.collection("Kmetije").document(mCurrentOrder.getId_kmetije())
                 .collection("Aktivna Naročila").document(mCurrentOrder.getId_order())
+                .set(mCurrentOrder);
+        // Start callback:
+        mUpdateSpecificOrder.onUpdateOrderCallback();
+        getParentFragmentManager().popBackStack();
+    } // acceptOrder
+
+    private void cancelOrder() {
+        // Preparation:
+        mCurrentOrder.setOpravljeno(3);
+        MyPostRequestSender myPostRequestSender = new MyPostRequestSender(requireContext());
+        String status_message = String.valueOf(mCurrentOrder.getOpravljeno());
+        String idTo;
+        if (appUser.isLastnik_kmetije())
+            idTo = mCurrentOrder.getId_kupca();
+        else
+            idTo = mCurrentOrder.getId_kmetije();
+        try {
+            myPostRequestSender.sendRequest(mCurrentOrder.getId_order(), idTo, status_message);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        // Buyer update:
+        db.collection("Uporabniki").document(mCurrentOrder.getId_kupca())
+                .collection("Aktivna Naročila").document(mCurrentOrder.getId_order())
+                .delete();
+        db.collection("Uporabniki").document(mCurrentOrder.getId_kupca())
+                .collection("Zgodovina Naročil").document(mCurrentOrder.getId_order())
+                .set(mCurrentOrder);
+        // Farmer update:
+        db.collection("Kmetije").document(mCurrentOrder.getId_kmetije())
+                .collection("Aktivna Naročila").document(mCurrentOrder.getId_order())
+                .delete();
+        db.collection("Kmetije").document(mCurrentOrder.getId_kmetije())
+                .collection("Zgodovina Naročil").document(mCurrentOrder.getId_order())
                 .set(mCurrentOrder);
         // Start callback:
         mUpdateSpecificOrder.onUpdateOrderCallback();

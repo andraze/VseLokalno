@@ -26,6 +26,8 @@ import diplomska.naloga.vselokalno.DataObjects.GlideApp;
 import diplomska.naloga.vselokalno.R;
 import diplomska.naloga.vselokalno.UserFunctions.ActiveOrders_FU.ActiveOrdersListFragment;
 import diplomska.naloga.vselokalno.UserFunctions.Basket_U.BasketFragment;
+import diplomska.naloga.vselokalno.UserFunctions.OrderHistory_FU.OrderHistoryListFragment;
+import diplomska.naloga.vselokalno.UserFunctions.OrderHistory_FU.SpecificOrder.OrderHistoryDetailsFragment;
 import diplomska.naloga.vselokalno.UserFunctions.StockList_F.Category.CategoryListFragment;
 
 
@@ -146,7 +148,13 @@ public class UserFunctionsFragment extends Fragment {
         zgodovinaLinearLayout = rootView.findViewById(R.id.zgodovina_userFunctionsFragment);
         zgodovinaLinearLayout.setOnClickListener(l -> {
             bottomNavigation.setVisibility(View.GONE);
-            // TODO: open history of orders
+            OrderHistoryListFragment orderHistoryListFragment= OrderHistoryListFragment.newInstance();
+            FragmentManager fragmentManager = getParentFragmentManager();
+            fragmentManager.beginTransaction()
+                    .setCustomAnimations(R.anim.fade_in, R.anim.fade_out, R.anim.fade_in, R.anim.fade_out)
+                    .replace(R.id.main_fragment_container, orderHistoryListFragment)
+                    .addToBackStack(null)
+                    .commit();
         });
         return rootView;
     } // onCreateView

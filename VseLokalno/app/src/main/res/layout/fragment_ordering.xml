@@ -1,35 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".UserFunctions.Basket_U.BuyingOrder.OrderingFragment"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".UserFunctions.Basket_U.BuyingOrder.OrderingFragment">
 
     <LinearLayout
-        android:layout_margin="@dimen/dp_8"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_8"
         android:orientation="horizontal">
 
         <TextView
             android:id="@+id/farm_name_tv_OrderingFragment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-            android:textColor="@color/blue_normal" />
+            android:fontFamily="@font/roboto_regular_family"
+            android:textColor="@color/blue_normal"
+            android:textSize="@dimen/sp_22" />
 
         <View
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:layout_weight="1"/>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/cancel_order_fab_OrderingFragment"
-            android:layout_gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_margin="@dimen/dp_4"
             android:contentDescription="@string/zavrzi_artikel"
             android:src="@drawable/ic_clear"
@@ -38,9 +39,9 @@
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/continue_roder_fab_OrderingFragment"
-            android:layout_gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_margin="@dimen/dp_4"
             android:contentDescription="@string/shrani_artikel"
             android:src="@drawable/ic_check"
@@ -52,15 +53,15 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_4"
         android:background="@color/blue_normal_low" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:layout_height="wrap_content"
         android:id="@+id/recycler_view_date_OrderingFragment"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_margin="@dimen/dp_4" />
 
@@ -68,8 +69,8 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginEnd="@dimen/dp_16"
         android:background="@color/blue_normal_low" />
 
     <androidx.appcompat.widget.LinearLayoutCompat
@@ -84,11 +85,13 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_margin="@dimen/dp_4"
+            android:layout_weight="1"
             android:backgroundTint="@color/disabled_btn_gray"
+            android:fontFamily="@font/roboto_regular_family"
             android:stateListAnimator="@null"
             android:text="@string/_07_00_08_00"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textColor="@color/blue_normal" />
+            android:textColor="@color/blue_normal"
+            android:textSize="@dimen/sp_18" />
 
         <View
             android:layout_width="0dp"
@@ -100,11 +103,13 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_margin="@dimen/dp_4"
+            android:layout_weight="1"
             android:backgroundTint="@color/disabled_btn_gray"
+            android:fontFamily="@font/roboto_regular_family"
             android:stateListAnimator="@null"
             android:text="@string/_08_00_09_00"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textColor="@color/blue_normal" />
+            android:textColor="@color/blue_normal"
+            android:textSize="@dimen/sp_18" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -127,11 +132,13 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_margin="@dimen/dp_4"
+            android:layout_weight="1"
             android:backgroundTint="@color/disabled_btn_gray"
+            android:fontFamily="@font/roboto_regular_family"
             android:stateListAnimator="@null"
             android:text="@string/_09_00_10_00"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textColor="@color/blue_normal" />
+            android:textColor="@color/blue_normal"
+            android:textSize="@dimen/sp_18" />
 
         <View
             android:layout_width="0dp"
@@ -143,11 +150,13 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_margin="@dimen/dp_4"
+            android:layout_weight="1"
             android:backgroundTint="@color/disabled_btn_gray"
+            android:fontFamily="@font/roboto_regular_family"
             android:stateListAnimator="@null"
             android:text="@string/_10_00_11_00"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textColor="@color/blue_normal" />
+            android:textColor="@color/blue_normal"
+            android:textSize="@dimen/sp_18" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -170,11 +179,13 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_margin="@dimen/dp_4"
+            android:layout_weight="1"
             android:backgroundTint="@color/disabled_btn_gray"
+            android:fontFamily="@font/roboto_regular_family"
             android:stateListAnimator="@null"
             android:text="@string/_11_00_12_00"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textColor="@color/blue_normal" />
+            android:textColor="@color/blue_normal"
+            android:textSize="@dimen/sp_18" />
 
         <View
             android:layout_width="0dp"
@@ -186,11 +197,13 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_margin="@dimen/dp_4"
+            android:layout_weight="1"
             android:backgroundTint="@color/disabled_btn_gray"
+            android:fontFamily="@font/roboto_regular_family"
             android:stateListAnimator="@null"
             android:text="@string/_12_00_13_00"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textColor="@color/blue_normal" />
+            android:textColor="@color/blue_normal"
+            android:textSize="@dimen/sp_18" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -213,11 +226,13 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_margin="@dimen/dp_4"
+            android:layout_weight="1"
             android:backgroundTint="@color/disabled_btn_gray"
+            android:fontFamily="@font/roboto_regular_family"
             android:stateListAnimator="@null"
             android:text="@string/_13_00_14_00"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textColor="@color/blue_normal" />
+            android:textColor="@color/blue_normal"
+            android:textSize="@dimen/sp_18" />
 
         <View
             android:layout_width="0dp"
@@ -229,11 +244,13 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_margin="@dimen/dp_4"
+            android:layout_weight="1"
             android:backgroundTint="@color/disabled_btn_gray"
+            android:fontFamily="@font/roboto_regular_family"
             android:stateListAnimator="@null"
             android:text="@string/_14_00_15_00"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textColor="@color/blue_normal" />
+            android:textColor="@color/blue_normal"
+            android:textSize="@dimen/sp_18" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -256,11 +273,13 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_margin="@dimen/dp_4"
+            android:layout_weight="1"
             android:backgroundTint="@color/disabled_btn_gray"
+            android:fontFamily="@font/roboto_regular_family"
             android:stateListAnimator="@null"
             android:text="@string/_15_00_16_00"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textColor="@color/blue_normal" />
+            android:textColor="@color/blue_normal"
+            android:textSize="@dimen/sp_18" />
 
         <View
             android:layout_width="0dp"
@@ -272,11 +291,13 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_margin="@dimen/dp_4"
+            android:layout_weight="1"
             android:backgroundTint="@color/disabled_btn_gray"
+            android:fontFamily="@font/roboto_regular_family"
             android:stateListAnimator="@null"
             android:text="@string/_16_00_17_00"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textColor="@color/blue_normal" />
+            android:textColor="@color/blue_normal"
+            android:textSize="@dimen/sp_18" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -299,11 +320,13 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_margin="@dimen/dp_4"
+            android:layout_weight="1"
             android:backgroundTint="@color/disabled_btn_gray"
+            android:fontFamily="@font/roboto_regular_family"
             android:stateListAnimator="@null"
             android:text="@string/_17_00_18_00"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textColor="@color/blue_normal" />
+            android:textColor="@color/blue_normal"
+            android:textSize="@dimen/sp_18" />
 
         <View
             android:layout_width="0dp"
@@ -315,11 +338,13 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_margin="@dimen/dp_4"
+            android:layout_weight="1"
             android:backgroundTint="@color/disabled_btn_gray"
+            android:fontFamily="@font/roboto_regular_family"
             android:stateListAnimator="@null"
             android:text="@string/_18_00_19_00"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textColor="@color/blue_normal" />
+            android:textColor="@color/blue_normal"
+            android:textSize="@dimen/sp_18" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -342,11 +367,13 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_margin="@dimen/dp_4"
+            android:layout_weight="1"
             android:backgroundTint="@color/disabled_btn_gray"
+            android:fontFamily="@font/roboto_regular_family"
             android:stateListAnimator="@null"
             android:text="@string/_19_00_20_00"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textColor="@color/blue_normal" />
+            android:textColor="@color/blue_normal"
+            android:textSize="@dimen/sp_18" />
 
         <View
             android:layout_width="0dp"
@@ -358,11 +385,13 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_margin="@dimen/dp_4"
+            android:layout_weight="1"
             android:backgroundTint="@color/disabled_btn_gray"
+            android:fontFamily="@font/roboto_regular_family"
             android:stateListAnimator="@null"
             android:text="@string/_20_00_21_00"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textColor="@color/blue_normal" />
+            android:textColor="@color/blue_normal"
+            android:textSize="@dimen/sp_18" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 

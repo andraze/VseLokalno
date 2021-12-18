@@ -91,6 +91,8 @@
         <entry key="app/src/main/res/layout/fragment_list.xml" value="0.3108728943338438" />
         <entry key="app/src/main/res/layout/fragment_map.xml" value="0.46510416666666665" />
         <entry key="app/src/main/res/layout/fragment_new_category.xml" value="0.3072916666666667" />
+        <entry key="app/src/main/res/layout/fragment_order_history_details.xml" value="0.2609375" />
+        <entry key="app/src/main/res/layout/fragment_order_history_list.xml" value="0.2609375" />
         <entry key="app/src/main/res/layout/fragment_ordering.xml" value="0.259375" />
         <entry key="app/src/main/res/layout/fragment_show_farm_descripton.xml" value="0.1375" />
         <entry key="app/src/main/res/layout/fragment_user_email.xml" value="0.3328125" />
@@ -101,6 +103,7 @@
         <entry key="app/src/main/res/layout/list_article_item_farm_view.xml" value="0.375" />
         <entry key="app/src/main/res/layout/list_category_item.xml" value="0.3891687657430731" />
         <entry key="app/src/main/res/layout/list_farm_item.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/list_order_history_item.xml" value="0.2609375" />
         <entry key="app/src/main/res/layout/list_specific_farm_item.xml" value="0.25" />
         <entry key="app/src/main/res/layout/order_item.xml" value="0.3328125" />
         <entry key="app/src/main/res/menu/menu_bottom.xml" value="0.3802083333333333" />
