@@ -1,67 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_margin="@dimen/dp_8"
-    tools:context=".UserFunctions.ArticleList_F.ArticleListFragment"
+    android:orientation="vertical"
+    tools:context=".UserFunctions.StockList_F.Article.ArticleListFragment"
     tools:ignore="ContentDescription">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:background="@color/green_light"
+        android:orientation="horizontal">
 
-
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:layout_width="match_parent"
+        <ImageButton
+            android:id="@+id/backBtn_fragmentArticleList"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/dp_8"
-            android:orientation="horizontal">
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_16"
+            android:background="@color/green_light"
+            android:src="@drawable/ic_arrow_back_white" />
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_seznam" />
+        <TextView
+            android:id="@+id/category_name_fragmentArticleList"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_16"
+            android:layout_weight="1"
+            android:fontFamily="@font/roboto_regular_family"
+            android:gravity="center"
+            android:textAllCaps="true"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_22" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:text="@string/artikli"
-                android:textAlignment="center"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-                android:textColor="@color/blue_normal" />
-
-        </androidx.appcompat.widget.LinearLayoutCompat>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_margin="@dimen/dp_8"
-            android:background="@color/blue_normal_low" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view_articleListFragment"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginLeft="@dimen/dp_4"
-            android:layout_marginRight="@dimen/dp_4"
-            android:layout_weight="1" />
+        <ImageButton
+            android:id="@+id/editCategoryBtn_fragmentArticleList"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_16"
+            android:background="@color/green_light"
+            android:src="@drawable/ic_edit" />
 
     </LinearLayout>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/add_article_fab"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view_articleListFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_8"
+        android:layout_weight="1" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/add_article"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_8"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_margin="@dimen/dp_16"
-        app:fabCustomSize="50dp"
-        android:src="@drawable/ic_plus" />
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/dp_8"
+        android:background="@drawable/round_button_background"
+        android:fontFamily="@font/roboto_medium_family"
+        android:text="@string/nov_artikel"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sp_18" />
 
-</RelativeLayout>
+</LinearLayout>

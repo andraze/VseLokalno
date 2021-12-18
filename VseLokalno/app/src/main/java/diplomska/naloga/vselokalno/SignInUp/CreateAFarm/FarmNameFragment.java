@@ -62,14 +62,14 @@ public class FarmNameFragment extends Fragment {
                 return;
             }
             farmData.setIme_kmetije(Objects.requireNonNull(nameET.getText()).toString());
-            FarmDescriptionFragment farmDescriptionFragment = FarmDescriptionFragment.newInstance();
+            FarmLocationFragment farmLocationFragment = FarmLocationFragment.newInstance();
             FragmentManager fragmentManager = getParentFragmentManager();
             fragmentManager.beginTransaction()
                     .setCustomAnimations(
                             R.anim.enter_from_right, R.anim.exit_to_left,
                             R.anim.enter_from_left, R.anim.exit_to_right
                     )
-                    .replace(R.id.fragment_container_view_signINUP, farmDescriptionFragment)
+                    .replace(R.id.fragment_container_view_signINUP, farmLocationFragment)
                     .addToBackStack(null)
                     .commit();
         });

@@ -13,16 +13,16 @@ import androidx.fragment.app.FragmentManager;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.ismaeldivita.chipnavigation.ChipNavigationBar;
-
-import org.json.JSONException;
 
 import java.lang.reflect.Type;
 import java.text.ParseException;
@@ -33,13 +33,16 @@ import java.util.Map;
 import java.util.Objects;
 
 import diplomska.naloga.vselokalno.DataObjects.AllFarms;
+import diplomska.naloga.vselokalno.DataObjects.Article;
+import diplomska.naloga.vselokalno.DataObjects.Category;
 import diplomska.naloga.vselokalno.DataObjects.Farm;
-import diplomska.naloga.vselokalno.DataObjects.Narocilo.ZaKupca;
+import diplomska.naloga.vselokalno.DataObjects.Order;
 import diplomska.naloga.vselokalno.DataObjects.User;
 import diplomska.naloga.vselokalno.FarmLookup.List.ListFragment;
 import diplomska.naloga.vselokalno.FarmLookup.Map.MapFragment;
+import diplomska.naloga.vselokalno.ImageCrop.ImageCropper;
+import diplomska.naloga.vselokalno.OrderNotifications.MyPostRequestSender;
 import diplomska.naloga.vselokalno.SignInUp.SignInUpActivity;
-import diplomska.naloga.vselokalno.UserFunctions.ActiveOrders_FU.ActiveOrdersListFragment;
 import diplomska.naloga.vselokalno.UserFunctions.UserFunctionsFragment;
 
 
@@ -56,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
     public static User appUser;
     //    users farm:
     public static Farm appFarm;
+    // Active orders:
+    public static ArrayList<Order> appActiveOrders;
     //    Firestore:
     public FirebaseFirestore db;
     //    Firebase storage:
@@ -70,14 +75,17 @@ public class MainActivity extends AppCompatActivity {
     private MapFragment mapFragment;
     private ListFragment listFragment;
     private UserFunctionsFragment userFunctionsFragment;
-    private String GoToFragment;
+    //    private String GoToFragment;
     public static final String[] allTimes = {"07:00", "08:00", "09:00", "10:00", "11:00", "12:00", "13:00",
             "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00"};
     public static final int[] timeIDs = {R.id.time_7_8, R.id.time_8_9, R.id.time_9_10, R.id.time_10_11, R.id.time_11_12, R.id.time_12_13, R.id.time_13_14,
             R.id.time_14_15, R.id.time_15_16, R.id.time_16_17, R.id.time_17_18, R.id.time_18_19, R.id.time_19_20, R.id.time_20_21};
     public static ArrayList<Map<String, String>> allFarmsDataShort;
     // Orders for buyer:
-    public static ArrayList<ZaKupca> appBasket;
+    public static ArrayList<Order> appBasket;
+    // Articles and category for farm:
+    public static ArrayList<Article> appArticles;
+    public static ArrayList<Category> appCategories;
     // Shared preferences file:
     private static final String sharedPrefFile = "app_basket_shared_preferences_filename";
     static SharedPreferences mySharedPreferences;
@@ -85,15 +93,20 @@ public class MainActivity extends AppCompatActivity {
     // Translate day names:
     public static final String[] dayNamesEng = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
     public static final String[] dayNamesSlo = {"Pon", "Tor", "Sre", "Čet", "Pet", "Sob", "Ned"};
-    ListenerRegistration userDataListener = null;
-    ListenerRegistration farmDataListener = null;
+    ListenerRegistration activeOrdersListener = null;
+    ListenerRegistration farmArticlesListener = null;
+    ListenerRegistration farmCategoriesListener = null;
+    // For image cropping:
+    public static ImageCropper appImageCropper;
 
     @SuppressLint("NonConstantResourceId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        GoToFragment = getIntent().getStringExtra("OpenFragment");
+        // Set the apps image cropper:
+        appImageCropper = new ImageCropper(this, this);
+//        GoToFragment = getIntent().getStringExtra("OpenFragment");
         // Initialise the shared preferences:
         mySharedPreferences = getSharedPreferences(sharedPrefFile, MODE_PRIVATE);
         // Initialise the firebase authentication:
@@ -111,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
         appUser = new User();
         appFarm = new Farm();
         appBasket = new ArrayList<>();
+        appArticles = new ArrayList<>();
         // Use the bottom navigation:
         bottomNavigation = findViewById(R.id.bottom_nav);
         bottomNavigation.setItemSelected(R.id.map_menu, true);
@@ -146,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         saveAppBasket();
-        stopDataListeners();
+        stopActiveOrdersListeners();
     }
 
     @Override
@@ -154,7 +168,7 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         loadAppBasket();
         if (currentUser != null)
-            startDataListeners();
+            startActiveOrdersListeners();
     }
 
     private void updateUI(FirebaseUser currentUser) {
@@ -168,61 +182,53 @@ public class MainActivity extends AppCompatActivity {
         } else {
             // Refresh user data and navigate to relative fragments.
             getUserData();
-            startDataListeners();
         }
     } // updateUI
 
-    public void startDataListeners() {
-        if (userDataListener == null)
-            setUserDataListener();
-        else if (appUser != null && appUser.isLastnik_kmetije() && farmDataListener == null)
-            setFarmDataListener();
-    } // setDataListener
-
-    public void stopDataListeners() {
-        if (userDataListener != null) {
-            userDataListener.remove();
-            userDataListener = null;
+    public void startActiveOrdersListeners() {
+        if (appUser != null && !appUser.getIme_uporabnika().equals("") && activeOrdersListener == null && !userID.isEmpty()) {
+            setActiveOrdersListener(appUser.isLastnik_kmetije());
         }
-        if (farmDataListener != null) {
-            farmDataListener.remove();
-            farmDataListener = null;
+    } // startActiveOrdersListeners
+
+    public void stopActiveOrdersListeners() {
+        if (activeOrdersListener != null) {
+            activeOrdersListener.remove();
+            activeOrdersListener = null;
+        }
+        if (farmArticlesListener != null) {
+            farmArticlesListener.remove();
+            farmArticlesListener = null;
+        }
+        if (farmCategoriesListener != null) {
+            farmCategoriesListener.remove();
+            farmCategoriesListener = null;
         }
     }
 
-    public void setUserDataListener() {
-        DocumentReference docRef = FirebaseFirestore.getInstance().collection("Uporabniki").document(currentUser.getUid());
-        userDataListener = docRef.addSnapshotListener((snapshot, e) -> {
+    public void setActiveOrdersListener(boolean isFarmer) {
+        CollectionReference colRef;
+        if (isFarmer) { // We have a farmer:
+            colRef = FirebaseFirestore.getInstance().collection("Kmetije").document(currentUser.getUid())
+                    .collection("Aktivna Naročila");
+            setFarmAppArticlesListener();
+            setFarmAppCategoriesListener();
+        } else // We have a buyer:
+            colRef = FirebaseFirestore.getInstance().collection("Uporabniki").document(currentUser.getUid())
+                    .collection("Aktivna Naročila");
+        activeOrdersListener = colRef
+                .addSnapshotListener((value, e) -> {
             if (e != null) {
-                Log.w(TAG, "(setUserDataListener) Listen failed.", e);
+                Log.w(TAG, "(setActiveOrdersListener) Listen failed.", e);
                 return;
             }
-            if (snapshot != null && snapshot.exists()) {
-                appUser = snapshot.toObject(User.class);
-                makeLogD(TAG, "(setUserDataListener) success, got user:\n" + Objects.requireNonNull(appUser).toString());
-                if (appUser.isLastnik_kmetije() && farmDataListener == null)
-                    setFarmDataListener();
-            } else {
-                makeLogD(TAG, "Current data: null");
+            appActiveOrders = new ArrayList<>();
+            for (QueryDocumentSnapshot doc : Objects.requireNonNull(value)) {
+                appActiveOrders.add(doc.toObject(Order.class));
             }
+            Log.d(TAG, "(setActiveOrdersListener) Current articles: " + appActiveOrders);
         });
-    } // setUserDataListener
-
-    public void setFarmDataListener() {
-        DocumentReference docRef = FirebaseFirestore.getInstance().collection("Kmetije").document(currentUser.getUid());
-        farmDataListener = docRef.addSnapshotListener((snapshot, e) -> {
-            if (e != null) {
-                Log.w(TAG, "(setFarmDataListener) Listen failed.", e);
-                return;
-            }
-            if (snapshot != null && snapshot.exists()) {
-                appFarm = snapshot.toObject(Farm.class);
-                makeLogD(TAG, "(setFarmDataListener) success, got farm:\n" + Objects.requireNonNull(appFarm).toString());
-            } else {
-                makeLogW(TAG, "(setFarmDataListener) Farm came back NULL!");
-            }
-        });
-    } // setFarmDataListener
+    } // setActiveOrdersListener
 
     private void getUserData() { // Get user data only once and open relative fragments (for onCreate)
         DocumentReference docRef = db.collection("Uporabniki").document(currentUser.getUid());
@@ -230,9 +236,11 @@ public class MainActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> makeLogW(TAG, "(getUserData) ERROR getting document user.\n" + e.getMessage()))
                 .addOnSuccessListener(documentSnapshot -> {
                     appUser = documentSnapshot.toObject(User.class);
+                    startActiveOrdersListeners();
                     if (appUser != null) {
                         userID = currentUser.getUid();
                         makeLogD(TAG, "(getUserData) success, got user:\n" + appUser.toString());
+                        startActiveOrdersListeners();
                         if (appUser.isLastnik_kmetije())
                             getUserFarm();
                         else {
@@ -259,6 +267,40 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
     } // getUserFarm
+
+    private void setFarmAppArticlesListener() {
+        farmArticlesListener = FirebaseFirestore.getInstance()
+                .collection("Kmetije").document(userID)
+                .collection("Artikli")
+                .addSnapshotListener((value, e) -> {
+                    if (e != null) {
+                        Log.w(TAG, "(setFarmAppArticlesListener) Listen failed.", e);
+                        return;
+                    }
+                    appArticles = new ArrayList<>();
+                    for (QueryDocumentSnapshot doc : Objects.requireNonNull(value)) {
+                        appArticles.add(doc.toObject(Article.class));
+                    }
+                    Log.d(TAG, "(setFarmAppArticlesListener) Current articles: " + appArticles);
+                });
+    } // setFarmAppArticlesListener
+
+    private void setFarmAppCategoriesListener() {
+        farmCategoriesListener = FirebaseFirestore.getInstance()
+                .collection("Kmetije").document(userID)
+                .collection("Kategorije")
+                .addSnapshotListener((value, e) -> {
+                    if (e != null) {
+                        Log.w(TAG, "(setFarmAppCategoriesListener) Listen failed.", e);
+                        return;
+                    }
+                    appCategories = new ArrayList<>();
+                    for (QueryDocumentSnapshot doc : Objects.requireNonNull(value)) {
+                        appCategories.add(doc.toObject(Category.class));
+                    }
+                    Log.d(TAG, "(setFarmAppCategoriesListener) Current articles: " + appCategories);
+                });
+    } // setFarmAppCategoriesListener
 
     @SuppressLint("NonConstantResourceId")
     private void getAllFarmData() {
@@ -346,7 +388,7 @@ public class MainActivity extends AppCompatActivity {
         String jsonAppBasketTemp = mySharedPreferences.getString(mAppBasketSharedPrefKey, "");
         if (!jsonAppBasketTemp.isEmpty()) {
             Gson gson = new Gson();
-            Type type = new TypeToken<ArrayList<ZaKupca>>() {
+            Type type = new TypeToken<ArrayList<Order>>() {
             }.getType();
             appBasket = gson.fromJson(jsonAppBasketTemp, type);
         }
@@ -372,4 +414,5 @@ public class MainActivity extends AppCompatActivity {
         }
         return "";
     } // getFullDateSlo
+
 }

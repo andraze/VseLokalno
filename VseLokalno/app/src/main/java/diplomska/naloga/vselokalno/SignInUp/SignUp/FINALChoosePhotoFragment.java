@@ -1,19 +1,26 @@
 package diplomska.naloga.vselokalno.SignInUp.SignUp;
 
+import static android.app.Activity.RESULT_OK;
+import static diplomska.naloga.vselokalno.MainActivity.makeLogD;
+import static diplomska.naloga.vselokalno.MainActivity.makeLogW;
+import static diplomska.naloga.vselokalno.SignInUp.SignInUpActivity.signInUpImageCropper;
+import static diplomska.naloga.vselokalno.SignInUp.SignInUpActivity.userData;
+
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatImageView;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -24,16 +31,14 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.File;
+
 import diplomska.naloga.vselokalno.DataObjects.User;
+import diplomska.naloga.vselokalno.ImageCrop.ImageCropper;
 import diplomska.naloga.vselokalno.MainActivity;
 import diplomska.naloga.vselokalno.R;
 
-import static android.app.Activity.RESULT_OK;
-import static diplomska.naloga.vselokalno.MainActivity.makeLogD;
-import static diplomska.naloga.vselokalno.MainActivity.makeLogW;
-import static diplomska.naloga.vselokalno.SignInUp.SignInUpActivity.userData;
-
-public class FINALChoosePhotoFragment extends Fragment {
+public class FINALChoosePhotoFragment extends Fragment implements ImageCropper.ImageCroppedCallbackListener {
 
     //    Views
     AppCompatImageView imageView;
@@ -120,8 +125,9 @@ public class FINALChoosePhotoFragment extends Fragment {
             FirebaseStorage storage = FirebaseStorage.getInstance();
 //            Create a storage reference from the app
             StorageReference storageRef = storage.getReference();
-            StorageReference imagesRef = storageRef.child("Uporabniške profilke/" + user.getUid());
-            UploadTask uploadTask = imagesRef.putFile(imageURI);
+            StorageReference imagesRef = storageRef.child("Profile Images/" + user.getUid());
+            Uri file = Uri.fromFile(new File(String.valueOf(imageURI)));
+            UploadTask uploadTask = imagesRef.putFile(file);
 //            Register observers to listen for when the download is done or if it fails
             uploadTask.addOnFailureListener(exception -> {
 //                Handle unsuccessful uploads
@@ -162,9 +168,18 @@ public class FINALChoosePhotoFragment extends Fragment {
         if (resultCode == RESULT_OK && requestCode == PICK_IMAGE) {
             if (data != null) {
                 imageURI = data.getData();
-                imageView.setImageURI(imageURI);
-                photo_changed = true;
+                makeLogD(TAG, "My uri" + imageURI.toString());
+                signInUpImageCropper.startCrop(imageURI, this);
             } else makeLogW(TAG, "(onActivityResult) data == null!");
         }
     } // onActivityResult
+
+    @Override
+    public void onImageCroppedCallback(@NonNull String path) {
+        makeLogD(TAG, path);
+        imageURI = Uri.parse(new File(path).toString());
+        imageView.setImageURI(imageURI);
+        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        photo_changed = true;
+    } // onImageCroppedCallback
 }

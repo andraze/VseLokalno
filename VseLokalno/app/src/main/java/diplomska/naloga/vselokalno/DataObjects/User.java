@@ -6,20 +6,11 @@ import com.google.gson.Gson;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-
-import diplomska.naloga.vselokalno.DataObjects.Narocilo.SkupnoNarocilo;
-import diplomska.naloga.vselokalno.DataObjects.Narocilo.ZaKmetijo;
-import diplomska.naloga.vselokalno.DataObjects.Narocilo.ZaKupca;
-
-import static diplomska.naloga.vselokalno.SignInUp.SignInUpActivity.userData;
-
 /**
  * public String email
  * public String ime_uporabnika
  * public String priimek_uporabnika
  * public boolean lastnik_kmetije ... {true == kmetovalec; false == kupec}
- * public ArrayList<ZaKupca> aktivnaNaročila ... TODO: Vsebuje vsa aktivna naročila
  * private String password
  */
 public class User {
@@ -35,7 +26,6 @@ public class User {
     public String ime_uporabnika;
     public String priimek_uporabnika;
     public boolean lastnik_kmetije;
-    public ArrayList<ZaKupca> aktivnaNarocila;
     private String password;
     boolean use_default_pic;
 
@@ -45,7 +35,6 @@ public class User {
         this.priimek_uporabnika = "";
         this.password = "";
         this.lastnik_kmetije = false;
-        this.aktivnaNarocila = new ArrayList<>();
         this.use_default_pic = true;
     }
 
@@ -95,21 +84,5 @@ public class User {
 
     public void setLastnik_kmetije(boolean lastnik_kmetije) {
         this.lastnik_kmetije = lastnik_kmetije;
-    }
-
-    public ArrayList<ZaKupca> getAktivnaNarocila() {
-        return aktivnaNarocila;
-    }
-
-    public void setAktivnaNarocila(ArrayList<ZaKupca> narocila) {
-        this.aktivnaNarocila = narocila;
-    }
-
-    public void addAktivnaNarocila(ZaKupca narocilo) {
-        this.aktivnaNarocila.add(narocilo);
-    }
-
-    public void removeAktivnaNarocila(ZaKupca narocilo) {
-        this.aktivnaNarocila.remove(narocilo);
     }
 }

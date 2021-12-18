@@ -2,24 +2,16 @@ package diplomska.naloga.vselokalno.FarmLookup.List;
 
 import static diplomska.naloga.vselokalno.MainActivity.allFarmsDataShort;
 import static diplomska.naloga.vselokalno.MainActivity.makeLogD;
-import static diplomska.naloga.vselokalno.MainActivity.makeLogI;
 import static diplomska.naloga.vselokalno.MainActivity.makeLogW;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.transition.TransitionInflater;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.google.firebase.storage.StorageReference;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.Map;
 
@@ -28,7 +20,6 @@ import diplomska.naloga.vselokalno.R;
 
 public class ListFragment extends Fragment implements RecyclerAdapter.ItemClickListener {
 
-    public static RecyclerAdapter.ItemClickListener mItemClickListener;
     private final String TAG = "ListFragment";
 
     public ListFragment() {
@@ -50,12 +41,11 @@ public class ListFragment extends Fragment implements RecyclerAdapter.ItemClickL
         // Inflate the layout for this fragment
 //        makeLogI(TAG, "(onCreateView) Working!");
         View rootView = inflater.inflate(R.layout.fragment_list, container, false);
-        mItemClickListener = this;
         RecyclerView mRecyclerView = rootView.findViewById(R.id.recycler_view);
         if (mRecyclerView != null) {
             // Initialize the adapter and set it to the RecyclerView.
             RecyclerAdapter mAdapter = new RecyclerAdapter(requireContext(), allFarmsDataShort,
-                    requireActivity().getSupportFragmentManager(), mItemClickListener);
+                    requireActivity().getSupportFragmentManager(), this);
             mRecyclerView.setAdapter(mAdapter);
             mRecyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 2));
             makeLogD(TAG, "(OnCreateView) recycler adapter ready.");
@@ -66,9 +56,9 @@ public class ListFragment extends Fragment implements RecyclerAdapter.ItemClickL
     } // onCreateView
 
     @Override
-    public void onItemClick(int position, Map<String, String> farm, TextView textView, ImageView imageView, StorageReference imageRef) {
+    public void onItemClick(int position, Map<String, String> farm) {
         makeLogD(TAG, "Farm: " + farm.toString());
-        final FarmDetailsFragment detailFragment = FarmDetailsFragment.newInstance(farm.get("id_kmetije"));
+        final FarmDetailsFragment detailFragment = FarmDetailsFragment.newInstance(farm);
         if (getFragmentManager() != null) {
             getFragmentManager()
                     .beginTransaction()

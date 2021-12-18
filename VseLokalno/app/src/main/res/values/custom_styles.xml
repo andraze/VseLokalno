@@ -13,9 +13,23 @@
         <item name="cornerSizeTopRight">10dp</item>
     </style>
 
+    <style name="ExtraRoundedSquare">
+        <item name="cornerSizeBottomLeft">20dp</item>
+        <item name="cornerSizeBottomRight">20dp</item>
+        <item name="cornerSizeTopLeft">20dp</item>
+        <item name="cornerSizeTopRight">20dp</item>
+    </style>
+
     <style name="RatingBar" parent="Theme.AppCompat">
         <item name="colorControlNormal">@color/blue_normal</item>
         <item name="colorControlActivated">@color/red_normal</item>
+    </style>
+
+    <style name="FullCircle">
+        <item name="cornerSizeBottomLeft">100dp</item>
+        <item name="cornerSizeBottomRight">100dp</item>
+        <item name="cornerSizeTopLeft">100dp</item>
+        <item name="cornerSizeTopRight">100dp</item>
     </style>
 
 </resources>

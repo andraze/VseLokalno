@@ -3,7 +3,6 @@ package diplomska.naloga.vselokalno.UserFunctions.Basket_U;
 import static diplomska.naloga.vselokalno.MainActivity.appBasket;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,59 +13,36 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.bumptech.glide.Glide;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
 
-import diplomska.naloga.vselokalno.DataObjects.Narocilo.ZaKupca;
-import diplomska.naloga.vselokalno.FarmLookup.List.GlideApp;
+import diplomska.naloga.vselokalno.DataObjects.Article;
+import diplomska.naloga.vselokalno.DataObjects.GlideApp;
+import diplomska.naloga.vselokalno.DataObjects.Order;
 import diplomska.naloga.vselokalno.R;
 
 public class BasketRecyclerAdapter extends RecyclerView.Adapter<BasketRecyclerAdapter.ViewHolder> {
 
-    public interface RemoveItemFromBasketInterface {
-        void removeItemFromBasketFun(int position);
-    }
-
-    public interface BasketArticleClickListener {
-        void onBasketItemClickListener(Map<String, String> article, int position);
+    public interface BasketArticleClickCallback {
+        void onBasketItemClickListener(Article article, int position);
     }
 
     private final String TAG = "BasketRecyclerAdapter";
     LayoutInflater mInflater;
     Context mContext;
-    ArrayList<Map<String, String>> mArticles;
-    RemoveItemFromBasketInterface removeItemFromBasketInterface;
-    BasketArticleClickListener mBasketArticleClickListener;
+    ArrayList<Article> mAllOrderedArticles;
+    BasketArticleClickCallback mBasketArticleClickCallback;
 
-    public BasketRecyclerAdapter(Context tempContext, RemoveItemFromBasketInterface removeItemListener, BasketArticleClickListener basketArticleClickListener) {
+    public BasketRecyclerAdapter(Context tempContext, BasketArticleClickCallback basketArticleClickCallback) {
         this.mContext = tempContext;
         this.mInflater = LayoutInflater.from(this.mContext);
-        this.removeItemFromBasketInterface = removeItemListener;
-        this.mBasketArticleClickListener = basketArticleClickListener;
-        mArticles = new ArrayList<>();
-        for (ZaKupca el : appBasket) {
-            Map<String, String> numOfUnitsMap = el.getNarocilo_kolicine();
-            Map<String, String> imagePaths = el.getNarocilo_slike();
-            Map<String, String> unitMap = el.getNarocilo_enote();
-            Map<String, String> storageMap = el.getNarocilo_zaloge();
-            Map<String, String> priceMap = el.getNarocilo_cene();
-            for (Map.Entry<String, String> entry : el.getNarocilo_imena().entrySet()) {
-                Map<String, String> newArticle = new HashMap<>();
-                newArticle.put("ime", entry.getValue());
-                newArticle.put("kolicina", numOfUnitsMap.get(entry.getKey()));
-                newArticle.put("cena", priceMap.get(entry.getKey()));
-                newArticle.put("slika", imagePaths.get(entry.getKey()));
-                newArticle.put("enota", unitMap.get(entry.getKey()));
-                newArticle.put("zaloga", storageMap.get(entry.getKey()));
-                newArticle.put("id", entry.getKey());
-                mArticles.add(newArticle);
-            }
+        this.mBasketArticleClickCallback = basketArticleClickCallback;
+        mAllOrderedArticles = new ArrayList<>();
+        for (Order order : appBasket) {
+            mAllOrderedArticles.addAll(order.getOrdered_articles());
         }
     }
 
@@ -86,63 +62,34 @@ public class BasketRecyclerAdapter extends RecyclerView.Adapter<BasketRecyclerAd
         return new BasketRecyclerAdapter.ViewHolder(mInflater.inflate(R.layout.basket_item, parent, false));
     } // onCreateViewHolder
 
-    @SuppressLint("UseCompatLoadingForDrawables")
+    @SuppressLint({"UseCompatLoadingForDrawables", "DefaultLocale"})
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         // Populate views with content:
-        Map<String, String> currentArticle = mArticles.get(position);
-        StorageReference imageRef = FirebaseStorage.getInstance().getReference()
-                .child(Objects.requireNonNull(currentArticle.get("slika")));
-        GlideApp.with(mContext).load(imageRef).into(holder.mArticleImage);
-        holder.mArticleAmount_Unit.setText(String.format("%s%s", currentArticle.get("kolicina"), currentArticle.get("enota")));
-        String totalPriceofArticle = String.valueOf(Double.parseDouble(Objects.requireNonNull(currentArticle.get("cena"))) * Double.parseDouble(Objects.requireNonNull(currentArticle.get("kolicina"))));
-        holder.mArticleCost.setText(String.format("%s€", totalPriceofArticle));
-        holder.mArticleName.setText(currentArticle.get("ime"));
-        holder.mRemoveArticle.setOnClickListener(v -> { // Delete one item:
-            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-            builder.setMessage("Ste prepričani, da želite izbrisati artikel:\n" + currentArticle.get("ime"))
-                    .setTitle("Izbris artikla");
-            builder.setPositiveButton("Ja", (dialog, id) -> {
-                // User clicked OK button:
-                for (int i = 0; i < appBasket.size(); i++) {
-                    ZaKupca el = appBasket.get(i);
-                    for (Map.Entry<String, String> entry : el.getNarocilo_imena().entrySet()) {
-                        if (entry.getKey().equals(currentArticle.get("id"))) { // This entry.key() article needs to be deleted:
-                            appBasket.get(i).removeNarocilo_slike(currentArticle.get("id"));
-                            appBasket.get(i).removeNarocilo_cene(currentArticle.get("id"));
-                            appBasket.get(i).removeNarocilo_enote(currentArticle.get("id"));
-                            appBasket.get(i).removeNarocilo_kolicine(currentArticle.get("id"));
-                            appBasket.get(i).removeNarocilo_zaloge(currentArticle.get("id"));
-                            appBasket.get(i).removeNarocilo_imena(currentArticle.get("id"));
-                            break;
-                        }
-                    }
-                }
-                mArticles.remove(position);
-                removeItemFromBasketInterface.removeItemFromBasketFun(position);
-            });
-            builder.setNegativeButton("ne", (dialog, id) -> {
-                // User cancelled the dialog:
-                dialog.cancel();
-            });
-            AlertDialog dialog = builder.create();
-            dialog.show();
-        });
-        double kolicinaTemp = Double.parseDouble(Objects.requireNonNull(currentArticle.get("kolicina")));
-        double zalogaTemp = Double.parseDouble(Objects.requireNonNull(currentArticle.get("zaloga")));
+        Article currentArticle = mAllOrderedArticles.get(position);
+        if (currentArticle.isPicture()) {
+            StorageReference imageRef = FirebaseStorage.getInstance().getReference()
+                    .child("Article Images/" + currentArticle.getArticle_id());
+            GlideApp.with(mContext).load(imageRef).into(holder.mArticleImage);
+        } else {
+            holder.mArticleImage.setVisibility(View.GONE);
+        }
+        holder.mArticleAmount.setText(String.format("%.2f", currentArticle.getArticle_buying_amount()));
+        holder.mArticleUnit.setText(currentArticle.getArticle_unit());
+        holder.mArticleCost.setText(String.format("%.2f", currentArticle.getArticle_price() * currentArticle.getArticle_buying_amount()));
+        holder.mArticleName.setText(currentArticle.getArticle_name());
+        double kolicinaTemp = currentArticle.getArticle_buying_amount();
+        double zalogaTemp = currentArticle.getArticle_storage();
         if (zalogaTemp >= 0 && zalogaTemp < kolicinaTemp) {
             holder.itemView.setBackground(mContext.getResources().getDrawable(R.drawable.error_background_border));
-//            holder.itemView.setBackgroundColor(mContext.getResources().getColor(R.color.red_light));
-        } else
-            holder.itemView.setBackgroundResource(0);
-//            holder.itemView.setBackgroundColor(mContext.getResources().getColor(R.color.white));
+        } // TODO: check if works
         // Edit specific article:
-        holder.itemView.setOnClickListener(v -> mBasketArticleClickListener.onBasketItemClickListener(currentArticle, position));
+        holder.itemView.setOnClickListener(v -> mBasketArticleClickCallback.onBasketItemClickListener(currentArticle, position));
     } // onBindViewHolder
 
     @Override
     public int getItemCount() {
-        return mArticles.size();
+        return mAllOrderedArticles.size();
     } // getITemCount
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -150,8 +97,8 @@ public class BasketRecyclerAdapter extends RecyclerView.Adapter<BasketRecyclerAd
         private final TextView mArticleName;
         private final ImageView mArticleImage;
         private final TextView mArticleCost;
-        private final TextView mArticleAmount_Unit;
-        private final FloatingActionButton mRemoveArticle;
+        private final TextView mArticleAmount;
+        private final TextView mArticleUnit;
 
         /**
          * Constructor for the ViewHolder, used in onCreateViewHolder().
@@ -161,11 +108,11 @@ public class BasketRecyclerAdapter extends RecyclerView.Adapter<BasketRecyclerAd
         public ViewHolder(View itemView) {
             super(itemView);
             // Initialize the views:
-            mRemoveArticle = itemView.findViewById(R.id.remove_article_basketItem);
-            mArticleImage = itemView.findViewById(R.id.slika_artikla_basketItem);
-            mArticleName = itemView.findViewById(R.id.ime_artikel_basketItem);
-            mArticleCost = itemView.findViewById(R.id.cena_artikel_basketItem);
-            mArticleAmount_Unit = itemView.findViewById(R.id.kolicina_enota_artikel_basketItem);
+            mArticleImage = itemView.findViewById(R.id.slika_artikla);
+            mArticleName = itemView.findViewById(R.id.ime_artikel);
+            mArticleCost = itemView.findViewById(R.id.cena_artikel);
+            mArticleAmount = itemView.findViewById(R.id.kolicina_artikel);
+            mArticleUnit = itemView.findViewById(R.id.enota_artikel);
         } // ViewHolder
 
     } // ViewHolder

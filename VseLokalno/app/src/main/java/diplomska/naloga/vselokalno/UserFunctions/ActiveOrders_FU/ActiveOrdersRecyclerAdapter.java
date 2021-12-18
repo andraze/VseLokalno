@@ -1,5 +1,7 @@
 package diplomska.naloga.vselokalno.UserFunctions.ActiveOrders_FU;
 
+import static diplomska.naloga.vselokalno.MainActivity.appActiveOrders;
+import static diplomska.naloga.vselokalno.MainActivity.appUser;
 import static diplomska.naloga.vselokalno.MainActivity.getFullDateSlo;
 
 import android.annotation.SuppressLint;
@@ -21,36 +23,27 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
 
-import diplomska.naloga.vselokalno.DataObjects.Farm;
-import diplomska.naloga.vselokalno.DataObjects.Narocilo.ZaKmetijo;
-import diplomska.naloga.vselokalno.DataObjects.Narocilo.ZaKupca;
-import diplomska.naloga.vselokalno.DataObjects.User;
-import diplomska.naloga.vselokalno.FarmLookup.List.GlideApp;
+import diplomska.naloga.vselokalno.DataObjects.GlideApp;
+import diplomska.naloga.vselokalno.DataObjects.Order;
 import diplomska.naloga.vselokalno.R;
 
 public class ActiveOrdersRecyclerAdapter extends RecyclerView.Adapter<ActiveOrdersRecyclerAdapter.ViewHolder> {
 
     public interface ActiveOrdersAdapterCallback {
+
+        void onSpecificOrderClickCallback(Order order);
+
         void onFinishCallback();
     }
 
     Context mContext;
     LayoutInflater mInflater;
-    Farm farmOfInterest;
-    User userOfInterest;
-    ActiveOrdersAdapterCallback mListener;
+    ActiveOrdersAdapterCallback mActiveOrdersAdapterCallback;
 
-    public ActiveOrdersRecyclerAdapter(Context context, Object obj, ActiveOrdersAdapterCallback listener) {
+    public ActiveOrdersRecyclerAdapter(Context context, ActiveOrdersAdapterCallback activeOrdersAdapterCallback) {
         mInflater = LayoutInflater.from(context);
         this.mContext = context;
-        this.mListener = listener;
-        if (obj instanceof User) {
-            userOfInterest = (User) obj;
-            farmOfInterest = null;
-        } else {
-            userOfInterest = null;
-            farmOfInterest = (Farm) obj;
-        }
+        this.mActiveOrdersAdapterCallback = activeOrdersAdapterCallback;
         setHasStableIds(true);
     }
 
@@ -64,51 +57,40 @@ public class ActiveOrdersRecyclerAdapter extends RecyclerView.Adapter<ActiveOrde
     @SuppressLint({"SimpleDateFormat", "UseCompatLoadingForDrawables"})
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        if (userOfInterest != null) { // We have a user:
-            ZaKupca currentOrder = userOfInterest.getAktivnaNarocila().get(position);
+        Order currentOrder = appActiveOrders.get(position);
+        holder.dateOrder_tv.setText(getFullDateSlo(currentOrder.getDatum_narocila()));
+        holder.datePickup_tv.setText(getFullDateSlo(currentOrder.getDatum_prevzema()));
+        showStatus(currentOrder.getOpravljeno(), holder, currentOrder.getDatum_prevzema());
+        StorageReference profileImageRef;
+        if (!appUser.isLastnik_kmetije()) { // We have a user:
             holder.name_tv.setText(currentOrder.getIme_kmetije());
-            holder.dateOrder_tv.setText(getFullDateSlo(currentOrder.getDatum_narocila()));
-            holder.datePickup_tv.setText(getFullDateSlo(currentOrder.getDatum_dostave()));
-            StorageReference imageRef = FirebaseStorage.getInstance().getReference()
-                    .child("Uporabniške profilke/" + currentOrder.getId_kmetije());
-            GlideApp.with(mContext).load(imageRef).error(R.drawable.default_profile_picture).into(holder.profileImage);
-            showStatus(currentOrder.getOpravljeno(), holder, currentOrder.getDatum_dostave());
-            if (position == userOfInterest.getAktivnaNarocila().size()-1)
-                mListener.onFinishCallback();
+            profileImageRef = FirebaseStorage.getInstance().getReference()
+                    .child("Profile Images/" + currentOrder.getId_kmetije());
         } else { // We have a farm:
-            ZaKmetijo currentOrder = farmOfInterest.getAktivnaNarocila().get(position);
-            holder.name_tv.setText(currentOrder.getIme_narocnika());
-            holder.dateOrder_tv.setText(getFullDateSlo(currentOrder.getDatum_narocila()));
-            holder.datePickup_tv.setText(getFullDateSlo(currentOrder.getDatum_dostave()));
-            StorageReference imageRef = FirebaseStorage.getInstance().getReference()
-                    .child("Uporabniške profilke/" + currentOrder.getId_narocnika());
-            GlideApp.with(mContext).load(imageRef).error(R.drawable.default_profile_picture).into(holder.profileImage);
-            showStatus(currentOrder.getOpravljeno(), holder, currentOrder.getDatum_dostave());
-            if (position == farmOfInterest.getAktivnaNarocila().size()-1)
-                mListener.onFinishCallback();
+            holder.name_tv.setText(currentOrder.getIme_priimek_kupca());
+            profileImageRef = FirebaseStorage.getInstance().getReference()
+                    .child("Profile Images/" + currentOrder.getId_kupca());
         }
-        holder.entireView.setOnClickListener(v -> {
-            // TODO: expand on the order.
-        });
+        GlideApp.with(mContext).load(profileImageRef)
+                .error(mContext.getResources().getDrawable(R.drawable.default_profile_picture))
+                .into(holder.profileImage);
+        if (position == appActiveOrders.size() - 1)
+            mActiveOrdersAdapterCallback.onFinishCallback();
+        // Specific order click listener:
+        holder.entireView.setOnClickListener(v -> mActiveOrdersAdapterCallback.onSpecificOrderClickCallback(currentOrder));
     }
 
     @SuppressLint({"UseCompatLoadingForDrawables", "SimpleDateFormat"})
     public void showStatus(int index, ViewHolder holderTemp, String datumDostave) {
         switch (index) {
             case 0: // In process and there is still enough time, eg: more than 1 day (white).
-                holderTemp.warningImage.setVisibility(View.GONE);
-                holderTemp.errorImage.setVisibility(View.GONE);
-                holderTemp.infoImage.setVisibility(View.GONE);
                 break;
             case 1: // There is something wrong, probably only 1 day left and not yet processed (yellow).
                 holderTemp.warningImage.setVisibility(View.VISIBLE);
-                holderTemp.errorImage.setVisibility(View.GONE);
-                holderTemp.infoImage.setVisibility(View.GONE);
                 holderTemp.entireView.setBackground(mContext.getResources().getDrawable(R.drawable.warning_background_border));
                 break;
             case 2: // The order is processed and is on schedule (green) / today (blue).
-                holderTemp.warningImage.setVisibility(View.GONE);
-                holderTemp.errorImage.setVisibility(View.GONE);
+                holderTemp.confirmedImage.setVisibility(View.VISIBLE);
                 try {
                     Date datePickup = new SimpleDateFormat("E dd-MM-yyyy HH:mm").parse(datumDostave);
                     Date dateToday = new Date();
@@ -125,8 +107,6 @@ public class ActiveOrdersRecyclerAdapter extends RecyclerView.Adapter<ActiveOrde
                 }
                 break;
             case 3: // There is an issue and the order was canceled (red).
-                holderTemp.warningImage.setVisibility(View.GONE);
-                holderTemp.infoImage.setVisibility(View.GONE);
                 holderTemp.errorImage.setVisibility(View.VISIBLE);
                 holderTemp.entireView.setBackground(mContext.getResources().getDrawable(R.drawable.error_background_border));
                 break;
@@ -135,10 +115,10 @@ public class ActiveOrdersRecyclerAdapter extends RecyclerView.Adapter<ActiveOrde
 
     @Override
     public int getItemCount() {
-        if (userOfInterest != null)
-            return userOfInterest.getAktivnaNarocila().size();
-        else
-            return farmOfInterest.getAktivnaNarocila().size();
+        int size = appActiveOrders.size();
+        if (size == 0)
+            mActiveOrdersAdapterCallback.onFinishCallback();
+        return size;
     }
 
     @Override
@@ -161,6 +141,7 @@ public class ActiveOrdersRecyclerAdapter extends RecyclerView.Adapter<ActiveOrde
         ShapeableImageView warningImage;
         ShapeableImageView errorImage;
         ShapeableImageView infoImage;
+        ShapeableImageView confirmedImage;
         View entireView;
 
         /**
@@ -178,6 +159,7 @@ public class ActiveOrdersRecyclerAdapter extends RecyclerView.Adapter<ActiveOrde
             warningImage = itemView.findViewById(R.id.image_warning_listActiveOrdersItem);
             errorImage = itemView.findViewById(R.id.image_error_listActiveOrdersItem);
             infoImage = itemView.findViewById(R.id.image_info_listActiveOrdersItem);
+            confirmedImage = itemView.findViewById(R.id.image_confirmed_listActiveOrdersItem);
             entireView = itemView;
         } // ViewHolder
     }

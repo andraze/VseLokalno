@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -53,7 +52,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="Poštna številka."
+            android:hint="@string/postna_stevilka"
             android:inputType="number"
             android:textColorHint="@color/blue_light" />
 
@@ -62,57 +61,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:hint="Vnesite kraj."
+            android:hint="@string/vnesite_kraj"
             android:inputType="textPostalAddress"
             android:textColorHint="@color/blue_light" />
 
     </LinearLayout>
 
-
-    <androidx.appcompat.widget.AppCompatEditText
-        android:id="@+id/pickup_et_farmLocationFragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/lin1"
-        android:hint="@string/vnesite_naslov_za_dvig"
-        android:inputType="textPostalAddress"
-        android:textColorHint="@color/blue_light"
-        android:visibility="gone" />
-
-
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/pickup_et_farmLocationFragment"
-        android:layout_margin="@dimen/dp_4"
-        android:text="@string/farm_creator_explain"
+        android:layout_below="@id/lin1"
+        android:layout_marginStart="@dimen/dp_4"
+        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginEnd="@dimen/dp_4"
+        android:layout_marginBottom="@dimen/dp_4"
+        android:text="@string/farm_creator_explain_address"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textColor="@color/blue_light" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/next_btn_farmLocation"
-        android:orientation="horizontal">
-
-        <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/farmLocationSwitch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checked="true"
-            app:thumbTint="@color/green_light" />
-
-        <TextView
-            android:id="@+id/TV_switch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="@dimen/dp_4"
-            android:text="@string/lokacija_za_dvig_je_na_kmetiji"
-            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="@color/blue_light" />
-
-    </LinearLayout>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/next_btn_farmLocation"

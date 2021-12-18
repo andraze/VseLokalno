@@ -3,19 +3,18 @@ package diplomska.naloga.vselokalno.UserFunctions;
 import static diplomska.naloga.vselokalno.MainActivity.appFarm;
 import static diplomska.naloga.vselokalno.MainActivity.appUser;
 import static diplomska.naloga.vselokalno.MainActivity.bottomNavigation;
-import static diplomska.naloga.vselokalno.MainActivity.makeLogD;
 import static diplomska.naloga.vselokalno.MainActivity.userID;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
-
-import androidx.appcompat.widget.LinearLayoutCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.appcompat.widget.LinearLayoutCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -23,11 +22,11 @@ import com.google.firebase.storage.StorageReference;
 import java.text.MessageFormat;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import diplomska.naloga.vselokalno.FarmLookup.List.GlideApp;
+import diplomska.naloga.vselokalno.DataObjects.GlideApp;
 import diplomska.naloga.vselokalno.R;
 import diplomska.naloga.vselokalno.UserFunctions.ActiveOrders_FU.ActiveOrdersListFragment;
-import diplomska.naloga.vselokalno.UserFunctions.ArticleList_F.ArticleListFragment;
 import diplomska.naloga.vselokalno.UserFunctions.Basket_U.BasketFragment;
+import diplomska.naloga.vselokalno.UserFunctions.StockList_F.Category.CategoryListFragment;
 
 
 public class UserFunctionsFragment extends Fragment {
@@ -38,7 +37,7 @@ public class UserFunctionsFragment extends Fragment {
     LinearLayoutCompat zeljeLinearLayout;
     LinearLayoutCompat zgodovinaLinearLayout;
     // Fragment:
-    ArticleListFragment articleListFragment;
+    CategoryListFragment categoryListFragment;
     private final String TAG = "UserFunctionsFragment";
 
 
@@ -62,6 +61,7 @@ public class UserFunctionsFragment extends Fragment {
         super.onResume();
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -76,30 +76,42 @@ public class UserFunctionsFragment extends Fragment {
         name.setText(nameToSet);
         TextView email = rootView.findViewById(R.id.email_text_view_userFunctionsFragment);
         email.setText(appUser.getEmail());
-        if (!appUser.isUse_default_pic()) {
-            // Go to firebase storage only if they uploaded a picture:
-            CircleImageView profilePic = rootView.findViewById(R.id.profile_image_view_userFunctionsFragment);
-            StorageReference imageRef = FirebaseStorage.getInstance().getReference()
-                    .child("Uporabniške profilke/" + userID);
-            GlideApp.with(requireContext()).load(imageRef).into(profilePic);
-        }
+        // Go to firebase storage only if they uploaded a picture:
+        CircleImageView profilePic = rootView.findViewById(R.id.profile_image_view_userFunctionsFragment);
+        StorageReference imageRef = FirebaseStorage.getInstance().getReference()
+                .child("Profile Images/" + userID);
+        GlideApp.with(requireContext()).load(imageRef)
+//                .addListener(new RequestListener<Drawable>() {
+//                    @Override
+//                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+//                        makeLogW(TAG, "Error loading image resource.");
+//                        return false;
+//                    }
+//
+//                    @Override
+//                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+//                        return false;
+//                    }
+//                })
+                .error(getResources().getDrawable(R.drawable.default_profile_picture))
+                .into(profilePic);
         if (appUser.isLastnik_kmetije()) {
             // Change some text if farm owner:
             TextView kosaricaVNarocila = rootView.findViewById(R.id.tv_kosarica_userFunctions);
             kosaricaVNarocila.setText(R.string.artikli);
-//            TextView seznamVArtikli = rootView.findViewById(R.id.tv_seznam_userFunctions);
-//            seznamVArtikli.setText(R.string.narocila);
+//            TextView seznamVArtikli = rootView.findsetText(R.string.narocilaViewById(R.id.tv_seznam_userFunctions);
+//            seznamVArtikli.);
         }
         // Košarica / artikli:
         kosarica_narocilaLinearLayout = rootView.findViewById(R.id.narocilo_kosarica_userFunctionsFragment);
         kosarica_narocilaLinearLayout.setOnClickListener(l -> {
             bottomNavigation.setVisibility(View.GONE);
             if (appUser.isLastnik_kmetije()) { // ?
-                articleListFragment = ArticleListFragment.newInstance();
+                categoryListFragment = CategoryListFragment.newInstance();
                 FragmentManager fragmentManager = getParentFragmentManager();
                 fragmentManager.beginTransaction()
                         .setCustomAnimations(R.anim.fade_in, R.anim.fade_out, R.anim.fade_in, R.anim.fade_out)
-                        .replace(R.id.main_fragment_container, articleListFragment)
+                        .replace(R.id.main_fragment_container, categoryListFragment)
                         .addToBackStack(null)
                         .commit();
             } else {

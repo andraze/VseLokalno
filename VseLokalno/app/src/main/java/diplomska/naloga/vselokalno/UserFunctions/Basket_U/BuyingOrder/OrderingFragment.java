@@ -1,6 +1,7 @@
 package diplomska.naloga.vselokalno.UserFunctions.Basket_U.BuyingOrder;
 
 import static diplomska.naloga.vselokalno.MainActivity.allTimes;
+import static diplomska.naloga.vselokalno.MainActivity.appActiveOrders;
 import static diplomska.naloga.vselokalno.MainActivity.appBasket;
 import static diplomska.naloga.vselokalno.MainActivity.appUser;
 import static diplomska.naloga.vselokalno.MainActivity.makeLogD;
@@ -28,12 +29,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Map;
 import java.util.Objects;
 
+import diplomska.naloga.vselokalno.DataObjects.Article;
 import diplomska.naloga.vselokalno.DataObjects.Farm;
-import diplomska.naloga.vselokalno.DataObjects.Narocilo.ZaKmetijo;
-import diplomska.naloga.vselokalno.DataObjects.Narocilo.ZaKupca;
+import diplomska.naloga.vselokalno.DataObjects.Order;
 import diplomska.naloga.vselokalno.R;
 
 public class OrderingFragment extends Fragment implements OrderRecyclerAdapter.OrderSelectDateListener {
@@ -122,19 +122,18 @@ public class OrderingFragment extends Fragment implements OrderRecyclerAdapter.O
         }
         farmNameView = rootView.findViewById(R.id.farm_name_tv_OrderingFragment);
         farmNameView.setText(appBasket.get(farmNumber).getIme_kmetije());
-        rootView.findViewById(R.id.cancel_order_fab_OrderingFragment).setOnClickListener(v -> requireActivity().getSupportFragmentManager().popBackStack("ProceedToBuying", FragmentManager.POP_BACK_STACK_INCLUSIVE));
+        rootView.findViewById(R.id.cancel_order_fab_OrderingFragment).setOnClickListener(v -> getParentFragmentManager().popBackStack("ProceedToBuying", FragmentManager.POP_BACK_STACK_INCLUSIVE));
         rootView.findViewById(R.id.continue_roder_fab_OrderingFragment).setOnClickListener(v -> {
             if (indexDaySelected == -1) {
                 Toast.makeText(requireContext(), "Najprej izberite možen dan dostave.", Toast.LENGTH_SHORT).show();
             } else if (indexTimeSelected == -1) {
                 Toast.makeText(requireContext(), "Najprej izberite možno uro dostave.", Toast.LENGTH_SHORT).show();
             } else {
-                if (checkStorageCurrentStorage()) {
+                // TODO: check they really want to order this!
+                if (checkCurrentStorage()) {
                     setDateOfPickup();
+                    finishOrder(farmNumber);
                     if (farmNumber + 1 == appBasket.size()) {
-                        for (int i = 0; i < appBasket.size(); i++) {
-                            finishOrder(i);
-                        }
                         appBasket.clear();
                         getParentFragmentManager().popBackStack("ProceedToBuying", FragmentManager.POP_BACK_STACK_INCLUSIVE);
                     } else {
@@ -143,7 +142,6 @@ public class OrderingFragment extends Fragment implements OrderRecyclerAdapter.O
                         fragmentManager.beginTransaction()
                                 .setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
                                 .replace(R.id.main_fragment_container, orderingFragment)
-                                .addToBackStack(null)
                                 .commit();
                     }
                 } else {
@@ -162,93 +160,83 @@ public class OrderingFragment extends Fragment implements OrderRecyclerAdapter.O
                 availableDaysRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
             }
         });
+        updateArticles(farmNumber, 0);
+        makeLogD(TAG, "Started updating articles!");
         return rootView;
     }
 
-    private boolean checkStorageCurrentStorage() {
-        boolean returnValue = true;
-        ZaKupca order = appBasket.get(farmNumber);
-        ArrayList<Map<String, String>> articles = farmOfInterest.getArtikli();
-        for (Map.Entry<String, String> kolicine : order.getNarocilo_kolicine().entrySet()) {
-            boolean doesnt_exist_anymore = true;
-            for (Map<String, String> oneArticle : articles) {
-                if (kolicine.getKey().equals(oneArticle.get("id_artikel"))) {
-                    doesnt_exist_anymore = false;
-                    order.addNarocilo_zaloge(kolicine.getKey(), oneArticle.get("zaloga_artikel"));
-                    double zalogaTemp = Double.parseDouble(Objects.requireNonNull(oneArticle.get("zaloga_artikel")));
-                    double kolicinaTemp = Double.parseDouble(kolicine.getValue());
-                    if (zalogaTemp >= 0 && zalogaTemp < kolicinaTemp) {
-                        returnValue = false;
-                    }
-                    break;
-                }
-            }
-            if (doesnt_exist_anymore) {
-                order.addNarocilo_zaloge(kolicine.getKey(), "0");
-                returnValue = false;
-            }
+    void updateArticles(int orderIndexTemp, int articleIndexTemp) {
+        if (orderIndexTemp == appBasket.size()) {
+            makeLogW(TAG, "Shouldn't arrive here!");
+            return;
         }
-        return returnValue;
-    }
+        Order order = appBasket.get(orderIndexTemp);
+        if (articleIndexTemp == order.getOrdered_articles().size()) {
+            makeLogD(TAG, "Stoped updating articles!");
+            return;
+        }
+        Article article = order.getOrdered_articles().get(articleIndexTemp);
+        db.collection("Kmetije").document(order.getId_kmetije())
+                .collection("Artikli").document(article.getArticle_id())
+                .get().addOnSuccessListener(documentSnapshot -> {
+            Article a = documentSnapshot.toObject(Article.class);
+            if (a != null) {
+                a.setArticle_buying_amount(article.getArticle_buying_amount());
+                appBasket.get(orderIndexTemp).getOrdered_articles().set(articleIndexTemp, a);
+            } else {
+                // Article doesn't exist anymore:
+                article.setArticle_storage(0.0);
+                appBasket.get(orderIndexTemp).getOrdered_articles().set(articleIndexTemp, article);
+            }
+        });
+        updateArticles(orderIndexTemp, articleIndexTemp + 1);
+    } // updateArticles
+
+    private boolean checkCurrentStorage() {
+        Order order = appBasket.get(farmNumber);
+        for (Article article : order.getOrdered_articles()) {
+            if (article.getArticle_storage() < article.getArticle_buying_amount())
+                return false;
+        }
+        return true;
+    } // checkCurrentStorage
 
     private void finishOrder(int index) {
-        ZaKupca narociloZaKupca = appBasket.get(index);
-        ZaKmetijo narociloZaKmetijo = new ZaKmetijo();
-        narociloZaKmetijo.setDatum_narocila(narociloZaKupca.getDatum_narocila());
-        narociloZaKmetijo.setDatum_dostave(narociloZaKupca.getDatum_dostave());
-        narociloZaKmetijo.setId_narocnika(userID);
-        narociloZaKmetijo.setIme_narocnika(appUser.getIme_uporabnika() + " " + appUser.getPriimek_uporabnika());
-        narociloZaKmetijo.setNarocilo_cene(narociloZaKupca.getNarocilo_cene());
-        narociloZaKmetijo.setNarocilo_enote(narociloZaKupca.getNarocilo_enote());
-        narociloZaKmetijo.setNarocilo_kolicine(narociloZaKupca.getNarocilo_kolicine());
-        narociloZaKmetijo.setNarocilo_slike(narociloZaKupca.getNarocilo_slike());
-        narociloZaKmetijo.setNarocilo_zaloge(narociloZaKupca.getNarocilo_zaloge());
-        narociloZaKmetijo.setNaslov_dostave(narociloZaKupca.getNaslov_dostave());
-        narociloZaKmetijo.setNarocilo_imena(narociloZaKupca.getNarocilo_imena());
-        narociloZaKmetijo.setOpravljeno(0);
-        narociloZaKupca.setOpravljeno(0);
-//        db.collection("Uporabniki").document(userID).collection("Naročila").document(narociloZaKupca.getPovezavo(userID)).
-//                set(narociloZaKupca).addOnCompleteListener(task -> {
-//            if (task.isSuccessful()) {
-//                makeLogD(TAG, "(finishOrder) user order created!");
-//            } else {
-//                makeLogW(TAG, "(finishOrder) " + task.getException());
-//            }
-//        });
-//        db.collection("Kmetije").document(narociloZaKupca.getId_kmetije()).collection("Naročila").document(narociloZaKmetijo.getPovezavo(narociloZaKupca.getId_kmetije())).
-//                set(narociloZaKmetijo).addOnCompleteListener(task -> {
-//            if (task.isSuccessful()) {
-//                makeLogD(TAG, "(finishOrder) farm order created!");
-//            } else {
-//                makeLogW(TAG, "(finishOrder) " + task.getException());
-//            }
-//        });
-        syncArticlesInFarm(index);
-        farmOfInterest.addAktivnaNarocila(narociloZaKmetijo);
-        db.collection("Kmetije").document(narociloZaKupca.getId_kmetije()).
-                set(farmOfInterest).addOnCompleteListener(task -> {
+        Order order = appBasket.get(index);
+        order.setId_kupca(userID);
+        order.setIme_priimek_kupca(appUser.getIme_uporabnika() + " " + appUser.getPriimek_uporabnika());
+        order.setOpravljeno(0);
 
-        });
-        appUser.addAktivnaNarocila(narociloZaKupca);
+        syncArticlesInFarm(index, 0);
+
+        if (appActiveOrders == null)
+            appActiveOrders = new ArrayList<>();
+        String uniqueString = String.valueOf(System.currentTimeMillis());
+        String orderID = userID + "#" + order.getId_kmetije() + "#" + uniqueString;
+        order.setId_order(orderID);
+        db.collection("Kmetije").document(order.getId_kmetije())
+                .collection("Aktivna Naročila").document(orderID)
+                .set(order)
+                .addOnCompleteListener(farmTask -> makeLogD(TAG, farmTask.toString()));
+        // Add active order for buyer:
         db.collection("Uporabniki").document(userID)
-                .set(appUser);
-    }
+                .collection("Aktivna Naročila").document(orderID)
+                .set(order)
+                .addOnCompleteListener(buyerTask -> makeLogD(TAG, buyerTask.toString()));
+    } // finishOrder
 
-    private void syncArticlesInFarm(int index) {
-        ZaKupca zaKupca = appBasket.get(index);
-        ArrayList<Map<String, String>> farmArticles = farmOfInterest.getArtikli();
-        Map<String, String> zaloge = zaKupca.getNarocilo_zaloge();
-        for (Map.Entry<String, String> kolicine : zaKupca.getNarocilo_kolicine().entrySet()) {
-            for (Map<String, String> oneArticle : farmArticles) {
-                if (kolicine.getKey().equals(oneArticle.get("id_artikel"))) {
-                    oneArticle.put("zaloga_artikel",
-                            String.valueOf(Double.parseDouble(Objects.requireNonNull(zaloge.get(kolicine.getKey()))) - Double.parseDouble(kolicine.getValue())));
-                    break;
-                }
-            }
-        }
-        farmOfInterest.setArtikli(farmArticles);
-    }
+    private void syncArticlesInFarm(int orderIndex, int articleIndex) {
+        Order order = appBasket.get(orderIndex);
+        if (articleIndex == order.getOrdered_articles().size())
+            return;
+        Article article = order.getOrdered_articles().get(articleIndex).makeCopy();
+        article.setArticle_storage(article.getArticle_storage() - article.getArticle_buying_amount());
+        article.setArticle_buying_amount(0.0);
+        db.collection("Kmetije").document(article.getFarm_id())
+                .collection("Artikli").document(article.getArticle_id())
+                .set(article);
+        syncArticlesInFarm(orderIndex, articleIndex + 1);
+    } // syncArticlesInFarm
 
     @SuppressLint("SimpleDateFormat")
     private void setDateOfPickup() {
@@ -269,8 +257,8 @@ public class OrderingFragment extends Fragment implements OrderRecyclerAdapter.O
             }
         }
         makeLogD(TAG, dateCalendar + " " + dateTime);
-        appBasket.get(farmNumber).setDatum_dostave(dateCalendar + " " + dateTime);
-    }
+        appBasket.get(farmNumber).setDatum_prevzema(dateCalendar + " " + dateTime);
+    } // setDateOfPickup
 
     public void selectTimeOrder(View view) {
         if (view != null && indexTimeSelected != view.getId()) {
@@ -347,5 +335,5 @@ public class OrderingFragment extends Fragment implements OrderRecyclerAdapter.O
             dayNumberView.setTextColor(getResources().getColor(R.color.white));
         }
         selectTimeOrder(null);
-    }
+    } // onOrderSelectDateListener
 }

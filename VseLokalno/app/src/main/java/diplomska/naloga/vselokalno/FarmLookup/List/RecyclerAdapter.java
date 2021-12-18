@@ -2,6 +2,7 @@ package diplomska.naloga.vselokalno.FarmLookup.List;
 
 import static diplomska.naloga.vselokalno.MainActivity.makeLogD;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,17 +11,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.core.view.ViewCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.Map;
 
+import diplomska.naloga.vselokalno.DataObjects.GlideApp;
 import diplomska.naloga.vselokalno.R;
 
 /***
@@ -31,7 +31,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     private final String TAG = "RecyclerAdapter";
 
     public interface ItemClickListener {
-        void onItemClick(int position, Map<String, String> farm, TextView textView, ImageView imageView, StorageReference imageRef);
+        void onItemClick(int position, Map<String, String> farm);
     } // ItemClickListener
 
     ItemClickListener ItemClickListener;
@@ -68,6 +68,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         return new ViewHolder(mInflater.inflate(R.layout.list_farm_item, parent, false));
     } // onCreateViewHolder
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     public void onBindViewHolder(RecyclerAdapter.ViewHolder holder, int position) {
         // Get current sport.
@@ -75,21 +76,16 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         makeLogD(TAG, "(onBindViewHolder) showing farm: " + currentFarm.get("ime_kmetije"));
         // Populate the textviews with data.
         holder.mNaslovText.setText(currentFarm.get("ime_kmetije"));
-        StorageReference imageRef = null;
-        if (currentFarm.containsKey("slika_kmetije")) {
-            // Reference to an image file in Cloud Storage
-            imageRef = FirebaseStorage.getInstance().getReference()
-                    .child("Ozadja kmetije/" + currentFarm.get("id_kmetije"));
+        // Reference to an image file in Cloud Storage
+        StorageReference imageRef = FirebaseStorage.getInstance().getReference()
+                .child("Profile Images/" + currentFarm.get("id_kmetije"));
 //        makeLogD(TAG, "(onBindViewHolder) storage reference: " + imageRef.toString());
-            GlideApp.with(mContext).load(imageRef).into(holder.mImage);
-        }
-        StorageReference finalImageRef = imageRef;
+        GlideApp.with(mContext).load(imageRef)
+                .error(mContext.getResources().getDrawable(R.drawable.default_farm_image))
+                .into(holder.mImage);
         holder.itemView.setOnClickListener(v -> ItemClickListener.onItemClick(
                 holder.getAdapterPosition(),
-                currentFarm,
-                holder.mNaslovText,
-                holder.mImage,
-                finalImageRef
+                currentFarm
         ));
     } // onBindViewHolder
 

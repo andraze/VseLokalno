@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="@dimen/dp_4"
     android:orientation="vertical"
-    tools:context=".UserFunctions.ActiveOrders_FU.ActiveOrdersListFragment">
+    tools:context=".UserFunctions.ActiveOrders_FU.ActiveOrdersListFragment"
+    tools:ignore="ContentDescription">
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/lin1"
@@ -29,10 +29,11 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="1"
+            android:fontFamily="@font/roboto_medium_family"
             android:text="@string/narocila"
             android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textColor="@color/blue_normal" />
+            android:textColor="@color/blue_normal"
+            android:textSize="@dimen/sp_22" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -55,7 +56,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view_activeOrderListFragment"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
@@ -75,17 +76,21 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_regular_family"
             android:text="@string/aktivna"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textColor="@color/blue_normal" />
+            android:textColor="@color/blue_normal"
+            android:textSize="@dimen/sp_18" />
 
         <TextView
             android:id="@+id/num_of_active_orders_activeOrderListFragment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_regular_family"
             android:text="@string/_0"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textColor="@color/blue_normal" />
+            android:textColor="@color/blue_normal"
+            android:textSize="@dimen/sp_22" />
 
         <View
             android:layout_width="0dp"

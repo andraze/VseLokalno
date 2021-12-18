@@ -1,61 +1,75 @@
 package diplomska.naloga.vselokalno.FarmLookup.FarmDetails;
 
 import static diplomska.naloga.vselokalno.MainActivity.appBasket;
+import static diplomska.naloga.vselokalno.MainActivity.appUser;
+import static diplomska.naloga.vselokalno.MainActivity.makeLogW;
+import static diplomska.naloga.vselokalno.MainActivity.userID;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Objects;
 
-import diplomska.naloga.vselokalno.DataObjects.Farm;
-import diplomska.naloga.vselokalno.DataObjects.Narocilo.ZaKupca;
-import diplomska.naloga.vselokalno.FarmLookup.FarmDetails.ArticleDetails.BuyArticleFragment;
-import diplomska.naloga.vselokalno.FarmLookup.List.GlideApp;
+import diplomska.naloga.vselokalno.DataObjects.Article;
+import diplomska.naloga.vselokalno.DataObjects.Category;
+import diplomska.naloga.vselokalno.DataObjects.GlideApp;
+import diplomska.naloga.vselokalno.DataObjects.Order;
+import diplomska.naloga.vselokalno.FarmLookup.FarmDetails.ArticleDetails.ArticleDetailsFragment;
 import diplomska.naloga.vselokalno.R;
 
-public class FarmDetailsFragment extends Fragment implements FarmDetailsArticleAdapter.OnArticleBuyerClickListener, BuyArticleFragment.BuyArticleCallBack {
+public class FarmDetailsFragment extends Fragment implements FarmDetailsCategoryAdapter.CategoryClickCallback, FarmDetailsArticleAdapter.ArticleClickCallback, ArticleDetailsFragment.BuyArticleCallback {
 
     private final String TAG = "FarmDetailsFragment";
-    private static final String FARM_ID = "farm_id";
-    private String mFarm_id;
+    // Current farm short details:
+    private Map<String, String> mCurrentFarm_short;
+    // Categories of this farm:
+    ArrayList<Category> currentFarmCategories;
+    // Articles of this farm:
+    ArrayList<Article> currentFarmArticles;
+    // Firestore:
     private FirebaseFirestore db;
-    Farm farmOfInterest;
-    ArrayList<Map<String, String>> mArticlesForBuying;
+    // Views
     public RecyclerView mRecyclerView;
-    public FarmDetailsArticleAdapter mAdapter;
     public TextView mFarmName;
     public ImageView mFarmImage;
-    public ImageView mUserImage;
-    public static FarmDetailsArticleAdapter.OnArticleBuyerClickListener mArticleBuyerClickListener;
+    LinearLayout topLinearLayout;
+    NestedScrollView nestedScrollView;
+    View topBackgroundView;
+    // Category recycler adapter:
+    public FarmDetailsCategoryAdapter mCategoryAdapter;
+    // Article recycler adapter:
+    public FarmDetailsArticleAdapter mArticleAdapter;
 
     public FarmDetailsFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * @param param Farm id to look up.
-     * @return A new instance of fragment FarmDetailsFragment.
-     */
-    public static FarmDetailsFragment newInstance(String param) {
-        FarmDetailsFragment fragment = new FarmDetailsFragment();
-        Bundle args = new Bundle();
-        args.putString(FARM_ID, param);
-        fragment.setArguments(args);
-        return fragment;
+    public FarmDetailsFragment(Map<String, String> farm) {
+        this.mCurrentFarm_short = farm;
+    }
+
+    public static FarmDetailsFragment newInstance(Map<String, String> farm) {
+        return new FarmDetailsFragment(farm);
     }
 
     @Override
@@ -65,89 +79,157 @@ public class FarmDetailsFragment extends Fragment implements FarmDetailsArticleA
         db = FirebaseFirestore.getInstance();
     } // onCreate
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_farm_details, container, false);
-        mArticleBuyerClickListener = this;
-        mFarmName = rootView.findViewById(R.id.farm_name_text_view_FarmDetailsFragment);
-        mFarmImage = rootView.findViewById(R.id.farm_image_view_FarmDetailsFragment);
-        mUserImage = rootView.findViewById(R.id.profile_image_view_FarmDetailsFragment);
+        // Find views:
+        topBackgroundView = rootView.findViewById(R.id.top_background);
+        nestedScrollView = rootView.findViewById(R.id.nestedScrollView_FarmDetailsFragment);
+        topLinearLayout = rootView.findViewById(R.id.lin_top);
+        mFarmName = rootView.findViewById(R.id.farm_name_FarmDetailsFragment);
+        mFarmName.setText(mCurrentFarm_short.get("ime_kmetije"));
+        mFarmImage = rootView.findViewById(R.id.farm_image_FarmDetailsFragment);
         mRecyclerView = rootView.findViewById(R.id.recycler_view_FarmDetailsFragment);
-        if (getArguments() != null) {
-            mFarm_id = getArguments().getString(FARM_ID);
-            DocumentReference farmDocReference = db.collection("Kmetije").document(mFarm_id);
-            farmDocReference.get().addOnSuccessListener(documentSnapshot -> {
-                farmOfInterest = documentSnapshot.toObject(Farm.class);
-//                Got specific farm:
-                if (farmOfInterest != null) {
-                    mFarmName.setText(farmOfInterest.getIme_kmetije());
-                    StorageReference imageRef = FirebaseStorage.getInstance().getReference()
-                            .child("Uporabniške profilke/" + mFarm_id);
-                    GlideApp.with(requireContext()).load(imageRef).error(R.drawable.default_profile_picture).into(mUserImage);
-                    //                    Fill the recycler view with articles:
-                    mArticlesForBuying = farmOfInterest.getArtikli();
-                    if (mRecyclerView != null) {
-                        mAdapter = new FarmDetailsArticleAdapter(requireContext(), farmOfInterest.getArtikli(),
-                                requireActivity().getSupportFragmentManager(), mArticleBuyerClickListener);
-                        mRecyclerView.setAdapter(mAdapter);
-                        mRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        mRecyclerView.setNestedScrollingEnabled(false);
+        // Set images:
+        StorageReference imageRef = FirebaseStorage.getInstance().getReference()
+                .child("Profile Images/" + mCurrentFarm_short.get("id_kmetije"));
+        GlideApp.with(requireContext()).load(imageRef)
+                .error(getResources().getDrawable(R.drawable.default_farm_image))
+                .into(mFarmImage);
+        // Get data:
+        currentFarmCategories = new ArrayList<>();
+        db.collection("Kmetije").document(Objects.requireNonNull(mCurrentFarm_short.get("id_kmetije")))
+                .collection("Kategorije")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            currentFarmCategories.add(document.toObject(Category.class));
+                        }
+                        // Set category adapter:
+                        setCategoryAdapter();
+                    } else {
+                        makeLogW(TAG, "Error getting documents: " + task.getException());
                     }
-                }
-            });
-        }
-        mUserImage.setOnClickListener(v -> {
-            ShowFarmDescriptionFragment showFarmDescriptionFragment = ShowFarmDescriptionFragment.newInstance(farmOfInterest);
-            showFarmDescriptionFragment.show(getParentFragmentManager(), "Podrobnosti kmetije");
+                });
+        currentFarmArticles = new ArrayList<>();
+        db.collection("Kmetije").document(Objects.requireNonNull(mCurrentFarm_short.get("id_kmetije")))
+                .collection("Artikli")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            currentFarmArticles.add(document.toObject(Article.class));
+                        }
+                    } else {
+                        makeLogW(TAG, "Error getting documents: " + task.getException());
+                    }
+                });
+        // Back button:
+        ImageButton backBtn = rootView.findViewById(R.id.backBtn_FarmDetailsFragmen);
+        backBtn.setOnClickListener(v -> {
+            if (mRecyclerView.getAdapter() instanceof FarmDetailsArticleAdapter)
+                setCategoryAdapter();
+            else
+                requireActivity().onBackPressed();
+        });
+        // Parallax effect:
+        /* intially hide the view */
+        topBackgroundView.setAlpha(0f);
+        /* set the scroll change listener on scrollview */
+        nestedScrollView.getViewTreeObserver().addOnScrollChangedListener(() -> {
+            /* get the maximum height which we have scroll before performing any action */
+            int maxDistance = mFarmImage.getHeight();
+            /* how much we have scrolled */
+            int movement = nestedScrollView.getScrollY();
+            /*finally calculate the alpha factor and set on the view */
+            float alphaFactor = ((movement * 1.0f) / (maxDistance - topBackgroundView.getHeight()));
+            if (movement >= 0 && movement <= maxDistance) {
+                /*for image parallax with scroll */
+                int temp = -movement / 2;
+                mFarmImage.setTranslationY(temp);
+                /* set visibility */
+                topBackgroundView.setAlpha(alphaFactor);
+            }
         });
         return rootView;
     } // onCreateView
 
+    void setCategoryAdapter() {
+        mCategoryAdapter = new FarmDetailsCategoryAdapter(
+                requireContext(),
+                currentFarmCategories,
+                currentFarmArticles,
+                this
+        );
+        // Set category adapter:
+        mRecyclerView.setAdapter(mCategoryAdapter);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+    } // setCategoryAdapter
+
+    void setArticleAdapter(ArrayList<Article> articlesForCategory) {
+        mArticleAdapter = new FarmDetailsArticleAdapter(
+                requireContext(),
+                articlesForCategory,
+                this
+        );
+        // Set article adapter:
+        mRecyclerView.setAdapter(mArticleAdapter);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+    } // setArticleAdapter
+
     @Override
-    public void onArticleClickListener(int position) {
-        BuyArticleFragment buyArticleFragment = BuyArticleFragment.newInstance(mArticlesForBuying.get(position));
-        buyArticleFragment.show(getParentFragmentManager(), "Kupi izdelek");
-        buyArticleFragment.setBuyArticleListener(this);
+    public void onCategoryClickListener(Category category) {
+        ArrayList<Article> articlesForCategory = new ArrayList<>();
+        for (Article el : currentFarmArticles) {
+            if (el.getCategory_id().equals(category.getCategory_id())) {
+                articlesForCategory.add(el);
+            }
+        }
+        setArticleAdapter(articlesForCategory);
+    } // onCategoryClickListener
+
+    @Override
+    public void onArticleClickListener(Article article) {
+        // Open article details fragment
+        ArticleDetailsFragment articleDetailsFragment = ArticleDetailsFragment.newInstance(article);
+        articleDetailsFragment.setBuyArticleCallback(this);
+        FragmentManager fragmentManager = getParentFragmentManager();
+        fragmentManager.beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_top, R.anim.slide_in_top, R.anim.slide_out_bottom)
+                .replace(R.id.main_fragment_container, articleDetailsFragment)
+                .addToBackStack(null)
+                .commit();
     } // onArticleClickListener
 
     @Override
-    public void callbackBuyArticle_fun(Map<String, String> order) {
-        if (appBasket.isEmpty()) {
-            // New order:
-            newOrder(order);
-        } else {
-            boolean found = false;
-            for (ZaKupca zaKupcaOrderFromSpecificFarm : appBasket) {
-                if (zaKupcaOrderFromSpecificFarm.getId_kmetije().equals(mFarm_id)) {
-                    // Update order:
-                    found = true;
-                    zaKupcaOrderFromSpecificFarm.addNarocilo_imena(order.get("id"), order.get("ime"));
-                    zaKupcaOrderFromSpecificFarm.addNarocilo_cene(order.get("id"), order.get("cena"));
-                    zaKupcaOrderFromSpecificFarm.addNarocilo_enote(order.get("id"), order.get("enota"));
-                    zaKupcaOrderFromSpecificFarm.addNarocilo_kolicine(order.get("id"), order.get("kolicina"));
-                    zaKupcaOrderFromSpecificFarm.addNarocilo_slike(order.get("id"), order.get("slika"));
-                    zaKupcaOrderFromSpecificFarm.addNarocilo_zaloge(order.get("id"), order.get("zaloga"));
+    public void onArticleBuyListener(Article newArticle) {
+        for (int orderIndex = 0; orderIndex < appBasket.size(); orderIndex++) {
+            Order order = appBasket.get(orderIndex);
+            if (order.getId_kmetije().equals(newArticle.getFarm_id())) {
+                // Order is from this farm:
+                for (int articleIndex = 0; articleIndex < order.getOrdered_articles().size(); articleIndex++) {
+                    Article article = order.getOrdered_articles().get(articleIndex);
+                    if (article.getArticle_id().equals(newArticle.getArticle_id())) {
+                        // Is same article:
+                        appBasket.get(orderIndex).editOrdered_articles(articleIndex, newArticle);
+                        return;
+                    }
                 }
-            }
-            if (!found) {
-                // New order:
-                newOrder(order);
+                order.addOrdered_articles(newArticle);
+                return;
             }
         }
-    } // callbackBuyArticle_fun
-
-    private void newOrder(Map<String, String> order) {
-        ZaKupca newOrder = new ZaKupca();
-        newOrder.setIme_kmetije(farmOfInterest.getIme_kmetije());
-        newOrder.setId_kmetije(mFarm_id);
-        newOrder.setNaslov_dostave(farmOfInterest.getNaslov_dostave());
-        newOrder.addNarocilo_imena(order.get("id"), order.get("ime"));
-        newOrder.addNarocilo_cene(order.get("id"), order.get("cena"));
-        newOrder.addNarocilo_enote(order.get("id"), order.get("enota"));
-        newOrder.addNarocilo_kolicine(order.get("id"), order.get("kolicina"));
-        newOrder.addNarocilo_slike(order.get("id"), order.get("slika"));
-        newOrder.addNarocilo_zaloge(order.get("id"), order.get("zaloga"));
+        Order newOrder = new Order();
+        newOrder.setIme_kmetije(mCurrentFarm_short.get("ime_kmetije"));
+        newOrder.setId_kupca(userID);
+        newOrder.setId_kmetije(newArticle.getFarm_id());
+        newOrder.setIme_priimek_kupca(appUser.getIme_uporabnika() + " " + appUser.getPriimek_uporabnika());
+        newOrder.addOrdered_articles(newArticle);
         appBasket.add(newOrder);
-    } // newOrder
+    } // onArticleBuyListener
 }

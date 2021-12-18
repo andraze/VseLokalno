@@ -54,6 +54,17 @@
         </LinearLayout>
 
         <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/image_confirmed_listActiveOrdersItem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_8"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_confirmed"
+            android:visibility="gone"
+            app:shapeAppearanceOverlay="@style/FullRoundedSquare" />
+
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/image_warning_listActiveOrdersItem"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

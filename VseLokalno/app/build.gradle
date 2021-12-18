@@ -1,16 +1,18 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
     buildToolsVersion "30.0.3"
 
     defaultConfig {
         applicationId "diplomska.naloga.vselokalno"
-        minSdkVersion 24
-        targetSdkVersion 30
+        minSdkVersion 26
+        targetSdkVersion 31
         versionCode 1
         versionName "1.0"
 
@@ -24,8 +26,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
     buildFeatures {
         viewBinding true
@@ -33,19 +35,19 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.3.1'
+    implementation 'androidx.appcompat:appcompat:1.4.0'
     implementation 'com.google.android.material:material:1.4.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.0'
-    implementation 'androidx.annotation:annotation:1.2.0'
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.1'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
+    implementation 'androidx.annotation:annotation:1.3.0'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.4.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     // Glide -> for showing images
-    implementation 'com.github.bumptech.glide:glide:4.11.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+    implementation 'com.github.bumptech.glide:glide:4.12.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
     // Gson library for saving data to shared prefs
     implementation 'com.google.code.gson:gson:2.8.6'
     // Import the BoM for the Firebase platform
@@ -61,7 +63,7 @@ dependencies {
     // Declare the dependency for the Firebase analytics library
     implementation 'com.google.firebase:firebase-analytics'
     // Google map
-    implementation 'com.google.android.gms:play-services-maps:18.0.0'
+    implementation 'com.google.android.gms:play-services-maps:18.0.1'
     // Simple location (for current location)
     implementation 'com.github.delight-im:Android-SimpleLocation:v1.0.1'
     // Play services vision
@@ -73,10 +75,15 @@ dependencies {
     // Circle image view;
     implementation 'de.hdodenhof:circleimageview:3.1.0'
     // Maybe need: parallax scroll; card view
+    // Parallax
+//    implementation 'com.github.ksoichiro:android-observablescrollview:1.6.0'
     // Swipe refresh:
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
     // Firebase messaging
     implementation 'com.google.firebase:firebase-messaging:23.0.0'
     // Volley for post request
     implementation 'com.android.volley:volley:1.2.1'
+    // Image cropper
+    implementation 'com.github.CanHub:Android-Image-Cropper:4.0.0'
+    kapt 'com.github.bumptech.glide:compiler:4.12.0'
 }

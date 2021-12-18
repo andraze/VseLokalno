@@ -11,6 +11,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 
 import diplomska.naloga.vselokalno.DataObjects.Farm;
+import diplomska.naloga.vselokalno.ImageCrop.ImageCropper;
 import diplomska.naloga.vselokalno.R;
 import diplomska.naloga.vselokalno.DataObjects.User;
 import diplomska.naloga.vselokalno.SignInUp.CreateAFarm.FarmTimeFragment;
@@ -27,6 +28,8 @@ public class SignInUpActivity extends AppCompatActivity {
     public static Farm farmData;
     //    FarmTimeFragment
     public static FarmTimeFragment farmTimeFragment;
+    // Sign in / up crop image
+    public static ImageCropper signInUpImageCropper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +40,8 @@ public class SignInUpActivity extends AppCompatActivity {
         farmData = new Farm();
 
         mAuth = FirebaseAuth.getInstance();
+
+        signInUpImageCropper = new ImageCropper(this, this);
 
         ChooseFragment chooseFragment = ChooseFragment.newInstance();
         FragmentManager fragmentManager = getSupportFragmentManager();

@@ -39,6 +39,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -178,34 +179,36 @@ public class MapFragment extends Fragment implements GoogleMap.OnInfoWindowClick
     public void onInfoWindowClick(@NonNull Marker marker) {
         // TODO show details about the selected marker/farm.
         makeLogD(TAG, marker.getPosition().toString());
-        String farmLookingForID = "";
+        Map<String, String> lookingForFarm = null;
         for (Map<String, String> farm : allFarmsDataShort) {
-            if (farm.get("ime_kmetije").equals(marker.getTitle()) &&
+            if (Objects.equals(farm.get("ime_kmetije"), marker.getTitle()) &&
                     marker.getPosition().equals(new LatLng(Double.parseDouble(Objects.requireNonNull(farm.get("lat"))), Double.parseDouble(Objects.requireNonNull(farm.get("lon")))))) {
-                farmLookingForID = farm.get("id_kmetije");
+                lookingForFarm = farm;
                 break;
             }
         }
-        final FarmDetailsFragment detailFragment = FarmDetailsFragment.newInstance(farmLookingForID);
-        if (getFragmentManager() != null) {
-            getFragmentManager()
-                    .beginTransaction()
-                    .setCustomAnimations(
-                            R.anim.enter_from_right, R.anim.exit_to_left,
-                            R.anim.enter_from_left, R.anim.exit_to_right
-                    )
-                    .addToBackStack(null)
-                    .replace(R.id.main_fragment_container, detailFragment)
-                    .commit();
-        } else {
-            makeLogW(TAG, "(onInfoWindowClick) getFragmentManager == null!");
+        if (lookingForFarm != null) {
+            final FarmDetailsFragment detailFragment = FarmDetailsFragment.newInstance(lookingForFarm);
+            if (getFragmentManager() != null) {
+                getFragmentManager()
+                        .beginTransaction()
+                        .setCustomAnimations(
+                                R.anim.enter_from_right, R.anim.exit_to_left,
+                                R.anim.enter_from_left, R.anim.exit_to_right
+                        )
+                        .addToBackStack(null)
+                        .replace(R.id.main_fragment_container, detailFragment)
+                        .commit();
+            } else {
+                makeLogW(TAG, "(onInfoWindowClick) getFragmentManager == null!");
+            }
         }
     } // onInfoWindowClick
 
     private void showFarms() {
         mMap.setInfoWindowAdapter(new CustomInfoWindowAdaper(requireActivity()));
         for (Map<String, String> farm : allFarmsDataShort) {
-            LatLng latLngOfFarm = null;
+            LatLng latLngOfFarm;
             if (farm.get("lat") == null || farm.get("lon") == null)
                 makeLogW(TAG, "(showFarms) lat or lon == null!");
             latLngOfFarm = new LatLng(Double.parseDouble(Objects.requireNonNull(farm.get("lat"))), Double.parseDouble(Objects.requireNonNull(farm.get("lon"))));
