@@ -28,6 +28,7 @@ import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
@@ -41,7 +42,6 @@ import diplomska.naloga.vselokalno.DataObjects.User;
 import diplomska.naloga.vselokalno.FarmLookup.List.ListFragment;
 import diplomska.naloga.vselokalno.FarmLookup.Map.MapFragment;
 import diplomska.naloga.vselokalno.ImageCrop.ImageCropper;
-import diplomska.naloga.vselokalno.OrderNotifications.MyPostRequestSender;
 import diplomska.naloga.vselokalno.SignInUp.SignInUpActivity;
 import diplomska.naloga.vselokalno.UserFunctions.UserFunctionsFragment;
 
@@ -210,16 +210,17 @@ public class MainActivity extends AppCompatActivity {
                     .collection("Aktivna Naročila");
         activeOrdersListener = colRef
                 .addSnapshotListener((value, e) -> {
-            if (e != null) {
-                Log.w(TAG, "(setActiveOrdersListener) Listen failed.", e);
-                return;
-            }
-            appActiveOrders = new ArrayList<>();
-            for (QueryDocumentSnapshot doc : Objects.requireNonNull(value)) {
-                appActiveOrders.add(doc.toObject(Order.class));
-            }
-            Log.d(TAG, "(setActiveOrdersListener) Current articles: " + appActiveOrders);
-        });
+                    if (e != null) {
+                        Log.w(TAG, "(setActiveOrdersListener) Listen failed.", e);
+                        return;
+                    }
+                    appActiveOrders = new ArrayList<>();
+                    for (QueryDocumentSnapshot doc : Objects.requireNonNull(value)) {
+                        appActiveOrders.add(doc.toObject(Order.class));
+                    }
+                    Collections.reverse(appActiveOrders);
+                    Log.d(TAG, "(setActiveOrdersListener) Current articles: " + appActiveOrders);
+                });
     } // setActiveOrdersListener
 
     private void getUserData() { // Get user data only once and open relative fragments (for onCreate)

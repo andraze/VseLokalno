@@ -74,8 +74,6 @@ public class ActiveOrdersRecyclerAdapter extends RecyclerView.Adapter<ActiveOrde
         GlideApp.with(mContext).load(profileImageRef)
                 .error(mContext.getResources().getDrawable(R.drawable.default_profile_picture))
                 .into(holder.profileImage);
-        if (position == appActiveOrders.size() - 1)
-            mActiveOrdersAdapterCallback.onFinishCallback();
         // Specific order click listener:
         holder.entireView.setOnClickListener(v -> mActiveOrdersAdapterCallback.onSpecificOrderClickCallback(currentOrder));
     }
@@ -116,8 +114,7 @@ public class ActiveOrdersRecyclerAdapter extends RecyclerView.Adapter<ActiveOrde
     @Override
     public int getItemCount() {
         int size = appActiveOrders.size();
-        if (size == 0)
-            mActiveOrdersAdapterCallback.onFinishCallback();
+        mActiveOrdersAdapterCallback.onFinishCallback();
         return size;
     }
 
