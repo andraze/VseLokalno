@@ -56,3 +56,11 @@ public class MyPostRequestSender {
         mQueue.add(jsonObjectRequest);
     }
 }
+
+// Send test request:
+//        MyPostRequestSender myPostRequestSender = new MyPostRequestSender(getContext());
+//        try {
+//            myPostRequestSender.sendRequest("Test", "Test", "Test");
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }

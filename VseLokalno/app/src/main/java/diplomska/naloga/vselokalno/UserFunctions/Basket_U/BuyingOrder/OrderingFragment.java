@@ -25,6 +25,8 @@ import com.google.android.material.button.MaterialButton;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import org.json.JSONException;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -34,6 +36,8 @@ import java.util.Objects;
 import diplomska.naloga.vselokalno.DataObjects.Article;
 import diplomska.naloga.vselokalno.DataObjects.Farm;
 import diplomska.naloga.vselokalno.DataObjects.Order;
+import diplomska.naloga.vselokalno.MainActivity;
+import diplomska.naloga.vselokalno.OrderNotifications.MyPostRequestSender;
 import diplomska.naloga.vselokalno.R;
 
 public class OrderingFragment extends Fragment implements OrderRecyclerAdapter.OrderSelectDateListener {
@@ -202,18 +206,24 @@ public class OrderingFragment extends Fragment implements OrderRecyclerAdapter.O
     } // checkCurrentStorage
 
     private void finishOrder(int index) {
+        // Update order with "Opravljeno", IDs, etc.:
         Order order = appBasket.get(index);
         order.setId_kupca(userID);
         order.setIme_priimek_kupca(appUser.getIme_uporabnika() + " " + appUser.getPriimek_uporabnika());
         order.setOpravljeno(0);
-
-        syncArticlesInFarm(index, 0);
-
-        if (appActiveOrders == null)
-            appActiveOrders = new ArrayList<>();
         String uniqueString = String.valueOf(System.currentTimeMillis());
         String orderID = userID + "#" + order.getId_kmetije() + "#" + uniqueString;
         order.setId_order(orderID);
+        // Update storages for every article ordered.
+        syncArticlesInFarm(index, 0);
+        // Send "New order" notification:
+        MyPostRequestSender myPostRequestSender = new MyPostRequestSender(requireContext());
+        try {
+            myPostRequestSender.sendRequest(order.getId_order(), order.getId_kmetije(), String.valueOf(order.getOpravljeno()));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        // Set order to active order of both users:
         db.collection("Kmetije").document(order.getId_kmetije())
                 .collection("Aktivna Naročila").document(orderID)
                 .set(order)

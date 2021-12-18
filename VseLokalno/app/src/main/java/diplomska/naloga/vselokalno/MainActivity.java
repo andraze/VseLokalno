@@ -68,7 +68,6 @@ public class MainActivity extends AppCompatActivity {
     //    Firebase messaging:
     FirebaseMessaging firebaseMessaging;
     final String fcmTopic = "active_orders_update";
-    public MyPostRequestSender myPostRequestSender;
     //    Bottom navigation:
     public static ChipNavigationBar bottomNavigation;
     //    Fragments:
@@ -119,7 +118,6 @@ public class MainActivity extends AppCompatActivity {
         // Firebase messaging subscribe to notification topic:
         firebaseMessaging = FirebaseMessaging.getInstance();
         firebaseMessaging.subscribeToTopic(fcmTopic);
-        myPostRequestSender = new MyPostRequestSender(this);
         // Initialise the app user and app farm and app basket:
         appUser = new User();
         appFarm = new Farm();
@@ -146,12 +144,6 @@ public class MainActivity extends AppCompatActivity {
                     break;
             }
         });
-        // Send test request:
-//        try {
-//            myPostRequestSender.sendRequest("Test", "Test", "Test");
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
         // Check if user is signed in (non-null) and update UI accordingly.
         updateUI(currentUser);
     } // onCreate

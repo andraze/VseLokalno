@@ -61,14 +61,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
                 createNotificationChannel();
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
-                        .setSmallIcon(R.drawable.ic_warning)
+                        .setSmallIcon(R.drawable.ic_info)
                         .setContentTitle("Imate novo naročilo!")
                         .setContentText("Prejeli ste novo naročilo, oglejte si ga.")
                         .setDefaults(Notification.DEFAULT_ALL)
                         .setAutoCancel(true)
                         .setContentIntent(resultPendingIntent)
                         .setPriority(NotificationCompat.PRIORITY_MAX);
-
                 NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
                 notificationManager.notify(1, builder.build());
             }
