@@ -248,8 +248,11 @@ public class MainActivity extends AppCompatActivity {
         try {
             Date dateOfPickup = new SimpleDateFormat("E dd-MM-yyyy HH:mm").parse(order.getDatum_prevzema());
             Date todayDate = new Date();
-            if (todayDate.after(dateOfPickup))
-                //TODO preveč točno!!!
+            String datePickupString = new SimpleDateFormat("dd-MM-yyyy").format(Objects.requireNonNull(dateOfPickup));
+            String dateTodayString = new SimpleDateFormat("dd-MM-yyyy").format(todayDate);
+            dateOfPickup = new SimpleDateFormat("dd-MM-yyyy").parse(datePickupString);
+            todayDate = new SimpleDateFormat("dd-MM-yyyy").parse(dateTodayString);
+            if (todayDate != null && todayDate.after(dateOfPickup))
                 return true;
         } catch (ParseException e) {
             e.printStackTrace();

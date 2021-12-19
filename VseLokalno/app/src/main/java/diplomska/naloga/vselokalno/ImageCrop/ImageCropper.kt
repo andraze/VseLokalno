@@ -41,6 +41,7 @@ class ImageCropper (activity : FragmentActivity, context: Context) {
                 setAspectRatio(400, 300)
                 setActivityTitle("Obreži sliko")
                 setOutputCompressFormat(Bitmap.CompressFormat.PNG)
+                setRequestedSize(600, 450)
             }
         )
     }
