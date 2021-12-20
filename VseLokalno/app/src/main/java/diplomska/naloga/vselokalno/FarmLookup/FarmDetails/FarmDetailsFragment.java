@@ -2,7 +2,6 @@ package diplomska.naloga.vselokalno.FarmLookup.FarmDetails;
 
 import static diplomska.naloga.vselokalno.MainActivity.appBasket;
 import static diplomska.naloga.vselokalno.MainActivity.appUser;
-import static diplomska.naloga.vselokalno.MainActivity.makeLogD;
 import static diplomska.naloga.vselokalno.MainActivity.makeLogW;
 import static diplomska.naloga.vselokalno.MainActivity.userID;
 
@@ -13,6 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+
+import androidx.appcompat.widget.SearchView;
+
 import android.widget.TextView;
 
 import androidx.core.widget.NestedScrollView;
@@ -171,8 +173,40 @@ public class FarmDetailsFragment extends Fragment implements FarmDetailsCategory
                 topBackgroundView.setAlpha(alphaFactor);
             }
         });
+        // Search view:
+        SearchView searchView = rootView.findViewById(R.id.search_FarmDetailsFragment);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                setArticleQueryAdapter(query.trim());
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                setArticleQueryAdapter(newText);
+                return false;
+            }
+        });
         return rootView;
     } // onCreateView
+
+    void setArticleQueryAdapter(String query) {
+        ArrayList<Article> queryArticles = new ArrayList<>();
+        for (Article article : currentFarmArticles) {
+            if (article.getArticle_name().toLowerCase().contains(query.toLowerCase())) {
+                queryArticles.add(article);
+            }
+        }
+        mArticleAdapter = new FarmDetailsArticleAdapter(
+                requireContext(),
+                queryArticles,
+                this
+        );
+        // Set article adapter:
+        mRecyclerView.setAdapter(mArticleAdapter);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+    } // setArticleQueryAdapter
 
     void setCategoryAdapter() {
         mCategoryAdapter = new FarmDetailsCategoryAdapter(

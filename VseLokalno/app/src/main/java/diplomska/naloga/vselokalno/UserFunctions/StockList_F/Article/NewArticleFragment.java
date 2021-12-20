@@ -34,6 +34,8 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Locale;
 
 import diplomska.naloga.vselokalno.DataObjects.Article;
 import diplomska.naloga.vselokalno.DataObjects.Category;
@@ -145,6 +147,7 @@ public class NewArticleFragment extends Fragment implements ImageCropper.ImageCr
                 String newArticleID = newArticle.getArticle_name() + "#" + System.currentTimeMillis();
                 newArticle.setArticle_id(newArticleID);
                 newArticle.setPicture(photo_changed);
+                newArticle.setArticle_name_keywords(createKeywords(newArticle.getArticle_name()));
                 if (photo_changed) {
                     try {
                         // Save to cloud storage
@@ -174,6 +177,26 @@ public class NewArticleFragment extends Fragment implements ImageCropper.ImageCr
         cancelArticle.setOnClickListener(view -> getParentFragmentManager().popBackStack());
         return rootView;
     } // onCreateView
+
+    private ArrayList<String> createKeywords(String article_name) {
+        article_name = article_name.toLowerCase();
+        article_name = article_name.trim();
+        ArrayList<String> array = new ArrayList<>();
+        StringBuilder stringTemp = new StringBuilder();
+        for (int i = 0; i < article_name.length(); i++){
+            stringTemp.append(article_name.charAt(i));
+            array.add(String.valueOf(stringTemp));
+        }
+        String[] articleNameParts = article_name.split(" ");
+        for (String onePart : articleNameParts) {
+            stringTemp = new StringBuilder();
+            for (int i = 0; i < onePart.length(); i++){
+                stringTemp.append(onePart.charAt(i));
+                array.add(String.valueOf(stringTemp));
+            }
+        }
+        return array;
+    }
 
     private void uploadChanges() {
         db.collection("Kmetije").document(userID)

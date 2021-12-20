@@ -33,6 +33,8 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Locale;
 
 import diplomska.naloga.vselokalno.DataObjects.Article;
 import diplomska.naloga.vselokalno.DataObjects.GlideApp;
@@ -155,8 +157,7 @@ public class EditArticleFragment extends Fragment implements ImageCropper.ImageC
                 try { // Try to parse the numbers:
                     Double.parseDouble(articlePrice.getText().toString());
                     Double.parseDouble(stockQuantity.getText().toString());
-                }
-                catch(NumberFormatException e) {
+                } catch (NumberFormatException e) {
                     Toast.makeText(requireContext(), "Cena in zaloga morata biti številki.", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -164,6 +165,7 @@ public class EditArticleFragment extends Fragment implements ImageCropper.ImageC
                 currentArticle.setArticle_price(Double.parseDouble(articlePrice.getText().toString()));
                 currentArticle.setArticle_unit(articleUnit.getText().toString());
                 currentArticle.setArticle_storage(Double.parseDouble(stockQuantity.getText().toString()));
+                currentArticle.setArticle_name_keywords(createKeywords(currentArticle.getArticle_name()));
                 if (photo_changed) {
                     currentArticle.setPicture(true);
                     try {
@@ -198,6 +200,26 @@ public class EditArticleFragment extends Fragment implements ImageCropper.ImageC
         deleteArticle.setOnClickListener(v -> deleteMyArticle());
         return rootView;
     } // onCreateView
+
+    private ArrayList<String> createKeywords(String article_name) {
+        article_name = article_name.toLowerCase();
+        article_name = article_name.trim();
+        ArrayList<String> array = new ArrayList<>();
+        StringBuilder stringTemp = new StringBuilder();
+        for (int i = 0; i < article_name.length(); i++) {
+            stringTemp.append(article_name.charAt(i));
+            array.add(String.valueOf(stringTemp));
+        }
+        String[] articleNameParts = article_name.split(" ");
+        for (String onePart : articleNameParts) {
+            stringTemp = new StringBuilder();
+            for (int i = 0; i < onePart.length(); i++) {
+                stringTemp.append(onePart.charAt(i));
+                array.add(String.valueOf(stringTemp));
+            }
+        }
+        return array;
+    } // createKeywords
 
     private void uploadChanges() {
         db.collection("Kmetije").document(userID)

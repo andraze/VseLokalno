@@ -17,7 +17,7 @@
         android:orientation="horizontal">
 
         <androidx.appcompat.widget.SearchView
-            android:id="@+id/search_FarmDetailsFragment"
+            android:id="@+id/search_FarmListFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/dp_16"

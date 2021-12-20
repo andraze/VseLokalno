@@ -1,5 +1,7 @@
 package diplomska.naloga.vselokalno.DataObjects;
 
+import java.util.ArrayList;
+
 /**
  * String article_id;
  * String article_name;
@@ -22,6 +24,7 @@ public class Article {
     String farm_id;
     String category_id;
     boolean picture;
+    ArrayList<String> article_name_keywords;
 
     public Article() {
         this.article_id = "";
@@ -33,6 +36,7 @@ public class Article {
         this.farm_id = "";
         this.category_id = "";
         this.picture = false;
+        article_name_keywords = new ArrayList<>();
     }
 
     public Article(Article article) {
@@ -45,6 +49,15 @@ public class Article {
         this.farm_id = article.farm_id;
         this.category_id = article.category_id;
         this.picture = article.picture;
+        article_name_keywords = new ArrayList<>(article.article_name_keywords);
+    }
+
+    public ArrayList<String> getArticle_name_keywords() {
+        return article_name_keywords;
+    }
+
+    public void setArticle_name_keywords(ArrayList<String> article_name_keywords) {
+        this.article_name_keywords = article_name_keywords;
     }
 
     public Article makeCopy() {

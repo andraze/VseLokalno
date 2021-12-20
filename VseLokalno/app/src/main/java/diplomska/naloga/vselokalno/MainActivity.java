@@ -488,6 +488,8 @@ public class MainActivity extends AppCompatActivity {
                 handled = ((FarmDetailsFragment) f).onBackPressed();
             if (f instanceof ArticleDetailsFragment)
                 handled = ((ArticleDetailsFragment) f).onBackPressed();
+            if (f instanceof ListFragment)
+                handled = ((ListFragment) f).onBackPressed();
             if (handled)
                 break;
         }
