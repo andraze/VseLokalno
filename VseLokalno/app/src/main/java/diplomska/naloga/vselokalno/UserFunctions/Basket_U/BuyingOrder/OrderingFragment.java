@@ -27,6 +27,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.json.JSONException;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -138,7 +139,10 @@ public class OrderingFragment extends Fragment implements OrderRecyclerAdapter.O
                 // Add the buttons
                 builder.setPositiveButton("Da", (dialog, id) -> {
                     if (checkCurrentStorage()) {
-                        setDateOfPickup();
+                        if (!setDateOfPickup()) {
+                            Toast.makeText(requireContext(), "Prišlo je do napake, poskusite ponovno.", Toast.LENGTH_LONG).show();
+                            return;
+                        }
                         finishOrder(farmNumber);
                         if (farmNumber + 1 == appBasket.size()) {
                             appBasket.clear();
@@ -272,9 +276,9 @@ public class OrderingFragment extends Fragment implements OrderRecyclerAdapter.O
     } // syncArticlesInFarm
 
     @SuppressLint("SimpleDateFormat")
-    private void setDateOfPickup() {
+    private boolean setDateOfPickup() {
         Date date = new Date();
-        appBasket.get(farmNumber).setDatum_narocila(new SimpleDateFormat("E dd-MM-yyyy HH:mm").format(date));
+        appBasket.get(farmNumber).setDatum_narocila(date);
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         calendar.add(Calendar.DATE, indexDaySelected);
@@ -287,8 +291,15 @@ public class OrderingFragment extends Fragment implements OrderRecyclerAdapter.O
                 break;
             }
         }
-        makeLogD(TAG, dateCalendar + " " + dateTime);
-        appBasket.get(farmNumber).setDatum_prevzema(dateCalendar + " " + dateTime);
+        String dateOfPickupString = dateCalendar + " " + dateTime;
+        try {
+            Date dateOfPickup = new SimpleDateFormat(Order.DATE_FORMAT).parse(dateOfPickupString);
+            appBasket.get(farmNumber).setDatum_prevzema(dateOfPickup);
+            return true;
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return false;
+        }
     } // setDateOfPickup
 
     public void selectTimeOrder(View view) {

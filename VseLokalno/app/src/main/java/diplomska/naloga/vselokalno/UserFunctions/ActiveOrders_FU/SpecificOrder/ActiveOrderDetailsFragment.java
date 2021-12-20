@@ -2,6 +2,8 @@ package diplomska.naloga.vselokalno.UserFunctions.ActiveOrders_FU.SpecificOrder;
 
 import static diplomska.naloga.vselokalno.MainActivity.allFarmsDataShort;
 import static diplomska.naloga.vselokalno.MainActivity.appUser;
+import static diplomska.naloga.vselokalno.MainActivity.getFullOrderDateSlo;
+import static diplomska.naloga.vselokalno.MainActivity.getFullPickupDateSlo;
 import static diplomska.naloga.vselokalno.MainActivity.makeLogW;
 
 import android.annotation.SuppressLint;
@@ -93,9 +95,9 @@ public class ActiveOrderDetailsFragment extends Fragment {
         TextView nameView = rootView.findViewById(R.id.name_ActiveOrderDetails);
         ShapeableImageView profileImageView = rootView.findViewById(R.id.profile_image_ActiveOrderDetails);
         TextView orderDateView = rootView.findViewById(R.id.date_order_ActiveOrderDetails);
-        orderDateView.setText(mCurrentOrder.getDatum_narocila());
+        orderDateView.setText(getFullPickupDateSlo(mCurrentOrder.getDatum_narocila()));
         TextView pickupDateView = rootView.findViewById(R.id.date_pickup_ActiveOrderDetails);
-        pickupDateView.setText(mCurrentOrder.getDatum_prevzema());
+        pickupDateView.setText(getFullPickupDateSlo(mCurrentOrder.getDatum_prevzema()));
         switch (mCurrentOrder.getOpravljeno()) {
             case 1: // Warning, (order is tomorrow).
                 rootView.findViewById(R.id.lin1).setBackground(getResources().getDrawable(R.drawable.warning_background_border));

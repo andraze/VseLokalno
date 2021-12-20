@@ -1,6 +1,7 @@
 package diplomska.naloga.vselokalno.DataObjects;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * String id_kmetije;
@@ -8,6 +9,7 @@ import java.util.ArrayList;
  * String id_kupca;
  * String ime_priimek_kupca;
  * Naročilo je objekt, ki ima osnovne podatke o narocilu.
+ * DATE FORMAT: "E dd-MM-yyyy HH:mm"
  * String datum_prevzema
  * String datum_narocila
  * String naslov_prevzema
@@ -19,13 +21,16 @@ import java.util.ArrayList;
  */
 
 public class Order {
+    public static final String DATE_FORMAT = "E dd-MM-yyyy HH:mm";
     String id_order;
     String id_kmetije;
     String ime_kmetije;
     String id_kupca;
     String ime_priimek_kupca;
-    String datum_prevzema;
-    String datum_narocila;
+    Date datum_prevzema;
+    Date datum_narocila;
+//    String datum_prevzema;
+//    String datum_narocila;
     int opravljeno;
     ArrayList<Article> ordered_articles;
 
@@ -35,8 +40,10 @@ public class Order {
         this.ime_kmetije = "";
         this.id_kupca = "";
         this.ime_priimek_kupca = "";
-        this.datum_prevzema = "";
-        this.datum_narocila = "";
+        this.datum_narocila = null;
+        this.datum_prevzema = null;
+//        this.datum_prevzema = "";
+//        this.datum_narocila = "";
         this.opravljeno = -1;
         this.ordered_articles = new ArrayList<>();
     }
@@ -105,21 +112,36 @@ public class Order {
         this.ime_priimek_kupca = ime_priimek_kupca;
     }
 
-    public String getDatum_prevzema() {
+    public Date getDatum_prevzema() {
         return datum_prevzema;
     }
 
-    public void setDatum_prevzema(String datum_prevzema) {
+    public void setDatum_prevzema(Date datum_prevzema) {
         this.datum_prevzema = datum_prevzema;
     }
 
-    public String getDatum_narocila() {
+    public Date getDatum_narocila() {
         return datum_narocila;
     }
 
-    public void setDatum_narocila(String datum_narocila) {
+    public void setDatum_narocila(Date datum_narocila) {
         this.datum_narocila = datum_narocila;
     }
+//    public String getDatum_prevzema() {
+//        return datum_prevzema;
+//    }
+//
+//    public void setDatum_prevzema(String datum_prevzema) {
+//        this.datum_prevzema = datum_prevzema;
+//    }
+//
+//    public String getDatum_narocila() {
+//        return datum_narocila;
+//    }
+//
+//    public void setDatum_narocila(String datum_narocila) {
+//        this.datum_narocila = datum_narocila;
+//    }
 
     public int getOpravljeno() {
         return opravljeno;

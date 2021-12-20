@@ -1,6 +1,8 @@
 package diplomska.naloga.vselokalno.UserFunctions.OrderHistory_FU.SpecificOrder;
 
 import static diplomska.naloga.vselokalno.MainActivity.appUser;
+import static diplomska.naloga.vselokalno.MainActivity.getFullOrderDateSlo;
+import static diplomska.naloga.vselokalno.MainActivity.getFullPickupDateSlo;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -72,9 +74,9 @@ public class OrderHistoryDetailsFragment extends Fragment {
         TextView nameView = rootView.findViewById(R.id.name_OrderHistoryDetailsFragment);
         ShapeableImageView profileImageView = rootView.findViewById(R.id.profile_image_OrderHistoryDetailsFragment);
         TextView orderDateView = rootView.findViewById(R.id.date_order_OrderHistoryDetailsFragment);
-        orderDateView.setText(mCurrentOrder.getDatum_narocila());
+        orderDateView.setText(getFullPickupDateSlo(mCurrentOrder.getDatum_narocila()));
         TextView pickupDateView = rootView.findViewById(R.id.date_pickup_OrderHistoryDetailsFragment);
-        pickupDateView.setText(mCurrentOrder.getDatum_prevzema());
+        pickupDateView.setText(getFullPickupDateSlo(mCurrentOrder.getDatum_prevzema()));
         switch (mCurrentOrder.getOpravljeno()) {
             case 2: // Order is confirmed.
                 rootView.findViewById(R.id.lin1).setBackground(getResources().getDrawable(R.drawable.green_background_border));

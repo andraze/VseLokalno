@@ -2,7 +2,8 @@ package diplomska.naloga.vselokalno.UserFunctions.OrderHistory_FU;
 
 import static diplomska.naloga.vselokalno.MainActivity.appOrderHistory;
 import static diplomska.naloga.vselokalno.MainActivity.appUser;
-import static diplomska.naloga.vselokalno.MainActivity.getFullDateSlo;
+import static diplomska.naloga.vselokalno.MainActivity.getFullOrderDateSlo;
+import static diplomska.naloga.vselokalno.MainActivity.getFullPickupDateSlo;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -53,8 +54,8 @@ public class OrderHistoryRecyclerAdapter extends RecyclerView.Adapter<OrderHisto
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Order currentOrder = appOrderHistory.get(position);
-        holder.dateOrder_tv.setText(getFullDateSlo(currentOrder.getDatum_narocila()));
-        holder.datePickup_tv.setText(getFullDateSlo(currentOrder.getDatum_prevzema()));
+        holder.dateOrder_tv.setText(getFullOrderDateSlo(currentOrder.getDatum_narocila()));
+        holder.datePickup_tv.setText(getFullPickupDateSlo(currentOrder.getDatum_prevzema()));
         showStatus(currentOrder.getOpravljeno(), holder);
         StorageReference profileImageRef;
         if (!appUser.isLastnik_kmetije()) { // We have a user:

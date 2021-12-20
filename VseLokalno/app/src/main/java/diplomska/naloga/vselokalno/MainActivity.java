@@ -13,10 +13,10 @@ import androidx.fragment.app.FragmentManager;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
@@ -28,7 +28,6 @@ import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -210,15 +209,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void setActiveOrdersListener(boolean isFarmer) {
-        CollectionReference colRef;
+        Query colRef;
         if (isFarmer) { // We have a farmer:
             colRef = FirebaseFirestore.getInstance().collection("Kmetije").document(currentUser.getUid())
-                    .collection("Aktivna Naročila");
+                    .collection("Aktivna Naročila").orderBy("datum_prevzema");
             setFarmAppArticlesListener();
             setFarmAppCategoriesListener();
         } else // We have a buyer:
             colRef = FirebaseFirestore.getInstance().collection("Uporabniki").document(currentUser.getUid())
-                    .collection("Aktivna Naročila");
+                    .collection("Aktivna Naročila").orderBy("datum_prevzema");
         activeOrdersListener = colRef
                 .addSnapshotListener((value, e) -> {
                     if (e != null) {
@@ -229,7 +228,6 @@ public class MainActivity extends AppCompatActivity {
                     for (QueryDocumentSnapshot doc : Objects.requireNonNull(value)) {
                         appActiveOrders.add(doc.toObject(Order.class));
                     }
-                    Collections.reverse(appActiveOrders);
                     checkStageOfActiveOrders();
                     Log.d(TAG, "(setActiveOrdersListener) Current orders: " + appActiveOrders);
                 });
@@ -246,9 +244,8 @@ public class MainActivity extends AppCompatActivity {
 
     @SuppressLint("SimpleDateFormat")
     private boolean orderPickupPassed(Order order) {
-//        if (todayDate.after(historyDate))
         try {
-            Date dateOfPickup = new SimpleDateFormat("E dd-MM-yyyy HH:mm").parse(order.getDatum_prevzema());
+            Date dateOfPickup = order.getDatum_prevzema();
             Date todayDate = new Date();
             String datePickupString = new SimpleDateFormat("dd-MM-yyyy").format(Objects.requireNonNull(dateOfPickup));
             String dateTodayString = new SimpleDateFormat("dd-MM-yyyy").format(todayDate);
@@ -277,13 +274,13 @@ public class MainActivity extends AppCompatActivity {
     } // sendOrderToHistory
 
     public void setOrderHistoryListener() {
-        CollectionReference colRef;
+        Query colRef;
         if (appUser.isLastnik_kmetije()) { // We have a farmer:
             colRef = FirebaseFirestore.getInstance().collection("Kmetije").document(currentUser.getUid())
-                    .collection("Zgodovina Naročil");
+                    .collection("Zgodovina Naročil").orderBy("datum_narocila");
         } else // We have a buyer:
             colRef = FirebaseFirestore.getInstance().collection("Uporabniki").document(currentUser.getUid())
-                    .collection("Zgodovina Naročil");
+                    .collection("Zgodovina Naročil").orderBy("datum_narocila");
         orderHistoryListener = colRef
                 .addSnapshotListener((value, e) -> {
                     if (e != null) {
@@ -294,7 +291,6 @@ public class MainActivity extends AppCompatActivity {
                     for (QueryDocumentSnapshot doc : Objects.requireNonNull(value)) {
                         appOrderHistory.add(doc.toObject(Order.class));
                     }
-                    Collections.reverse(appOrderHistory);
                 });
     } // setOrderHistoryListener
 
@@ -472,15 +468,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @SuppressLint("SimpleDateFormat")
-    public static String getFullDateSlo(String date) {
-        try {
-            Date tempDate = new SimpleDateFormat("E dd-MM-yyyy HH:mm").parse(date);
-            String dayNameEng = new SimpleDateFormat("E").format(Objects.requireNonNull(tempDate));
-            return getSloDayName(dayNameEng) + " " + new SimpleDateFormat("dd-MM-yyyy HH:mm").format(tempDate);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return "";
+    public static String getFullPickupDateSlo(Date date) {
+        String dayNameEng = new SimpleDateFormat("E").format(Objects.requireNonNull(date));
+        return getSloDayName(dayNameEng) + " " + new SimpleDateFormat("dd-MM-yyyy HH:mm").format(date);
+    } // getFullDateSlo
+
+    @SuppressLint("SimpleDateFormat")
+    public static String getFullOrderDateSlo(Date date) {
+        String dayNameEng = new SimpleDateFormat("E").format(Objects.requireNonNull(date));
+        return getSloDayName(dayNameEng) + " " + new SimpleDateFormat("dd-MM-yyyy").format(date);
     } // getFullDateSlo
 
     @Override
@@ -496,7 +492,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
         if (!handled) {
-                super.onBackPressed();
+            super.onBackPressed();
         }
     } // onBackPressed
 }

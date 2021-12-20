@@ -2,7 +2,8 @@ package diplomska.naloga.vselokalno.UserFunctions.ActiveOrders_FU;
 
 import static diplomska.naloga.vselokalno.MainActivity.appActiveOrders;
 import static diplomska.naloga.vselokalno.MainActivity.appUser;
-import static diplomska.naloga.vselokalno.MainActivity.getFullDateSlo;
+import static diplomska.naloga.vselokalno.MainActivity.getFullOrderDateSlo;
+import static diplomska.naloga.vselokalno.MainActivity.getFullPickupDateSlo;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -18,7 +19,6 @@ import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
@@ -58,8 +58,8 @@ public class ActiveOrdersRecyclerAdapter extends RecyclerView.Adapter<ActiveOrde
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Order currentOrder = appActiveOrders.get(position);
-        holder.dateOrder_tv.setText(getFullDateSlo(currentOrder.getDatum_narocila()));
-        holder.datePickup_tv.setText(getFullDateSlo(currentOrder.getDatum_prevzema()));
+        holder.dateOrder_tv.setText(getFullOrderDateSlo(currentOrder.getDatum_narocila()));
+        holder.datePickup_tv.setText(getFullPickupDateSlo(currentOrder.getDatum_prevzema()));
         showStatus(currentOrder.getOpravljeno(), holder, currentOrder.getDatum_prevzema());
         StorageReference profileImageRef;
         if (!appUser.isLastnik_kmetije()) { // We have a user:
@@ -79,7 +79,7 @@ public class ActiveOrdersRecyclerAdapter extends RecyclerView.Adapter<ActiveOrde
     }
 
     @SuppressLint({"UseCompatLoadingForDrawables", "SimpleDateFormat"})
-    public void showStatus(int index, ViewHolder holderTemp, String datumDostave) {
+    public void showStatus(int index, ViewHolder holderTemp, Date datePickup) {
         switch (index) {
             case 0: // In process and there is still enough time, eg: more than 1 day (white).
                 break;
@@ -88,21 +88,15 @@ public class ActiveOrdersRecyclerAdapter extends RecyclerView.Adapter<ActiveOrde
                 holderTemp.entireView.setBackground(mContext.getResources().getDrawable(R.drawable.warning_background_border));
                 break;
             case 2: // The order is processed and is on schedule (green) / today (blue).
-                try {
-                    Date datePickup = new SimpleDateFormat("E dd-MM-yyyy HH:mm").parse(datumDostave);
-                    Date dateToday = new Date();
-                    String datePickupString = new SimpleDateFormat("dd-MM-yyyy").format(Objects.requireNonNull(datePickup));
-                    String dateTodayString = new SimpleDateFormat("dd-MM-yyyy").format(dateToday);
-                    if (datePickup.after(dateToday)) { // Not pickup day yet
-                        holderTemp.confirmedImage.setVisibility(View.VISIBLE);
-                        holderTemp.entireView.setBackground(mContext.getResources().getDrawable(R.drawable.green_background_border));
-                    }
-                    else if (datePickupString.equals(dateTodayString)) { // Today is pickup day
-                        holderTemp.entireView.setBackground(mContext.getResources().getDrawable(R.drawable.blue_background_border));
-                        holderTemp.infoImage.setVisibility(View.VISIBLE);
-                    }
-                } catch (ParseException e) {
-                    e.printStackTrace();
+                Date dateToday = new Date();
+                String datePickupString = new SimpleDateFormat("dd-MM-yyyy").format(Objects.requireNonNull(datePickup));
+                String dateTodayString = new SimpleDateFormat("dd-MM-yyyy").format(dateToday);
+                if (datePickup.after(dateToday)) { // Not pickup day yet
+                    holderTemp.confirmedImage.setVisibility(View.VISIBLE);
+                    holderTemp.entireView.setBackground(mContext.getResources().getDrawable(R.drawable.green_background_border));
+                } else if (datePickupString.equals(dateTodayString)) { // Today is pickup day
+                    holderTemp.entireView.setBackground(mContext.getResources().getDrawable(R.drawable.blue_background_border));
+                    holderTemp.infoImage.setVisibility(View.VISIBLE);
                 }
                 break;
             case 3: // There is an issue and the order was canceled (red).

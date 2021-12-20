@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
@@ -20,7 +21,6 @@ import diplomska.naloga.vselokalno.UserFunctions.ActiveOrders_FU.SpecificOrder.A
 
 public class ActiveOrdersListFragment extends Fragment implements ActiveOrdersRecyclerAdapter.ActiveOrdersAdapterCallback, ActiveOrderDetailsFragment.UpdateSpecificOrder {
 
-    private final String TAG = "ActiveOrdersListFragment";
     SwipeRefreshLayout pullToRefresh;
     TextView numOfActiveOrdersView;
     RecyclerView activeOrdersRecyclerView;
