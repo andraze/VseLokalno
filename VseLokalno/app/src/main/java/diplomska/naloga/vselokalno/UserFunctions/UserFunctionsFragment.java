@@ -27,7 +27,7 @@ import diplomska.naloga.vselokalno.R;
 import diplomska.naloga.vselokalno.UserFunctions.ActiveOrders_FU.ActiveOrdersListFragment;
 import diplomska.naloga.vselokalno.UserFunctions.Basket_U.BasketFragment;
 import diplomska.naloga.vselokalno.UserFunctions.OrderHistory_FU.OrderHistoryListFragment;
-import diplomska.naloga.vselokalno.UserFunctions.OrderHistory_FU.SpecificOrder.OrderHistoryDetailsFragment;
+import diplomska.naloga.vselokalno.UserFunctions.ProfileSettings_FU.EditProfileInformationFragment;
 import diplomska.naloga.vselokalno.UserFunctions.StockList_F.Category.CategoryListFragment;
 
 
@@ -38,6 +38,7 @@ public class UserFunctionsFragment extends Fragment {
     LinearLayoutCompat seznam_artikliLinearLayout;
     LinearLayoutCompat zeljeLinearLayout;
     LinearLayoutCompat zgodovinaLinearLayout;
+    LinearLayoutCompat uporabniske_nastavitveLinearLayout;
     // Fragment:
     CategoryListFragment categoryListFragment;
     private final String TAG = "UserFunctionsFragment";
@@ -153,6 +154,17 @@ public class UserFunctionsFragment extends Fragment {
             fragmentManager.beginTransaction()
                     .setCustomAnimations(R.anim.fade_in, R.anim.fade_out, R.anim.fade_in, R.anim.fade_out)
                     .replace(R.id.main_fragment_container, orderHistoryListFragment)
+                    .addToBackStack(null)
+                    .commit();
+        });
+        uporabniske_nastavitveLinearLayout = rootView.findViewById(R.id.uporabniske_nastavitve_userFunctionsFragment);
+        uporabniske_nastavitveLinearLayout.setOnClickListener(l -> {
+            bottomNavigation.setVisibility(View.GONE);
+            EditProfileInformationFragment editProfileInformationFragment= EditProfileInformationFragment.newInstance();
+            FragmentManager fragmentManager = getParentFragmentManager();
+            fragmentManager.beginTransaction()
+                    .setCustomAnimations(R.anim.fade_in, R.anim.fade_out, R.anim.fade_in, R.anim.fade_out)
+                    .replace(R.id.main_fragment_container, editProfileInformationFragment)
                     .addToBackStack(null)
                     .commit();
         });

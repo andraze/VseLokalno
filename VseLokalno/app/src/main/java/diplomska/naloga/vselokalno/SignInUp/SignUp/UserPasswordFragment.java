@@ -70,16 +70,15 @@ public class UserPasswordFragment extends Fragment {
                 Toast.makeText(requireContext(), "Gesli se ne ujemata.", Toast.LENGTH_SHORT).show();
             else {
                 userData.setPassword(passwordET.getText().toString());
-//                If user is also a farm owner we will ask for picture later and first ask to fill in data for farm.
                 if (!userData.isLastnik_kmetije()) {
-                    FINALChoosePhotoFragment finalChoosePhotoFragment = FINALChoosePhotoFragment.newInstance();
+                    UserNameFragment userNameFragment = UserNameFragment.newInstance();
                     FragmentManager fragmentManager = getParentFragmentManager();
                     fragmentManager.beginTransaction()
                             .setCustomAnimations(
                                     R.anim.enter_from_right, R.anim.exit_to_left,
                                     R.anim.enter_from_left, R.anim.exit_to_right
                             )
-                            .replace(R.id.fragment_container_view_signINUP, finalChoosePhotoFragment)
+                            .replace(R.id.fragment_container_view_signINUP, userNameFragment)
                             .addToBackStack(null)
                             .commit();
                 } else {

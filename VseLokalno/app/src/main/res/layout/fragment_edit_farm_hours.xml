@@ -1,0 +1,461 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/dp_4"
+    android:orientation="vertical"
+    tools:context=".UserFunctions.ProfileSettings_FU.EditFarmHoursFragment">
+
+    <TextView
+        android:id="@+id/header_timeFarm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_4"
+        android:text="@string/cas_prevzema"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:textColor="@color/blue_normal" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/blue_normal_low" />
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_4"
+        android:orientation="horizontal">
+
+        <CheckedTextView
+            android:id="@+id/pon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/checkmark"
+            android:gravity="center"
+            android:text="@string/pon"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            app:buttonTint="@color/red_normal" />
+
+        <CheckedTextView
+            android:id="@+id/tor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/checkmark"
+            android:gravity="center"
+            android:text="@string/tor"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            app:buttonTint="@color/red_normal" />
+
+        <CheckedTextView
+            android:id="@+id/sre"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/checkmark"
+            android:gravity="center"
+            android:text="@string/sre"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            app:buttonTint="@color/red_normal" />
+
+        <CheckedTextView
+            android:id="@+id/cet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/checkmark"
+            android:gravity="center"
+            android:text="@string/cet"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            app:buttonTint="@color/red_normal" />
+
+        <CheckedTextView
+            android:id="@+id/pet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/checkmark"
+            android:gravity="center"
+            android:text="@string/pet"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            app:buttonTint="@color/red_normal" />
+
+        <CheckedTextView
+            android:id="@+id/sob"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/checkmark"
+            android:gravity="center"
+            android:text="@string/sob"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            app:buttonTint="@color/red_normal" />
+
+        <CheckedTextView
+            android:id="@+id/ned"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/checkmark"
+            android:gravity="center"
+            android:text="@string/ned"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            app:buttonTint="@color/red_normal" />
+
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/blue_normal_low" />
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/time_7_8"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/dp_4"
+            android:backgroundTint="@color/white"
+            android:elevation="2dp"
+            android:onClick="selectNewTime"
+            android:stateListAnimator="@null"
+            android:text="@string/_07_00_08_00"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="@color/blue_normal" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/time_8_9"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/dp_4"
+            android:backgroundTint="@color/white"
+            android:elevation="2dp"
+            android:onClick="selectNewTime"
+            android:stateListAnimator="@null"
+            android:text="@string/_08_00_09_00"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="@color/blue_normal" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/blue_normal_low" />
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/time_9_10"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/dp_4"
+            android:backgroundTint="@color/white"
+            android:elevation="2dp"
+            android:onClick="selectNewTime"
+            android:stateListAnimator="@null"
+            android:text="@string/_09_00_10_00"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="@color/blue_normal" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/time_10_11"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/dp_4"
+            android:backgroundTint="@color/white"
+            android:elevation="2dp"
+            android:onClick="selectNewTime"
+            android:stateListAnimator="@null"
+            android:text="@string/_10_00_11_00"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="@color/blue_normal" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/blue_normal_low" />
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/time_11_12"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/dp_4"
+            android:backgroundTint="@color/white"
+            android:elevation="2dp"
+            android:onClick="selectNewTime"
+            android:stateListAnimator="@null"
+            android:text="@string/_11_00_12_00"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="@color/blue_normal" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/time_12_13"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/dp_4"
+            android:backgroundTint="@color/white"
+            android:elevation="2dp"
+            android:onClick="selectNewTime"
+            android:stateListAnimator="@null"
+            android:text="@string/_12_00_13_00"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="@color/blue_normal" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/blue_normal_low" />
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/time_13_14"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/dp_4"
+            android:backgroundTint="@color/white"
+            android:elevation="2dp"
+            android:onClick="selectNewTime"
+            android:stateListAnimator="@null"
+            android:text="@string/_13_00_14_00"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="@color/blue_normal" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/time_14_15"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/dp_4"
+            android:backgroundTint="@color/white"
+            android:elevation="2dp"
+            android:onClick="selectNewTime"
+            android:stateListAnimator="@null"
+            android:text="@string/_14_00_15_00"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="@color/blue_normal" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/blue_normal_low" />
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/time_15_16"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/dp_4"
+            android:backgroundTint="@color/white"
+            android:elevation="2dp"
+            android:onClick="selectNewTime"
+            android:stateListAnimator="@null"
+            android:text="@string/_15_00_16_00"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="@color/blue_normal" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/time_16_17"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/dp_4"
+            android:backgroundTint="@color/white"
+            android:elevation="2dp"
+            android:onClick="selectNewTime"
+            android:stateListAnimator="@null"
+            android:text="@string/_16_00_17_00"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="@color/blue_normal" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/blue_normal_low" />
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/time_17_18"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/dp_4"
+            android:backgroundTint="@color/white"
+            android:elevation="2dp"
+            android:onClick="selectNewTime"
+            android:stateListAnimator="@null"
+            android:text="@string/_17_00_18_00"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="@color/blue_normal" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/time_18_19"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/dp_4"
+            android:backgroundTint="@color/white"
+            android:elevation="2dp"
+            android:onClick="selectNewTime"
+            android:stateListAnimator="@null"
+            android:text="@string/_18_00_19_00"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="@color/blue_normal" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/blue_normal_low" />
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/time_19_20"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/dp_4"
+            android:backgroundTint="@color/white"
+            android:elevation="2dp"
+            android:onClick="selectNewTime"
+            android:stateListAnimator="@null"
+            android:text="@string/_19_00_20_00"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="@color/blue_normal" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/time_20_21"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/dp_4"
+            android:backgroundTint="@color/white"
+            android:elevation="2dp"
+            android:onClick="selectNewTime"
+            android:stateListAnimator="@null"
+            android:text="@string/_20_00_21_00"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="@color/blue_normal" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_8"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/discard_changes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/dp_8"
+            android:clickable="true"
+            android:focusable="true"
+            android:fontFamily="@font/roboto_medium_family"
+            android:text="@string/zavrzi_spremembe"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/red_normal"
+            android:textSize="@dimen/sp_12" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/save_changes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/dp_8"
+            android:background="@drawable/round_button_background"
+            android:fontFamily="@font/roboto_medium_family"
+            android:text="@string/shrani_spremembe"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_14" />
+
+    </LinearLayout>
+
+</LinearLayout>

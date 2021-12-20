@@ -183,7 +183,7 @@ public class FINALFarmPictureFragment extends Fragment implements ImageCropper.I
         Map<String, String> shortDataFarm = farmData.getKoordinate_kmetije();
         shortDataFarm.put("ime_kmetije", farmData.getIme_kmetije());
         shortDataFarm.put("id_kmetije", user.getUid());
-        allFarmsDocument.update("seznam_vseh_kmetij", FieldValue.arrayUnion(shortDataFarm))
+        allFarmsDocument.update(user.getUid(), shortDataFarm)
                 .addOnSuccessListener(unused -> {
                     makeLogD(TAG, "(addToAllFarmList) addition successful.");
                     Intent toMainActivity = new Intent(requireContext(), MainActivity.class);

@@ -179,10 +179,12 @@ public class MapFragment extends Fragment implements GoogleMap.OnInfoWindowClick
     public void onInfoWindowClick(@NonNull Marker marker) {
         makeLogD(TAG, marker.getPosition().toString());
         Map<String, String> lookingForFarm = null;
-        for (Map<String, String> farm : allFarmsDataShort) {
-            if (Objects.equals(farm.get("ime_kmetije"), marker.getTitle()) &&
-                    marker.getPosition().equals(new LatLng(Double.parseDouble(Objects.requireNonNull(farm.get("lat"))), Double.parseDouble(Objects.requireNonNull(farm.get("lon")))))) {
-                lookingForFarm = farm;
+        for (Map.Entry<String,Map<String, String>> entry : allFarmsDataShort.entrySet()) {
+            Map<String, String> oneFarmDetails = entry.getValue();
+            if (Objects.equals(oneFarmDetails.get("ime_kmetije"), marker.getTitle()) &&
+                    marker.getPosition().equals(new LatLng(Double.parseDouble(Objects.requireNonNull(oneFarmDetails.get("lat"))), Double.parseDouble(Objects.requireNonNull(oneFarmDetails.get("lon")))))) {
+                lookingForFarm = oneFarmDetails;
+                lookingForFarm.put("id_kmetije", entry.getKey());
                 break;
             }
         }
@@ -206,7 +208,8 @@ public class MapFragment extends Fragment implements GoogleMap.OnInfoWindowClick
 
     private void showFarms() {
         mMap.setInfoWindowAdapter(new CustomInfoWindowAdaper(requireActivity()));
-        for (Map<String, String> farm : allFarmsDataShort) {
+        for (Map.Entry<String,Map<String, String>> entry : allFarmsDataShort.entrySet()) {
+            Map<String, String> farm = entry.getValue();
             LatLng latLngOfFarm;
             if (farm.get("lat") == null || farm.get("lon") == null)
                 makeLogW(TAG, "(showFarms) lat or lon == null!");

@@ -12,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -20,7 +19,6 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -171,12 +169,8 @@ public class ListFragment extends Fragment implements RecyclerAdapter.ItemClickL
             }
         }
         Order newOrder = new Order();
-        for (Map<String, String> currentFarmShort : allFarmsDataShort) {
-            if (Objects.equals(currentFarmShort.get("id_kmetije"), newArticle.getFarm_id())) {
-                newOrder.setIme_kmetije(currentFarmShort.get("ime_kmetije"));
-                break;
-            }
-        }
+        Map<String, String> farmTemp = allFarmsDataShort.get(newArticle.getFarm_id());
+        newOrder.setIme_kmetije(Objects.requireNonNull(farmTemp).get("ime_kmetije"));
         newOrder.setId_kupca(userID);
         newOrder.setId_kmetije(newArticle.getFarm_id());
         newOrder.setIme_priimek_kupca(appUser.getIme_uporabnika() + " " + appUser.getPriimek_uporabnika());

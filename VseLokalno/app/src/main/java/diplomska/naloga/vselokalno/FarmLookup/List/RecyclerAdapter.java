@@ -1,7 +1,5 @@
 package diplomska.naloga.vselokalno.FarmLookup.List;
 
-import static diplomska.naloga.vselokalno.MainActivity.makeLogD;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -17,8 +15,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.util.ArrayList;
 import java.util.Map;
+import java.util.Objects;
 
 import diplomska.naloga.vselokalno.DataObjects.GlideApp;
 import diplomska.naloga.vselokalno.R;
@@ -37,15 +35,17 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     ItemClickListener ItemClickListener;
 
     // Member variables.
-    private final ArrayList<Map<String, String>> mFarmData;
+    private final Map<String, Map<String, String>> mFarmData;
+    private final Object[] mFarmDataKeys;
     private final Context mContext;
     LayoutInflater mInflater;
     FragmentManager fragmentManager;
 
-    public RecyclerAdapter(Context context, ArrayList<Map<String, String>> farmArrayList,
+    public RecyclerAdapter(Context context, Map<String, Map<String, String>> farmData,
                            FragmentManager newFragmentmaneger, ItemClickListener itemClickListener) {
         mInflater = LayoutInflater.from(context);
-        this.mFarmData = farmArrayList;
+        this.mFarmData = farmData;
+        mFarmDataKeys = mFarmData.keySet().toArray();
         this.mContext = context;
         setHasStableIds(true);
         this.fragmentManager = newFragmentmaneger;
@@ -72,13 +72,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     @Override
     public void onBindViewHolder(RecyclerAdapter.ViewHolder holder, int position) {
         // Get current sport.
-        Map<String, String> currentFarm = mFarmData.get(position);
-        makeLogD(TAG, "(onBindViewHolder) showing farm: " + currentFarm.get("ime_kmetije"));
+        Map<String, String> currentFarm = mFarmData.get(mFarmDataKeys[position]);
         // Populate the textviews with data.
-        holder.mNaslovText.setText(currentFarm.get("ime_kmetije"));
+        holder.mNaslovText.setText(Objects.requireNonNull(currentFarm).get("ime_kmetije"));
         // Reference to an image file in Cloud Storage
         StorageReference imageRef = FirebaseStorage.getInstance().getReference()
-                .child("Profile Images/" + currentFarm.get("id_kmetije"));
+                .child("Profile Images/" + mFarmDataKeys[position]);
 //        makeLogD(TAG, "(onBindViewHolder) storage reference: " + imageRef.toString());
         GlideApp.with(mContext).load(imageRef)
                 .error(mContext.getResources().getDrawable(R.drawable.default_farm_image))

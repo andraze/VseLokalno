@@ -128,14 +128,8 @@ public class ActiveOrderDetailsFragment extends Fragment {
         TextView goToNavigationBtn = rootView.findViewById(R.id.navigation_btn);
         if (!appUser.isLastnik_kmetije()) { // We have a user:
             goToNavigationBtn.setOnClickListener(v -> {
-                Map<String, String> myFarm = new HashMap<>();
-                for (Map<String, String> farm : allFarmsDataShort) {
-                    if (Objects.equals(farm.get("id_kmetije"), mCurrentOrder.getId_kmetije())) {
-                        myFarm = farm;
-                        break;
-                    }
-                }
-                if (myFarm.isEmpty()) {
+                Map<String, String> myFarm = allFarmsDataShort.get(mCurrentOrder.getId_kmetije());
+                if (Objects.requireNonNull(myFarm).isEmpty()) {
                     makeLogW(TAG, "Error getting farm!");
                 } else {
                     Uri gmmIntentUri = Uri.parse("google.navigation:q=" + myFarm.get("lat") + "," + myFarm.get("lon"));

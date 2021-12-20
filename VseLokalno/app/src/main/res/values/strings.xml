@@ -118,4 +118,11 @@
     <string name="na_zalogi">na zalogi</string>
     <string name="st_narocil">ŠT NAROČIL: </string>
     <string name="pojdi">Pojdi</string>
+    <string name="uredi_profil">Uredi profil</string>
+    <string name="elektronska_posta">Elektronska pošta</string>
+    <string name="moj_priimek_je">Moj priimek je</string>
+    <string name="delovni_cas">Delovni čas</string>
+    <string name="notifikacije">Notifikacije</string>
+    <string name="shrani_spremembe">SHRANI SPREMEMBE</string>
+    <string name="zavrzi_spremembe">ZAVRZI SPREMEMBE</string>
 </resources>

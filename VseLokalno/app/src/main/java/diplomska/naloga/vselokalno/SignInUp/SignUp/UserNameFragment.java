@@ -65,14 +65,14 @@ public class UserNameFragment extends Fragment {
             }
             userData.setIme_uporabnika(Objects.requireNonNull(nameET.getText()).toString());
             userData.setPriimek_uporabnika(Objects.requireNonNull(surrnameET.getText()).toString());
-            UserPasswordFragment userPasswordFragment = UserPasswordFragment.newInstance();
+            FINALChoosePhotoFragment finalChoosePhotoFragment = FINALChoosePhotoFragment.newInstance();
             FragmentManager fragmentManager = getParentFragmentManager();
             fragmentManager.beginTransaction()
                     .setCustomAnimations(
                             R.anim.enter_from_right, R.anim.exit_to_left,
                             R.anim.enter_from_left, R.anim.exit_to_right
                     )
-                    .replace(R.id.fragment_container_view_signINUP, userPasswordFragment)
+                    .replace(R.id.fragment_container_view_signINUP, finalChoosePhotoFragment)
                     .addToBackStack(null)
                     .commit();
         });

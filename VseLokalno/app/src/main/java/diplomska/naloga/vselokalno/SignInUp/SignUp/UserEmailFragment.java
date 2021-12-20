@@ -62,14 +62,14 @@ public class UserEmailFragment extends Fragment {
                 return;
             }
             userData.setEmail(Objects.requireNonNull(emailET.getText()).toString());
-            UserNameFragment userNameFragment = UserNameFragment.newInstance();
+            UserPasswordFragment userPasswordFragment = UserPasswordFragment.newInstance();
             FragmentManager fragmentManager = getParentFragmentManager();
             fragmentManager.beginTransaction()
                     .setCustomAnimations(
                             R.anim.enter_from_right, R.anim.exit_to_left,
                             R.anim.enter_from_left, R.anim.exit_to_right
                     )
-                    .replace(R.id.fragment_container_view_signINUP, userNameFragment)
+                    .replace(R.id.fragment_container_view_signINUP, userPasswordFragment)
                     .addToBackStack(null)
                     .commit();
         });

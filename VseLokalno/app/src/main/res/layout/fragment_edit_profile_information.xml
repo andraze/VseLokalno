@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="@dimen/dp_16"
+    android:layout_marginRight="@dimen/dp_16"
+    android:orientation="vertical"
+    tools:context=".UserFunctions.ProfileSettings_FU.EditProfileInformationFragment"
+    tools:ignore="ContentDescription, UseCompoundDrawables">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/edit_profile_image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/profile_image_view_EditProfileInformationFragment"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_margin="@dimen/dp_4"
+                android:elevation="2dp"
+                android:src="@drawable/default_profile_picture"
+                app:civ_border_color="@color/white"
+                app:civ_border_width="3dp" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginStart="-25dp"
+                android:background="@drawable/edit_pencil_background"
+                android:src="@drawable/ic_pencil_edit" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_16"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/edit_email"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/roboto_regular_family"
+                android:hint="@string/elektronska_posta"
+                android:importantForAutofill="no"
+                android:inputType="textEmailAddress"
+                android:textColor="@color/blue_dark"
+                android:textSize="@dimen/sp_22" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:background="@drawable/edit_pencil_background"
+                android:src="@drawable/ic_pencil_edit" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_16"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/edit_password"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/roboto_regular_family"
+                android:hint="@string/moje_geslo_naj_bo"
+                android:importantForAutofill="no"
+                android:inputType="textPassword"
+                android:textColor="@color/blue_dark"
+                android:textSize="@dimen/sp_22" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:background="@drawable/edit_pencil_background"
+                android:src="@drawable/ic_pencil_edit" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/lin_layout_farmName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_16"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/edit_farmName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/roboto_regular_family"
+                android:hint="@string/ime_kmetije_je"
+                android:importantForAutofill="no"
+                android:inputType="textEmailAddress"
+                android:textColor="@color/blue_dark"
+                android:textSize="@dimen/sp_22" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:background="@drawable/edit_pencil_background"
+                android:src="@drawable/ic_pencil_edit" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/lin_layout_farmAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_16"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/edit_farmAddress"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/roboto_regular_family"
+                android:hint="@string/naslov_kmetije"
+                android:importantForAutofill="no"
+                android:inputType="textEmailAddress"
+                android:textColor="@color/blue_dark"
+                android:textSize="@dimen/sp_22" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:background="@drawable/edit_pencil_background"
+                android:src="@drawable/ic_pencil_edit" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/lin_layout_userName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_16"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/edit_userName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/roboto_regular_family"
+                android:hint="@string/moje_ime_je"
+                android:importantForAutofill="no"
+                android:inputType="textEmailAddress"
+                android:textColor="@color/blue_dark"
+                android:textSize="@dimen/sp_22" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:background="@drawable/edit_pencil_background"
+                android:src="@drawable/ic_pencil_edit" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/lin_layout_userSurrname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_16"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/edit_userSurrname"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/roboto_regular_family"
+                android:hint="@string/moj_priimek_je"
+                android:importantForAutofill="no"
+                android:inputType="textEmailAddress"
+                android:textColor="@color/blue_dark"
+                android:textSize="@dimen/sp_22" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:background="@drawable/edit_pencil_background"
+                android:src="@drawable/ic_pencil_edit" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/lin_layout_farmWorkingHours"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_16"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/roboto_regular_family"
+                android:text="@string/delovni_cas"
+                android:textColor="@color/blue_dark"
+                android:textSize="@dimen/sp_22" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:background="@drawable/edit_pencil_background"
+                android:src="@drawable/ic_pencil_edit" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_16"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/notification_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:thumbTint="@color/white"
+                app:trackTint="@color/blue_light" />
+
+            <TextView
+                android:id="@+id/notification_explanation"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/roboto_light_family"
+                android:text="@string/notifikacije"
+                android:textColor="@color/blue_dark"
+                android:textSize="@dimen/sp_18" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_16"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/discard_changes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/dp_8"
+                android:clickable="true"
+                android:focusable="true"
+                android:fontFamily="@font/roboto_medium_family"
+                android:text="@string/zavrzi_spremembe"
+                android:textColor="@color/red_normal"
+                android:textSize="@dimen/sp_12" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/save_changes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/dp_8"
+                android:background="@drawable/round_button_background"
+                android:fontFamily="@font/roboto_medium_family"
+                android:text="@string/shrani_spremembe"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_14" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

@@ -62,6 +62,8 @@ public class FarmNameFragment extends Fragment {
                 return;
             }
             farmData.setIme_kmetije(Objects.requireNonNull(nameET.getText()).toString());
+            userData.setIme_uporabnika("Kmetija");
+            userData.setPriimek_uporabnika(farmData.getIme_kmetije());
             FarmLocationFragment farmLocationFragment = FarmLocationFragment.newInstance();
             FragmentManager fragmentManager = getParentFragmentManager();
             fragmentManager.beginTransaction()

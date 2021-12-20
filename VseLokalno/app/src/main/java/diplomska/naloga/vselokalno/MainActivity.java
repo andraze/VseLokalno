@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -29,11 +30,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import diplomska.naloga.vselokalno.DataObjects.AllFarms;
 import diplomska.naloga.vselokalno.DataObjects.Article;
 import diplomska.naloga.vselokalno.DataObjects.Category;
 import diplomska.naloga.vselokalno.DataObjects.Farm;
@@ -45,6 +46,7 @@ import diplomska.naloga.vselokalno.FarmLookup.List.ListFragment;
 import diplomska.naloga.vselokalno.FarmLookup.Map.MapFragment;
 import diplomska.naloga.vselokalno.ImageCrop.ImageCropper;
 import diplomska.naloga.vselokalno.SignInUp.SignInUpActivity;
+import diplomska.naloga.vselokalno.UserFunctions.ProfileSettings_FU.EditFarmHoursFragment;
 import diplomska.naloga.vselokalno.UserFunctions.UserFunctionsFragment;
 
 
@@ -71,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
     public FirebaseStorage storage;
     //    Firebase messaging:
     FirebaseMessaging firebaseMessaging;
-    final String fcmTopic = "active_orders_update";
+    final public static String fcmTopic = "active_orders_update";
     //    Bottom navigation:
     public static ChipNavigationBar bottomNavigation;
     //    Fragments:
@@ -83,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
             "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00"};
     public static final int[] timeIDs = {R.id.time_7_8, R.id.time_8_9, R.id.time_9_10, R.id.time_10_11, R.id.time_11_12, R.id.time_12_13, R.id.time_13_14,
             R.id.time_14_15, R.id.time_15_16, R.id.time_16_17, R.id.time_17_18, R.id.time_18_19, R.id.time_19_20, R.id.time_20_21};
-    public static ArrayList<Map<String, String>> allFarmsDataShort;
+    public static Map<String, Map<String, String>> allFarmsDataShort;
     // Orders for buyer:
     public static ArrayList<Order> appBasket;
     // Articles and category for farm:
@@ -91,8 +93,9 @@ public class MainActivity extends AppCompatActivity {
     public static ArrayList<Category> appCategories;
     // Shared preferences file:
     private static final String sharedPrefFile = "app_basket_shared_preferences_filename";
-    static SharedPreferences mySharedPreferences;
+    public static SharedPreferences mySharedPreferences;
     public static final String mAppBasketSharedPrefKey = "shared_preferences_key";
+    public static final String mNotificationsSharedPrefKey = "notifications_shared_preferences_key";
     // Translate day names:
     public static final String[] dayNamesEng = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
     public static final String[] dayNamesSlo = {"Pon", "Tor", "Sre", "Čet", "Pet", "Sob", "Ned"};
@@ -121,8 +124,12 @@ public class MainActivity extends AppCompatActivity {
         // Initialise the firebase storage:
         storage = FirebaseStorage.getInstance();
         // Firebase messaging subscribe to notification topic:
+        boolean showNotifications = mySharedPreferences.getBoolean(mNotificationsSharedPrefKey, true);
         firebaseMessaging = FirebaseMessaging.getInstance();
-        firebaseMessaging.subscribeToTopic(fcmTopic);
+        if (showNotifications)
+            firebaseMessaging.subscribeToTopic(fcmTopic);
+        else
+            firebaseMessaging.unsubscribeFromTopic(fcmTopic);
         // Initialise the app user and app farm and app basket:
         appUser = new User();
         appFarm = new Farm();
@@ -374,11 +381,11 @@ public class MainActivity extends AppCompatActivity {
                     // Success
                     if (documentSnapshot.exists()) {
                         makeLogD(TAG, "(getAllFarmData) Got document: " + documentSnapshot.getId());
-                        AllFarms allFarms = documentSnapshot.toObject(AllFarms.class);
-                        if (allFarms != null) {
-                            allFarmsDataShort = allFarms.getSeznam_vseh_kmetij();
-                            openFragment(0);
-                        }
+//                        AllFarms allFarms = documentSnapshot.toObject(AllFarms.class);
+                        allFarmsDataShort = new HashMap<>();
+                        for (String key : Objects.requireNonNull(documentSnapshot.getData()).keySet())
+                            allFarmsDataShort.put(key, (Map<String, String>) documentSnapshot.getData().get(key));
+                        openFragment(0);
                     } else {
                         makeLogW(TAG, "(getAllFarmData) No such document!");
                     }
@@ -497,4 +504,15 @@ public class MainActivity extends AppCompatActivity {
             super.onBackPressed();
         }
     } // onBackPressed
+
+    public void selectNewTime(View view) {
+        MaterialButton btn = (MaterialButton) view;
+        List<Fragment> fragmentList = getSupportFragmentManager().getFragments();
+        for (Fragment f : fragmentList) {
+            if (f instanceof EditFarmHoursFragment) {
+                ((EditFarmHoursFragment) f).selectNewTime(btn);
+                break;
+            }
+        }
+    }
 }
