@@ -82,7 +82,7 @@ public class BasketRecyclerAdapter extends RecyclerView.Adapter<BasketRecyclerAd
         double zalogaTemp = currentArticle.getArticle_storage();
         if (zalogaTemp >= 0 && zalogaTemp < kolicinaTemp) {
             holder.itemView.setBackground(mContext.getResources().getDrawable(R.drawable.error_background_border));
-        } // TODO: check if works
+        }
         // Edit specific article:
         holder.itemView.setOnClickListener(v -> mBasketArticleClickCallback.onBasketItemClickListener(currentArticle, position));
     } // onBindViewHolder

@@ -88,15 +88,16 @@ public class ActiveOrdersRecyclerAdapter extends RecyclerView.Adapter<ActiveOrde
                 holderTemp.entireView.setBackground(mContext.getResources().getDrawable(R.drawable.warning_background_border));
                 break;
             case 2: // The order is processed and is on schedule (green) / today (blue).
-                holderTemp.confirmedImage.setVisibility(View.VISIBLE);
                 try {
                     Date datePickup = new SimpleDateFormat("E dd-MM-yyyy HH:mm").parse(datumDostave);
                     Date dateToday = new Date();
                     String datePickupString = new SimpleDateFormat("dd-MM-yyyy").format(Objects.requireNonNull(datePickup));
                     String dateTodayString = new SimpleDateFormat("dd-MM-yyyy").format(dateToday);
-                    if (datePickup.after(dateToday)) // Not yet pickup day
+                    if (datePickup.after(dateToday)) { // Not pickup day yet
+                        holderTemp.confirmedImage.setVisibility(View.VISIBLE);
                         holderTemp.entireView.setBackground(mContext.getResources().getDrawable(R.drawable.green_background_border));
-                    if (datePickupString.equals(dateTodayString)) { // Today is pickup day
+                    }
+                    else if (datePickupString.equals(dateTodayString)) { // Today is pickup day
                         holderTemp.entireView.setBackground(mContext.getResources().getDrawable(R.drawable.blue_background_border));
                         holderTemp.infoImage.setVisibility(View.VISIBLE);
                     }

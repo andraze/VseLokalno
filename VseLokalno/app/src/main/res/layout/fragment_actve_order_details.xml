@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     android:layout_margin="@dimen/dp_4"
     android:orientation="vertical"
-    tools:context=".UserFunctions.ActiveOrders_FU.SpecificOrder.ActiveOrderDetailsFragment">
+    tools:context=".UserFunctions.ActiveOrders_FU.SpecificOrder.ActiveOrderDetailsFragment"
+    tools:ignore="ContentDescription">
 
     <LinearLayout
         android:id="@+id/lin1"
@@ -54,6 +55,21 @@
                 android:textColor="@color/blue_light" />
 
         </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/navigation_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/dp_8"
+            android:clickable="true"
+            android:focusable="true"
+            android:fontFamily="@font/roboto_light_family"
+            android:text="@string/pojdi"
+            android:textSize="@dimen/sp_12"
+            app:drawableTopCompat="@drawable/ic_google_maps_icon" />
+
 
     </LinearLayout>
 

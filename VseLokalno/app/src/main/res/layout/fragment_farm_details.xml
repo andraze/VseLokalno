@@ -21,7 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_alignParentTop="true"
-        android:background="@drawable/inner_top_shadow"/>
+        android:background="@drawable/inner_top_shadow" />
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nestedScrollView_FarmDetailsFragment"
@@ -91,7 +91,7 @@
         android:id="@+id/top_background"
         android:layout_width="match_parent"
         android:layout_height="70dp"
-        android:background="@color/green_light"/>
+        android:background="@color/green_light" />
 
     <LinearLayout
         android:id="@+id/lin_top"
@@ -100,26 +100,12 @@
         android:layout_alignParentTop="true"
         android:orientation="horizontal">
 
-        <ImageButton
-            android:id="@+id/backBtn_FarmDetailsFragmen"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_16"
-            android:layout_marginEnd="@dimen/dp_8"
-            android:layout_marginBottom="@dimen/dp_16"
-            android:background="#00000000"
-            android:src="@drawable/ic_arrow_back_white" />
-
         <androidx.appcompat.widget.SearchView
             android:id="@+id/search_FarmDetailsFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginTop="@dimen/dp_16"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginBottom="@dimen/dp_16"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/dp_16"
             android:background="@drawable/search_view_background"
             app:iconifiedByDefault="false"
             app:queryBackground="@null"

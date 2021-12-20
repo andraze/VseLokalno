@@ -177,7 +177,6 @@ public class MapFragment extends Fragment implements GoogleMap.OnInfoWindowClick
 
     @Override
     public void onInfoWindowClick(@NonNull Marker marker) {
-        // TODO show details about the selected marker/farm.
         makeLogD(TAG, marker.getPosition().toString());
         Map<String, String> lookingForFarm = null;
         for (Map<String, String> farm : allFarmsDataShort) {

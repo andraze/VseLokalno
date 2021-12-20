@@ -1,9 +1,13 @@
 package diplomska.naloga.vselokalno.UserFunctions.ActiveOrders_FU.SpecificOrder;
 
+import static diplomska.naloga.vselokalno.MainActivity.allFarmsDataShort;
 import static diplomska.naloga.vselokalno.MainActivity.appUser;
+import static diplomska.naloga.vselokalno.MainActivity.makeLogW;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,13 +19,16 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import org.json.JSONException;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 import diplomska.naloga.vselokalno.DataObjects.Article;
 import diplomska.naloga.vselokalno.DataObjects.GlideApp;
@@ -115,7 +122,26 @@ public class ActiveOrderDetailsFragment extends Fragment {
             AlertDialog dialog = builder.create();
             dialog.show();
         });
+        // Go to navigation:
+        TextView goToNavigationBtn = rootView.findViewById(R.id.navigation_btn);
         if (!appUser.isLastnik_kmetije()) { // We have a user:
+            goToNavigationBtn.setOnClickListener(v -> {
+                Map<String, String> myFarm = new HashMap<>();
+                for (Map<String, String> farm : allFarmsDataShort) {
+                    if (Objects.equals(farm.get("id_kmetije"), mCurrentOrder.getId_kmetije())) {
+                        myFarm = farm;
+                        break;
+                    }
+                }
+                if (myFarm.isEmpty()) {
+                    makeLogW(TAG, "Error getting farm!");
+                } else {
+                    Uri gmmIntentUri = Uri.parse("google.navigation:q=" + myFarm.get("lat") + "," + myFarm.get("lon"));
+                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                    mapIntent.setPackage("com.google.android.apps.maps");
+                    startActivity(mapIntent);
+                }
+            });
             nameView.setText(mCurrentOrder.getIme_kmetije());
             StorageReference imageRef = FirebaseStorage.getInstance().getReference()
                     .child("Profile Images/" + mCurrentOrder.getId_kmetije());
@@ -123,6 +149,7 @@ public class ActiveOrderDetailsFragment extends Fragment {
             // Confirm button pressed:
             confirmBtn.setVisibility(View.GONE);
         } else { // We have a farm:
+            goToNavigationBtn.setVisibility(View.GONE);
             nameView.setText(mCurrentOrder.getIme_priimek_kupca());
             StorageReference imageRef = FirebaseStorage.getInstance().getReference()
                     .child("Profile Images/" + mCurrentOrder.getId_kupca());

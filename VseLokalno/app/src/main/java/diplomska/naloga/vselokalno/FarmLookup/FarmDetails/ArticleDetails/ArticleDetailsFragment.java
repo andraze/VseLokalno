@@ -26,12 +26,15 @@ import com.google.firebase.storage.StorageReference;
 import diplomska.naloga.vselokalno.DataObjects.Article;
 import diplomska.naloga.vselokalno.DataObjects.DecimalDitgitsInputFilter;
 import diplomska.naloga.vselokalno.DataObjects.GlideApp;
+import diplomska.naloga.vselokalno.FarmLookup.FarmDetails.FarmDetailsFragment;
 import diplomska.naloga.vselokalno.R;
 
 public class ArticleDetailsFragment extends Fragment {
 
-    public interface BuyArticleCallback {
+    public interface ArticleDetailsCallback {
         void onArticleBuyListener(Article article);
+
+        void onArticleCancelListener(Article article);
     }
 
     // Current article:
@@ -43,7 +46,7 @@ public class ArticleDetailsFragment extends Fragment {
     // Views:
     EditText articleBuyAmountView;
     // Callback:
-    BuyArticleCallback mBuyArticleCallback;
+    ArticleDetailsCallback mArticleDetailsCallback;
 
     public ArticleDetailsFragment() {
         // Required empty public constructor
@@ -128,7 +131,10 @@ public class ArticleDetailsFragment extends Fragment {
         });
         // Cancel buying article:
         ImageButton cancel = rootView.findViewById(R.id.cancel_btn);
-        cancel.setOnClickListener(v -> getParentFragmentManager().popBackStack());
+        cancel.setOnClickListener(v -> {
+            mArticleDetailsCallback.onArticleCancelListener(mArticle);
+            getParentFragmentManager().popBackStack();
+        });
         // Accept article:
         AppCompatButton acceptArticleBtn = rootView.findViewById(R.id.add_article_btn);
         acceptArticleBtn.setOnClickListener(v -> {
@@ -145,7 +151,7 @@ public class ArticleDetailsFragment extends Fragment {
                     Toast.makeText(requireContext(), "Količina je večja kot je na zalogi.", Toast.LENGTH_SHORT).show();
                 } else {
                     mArticle.setArticle_buying_amount(buyingAmountDouble);
-                    mBuyArticleCallback.onArticleBuyListener(mArticle);
+                    mArticleDetailsCallback.onArticleBuyListener(mArticle);
                     getParentFragmentManager().popBackStack();
                 }
             }
@@ -153,7 +159,13 @@ public class ArticleDetailsFragment extends Fragment {
         return rootView;
     } // onCreateView
 
-    public void setBuyArticleCallback(BuyArticleCallback buyArticleCallback) {
-        this.mBuyArticleCallback = buyArticleCallback;
+    public void setBuyArticleCallback(ArticleDetailsCallback articleCallback) {
+        this.mArticleDetailsCallback = articleCallback;
+    } // setBuyArticleCallback
+
+    public boolean onBackPressed() {
+        mArticleDetailsCallback.onArticleCancelListener(mArticle);
+        getParentFragmentManager().popBackStack();
+        return true;
     }
 }

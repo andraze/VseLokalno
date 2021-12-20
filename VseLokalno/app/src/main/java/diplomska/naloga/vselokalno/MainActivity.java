@@ -28,9 +28,9 @@ import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -40,6 +40,8 @@ import diplomska.naloga.vselokalno.DataObjects.Category;
 import diplomska.naloga.vselokalno.DataObjects.Farm;
 import diplomska.naloga.vselokalno.DataObjects.Order;
 import diplomska.naloga.vselokalno.DataObjects.User;
+import diplomska.naloga.vselokalno.FarmLookup.FarmDetails.ArticleDetails.ArticleDetailsFragment;
+import diplomska.naloga.vselokalno.FarmLookup.FarmDetails.FarmDetailsFragment;
 import diplomska.naloga.vselokalno.FarmLookup.List.ListFragment;
 import diplomska.naloga.vselokalno.FarmLookup.Map.MapFragment;
 import diplomska.naloga.vselokalno.ImageCrop.ImageCropper;
@@ -481,4 +483,20 @@ public class MainActivity extends AppCompatActivity {
         return "";
     } // getFullDateSlo
 
+    @Override
+    public void onBackPressed() {
+        List<Fragment> fragmentList = getSupportFragmentManager().getFragments();
+        boolean handled = false;
+        for (Fragment f : fragmentList) {
+            if (f instanceof FarmDetailsFragment)
+                handled = ((FarmDetailsFragment) f).onBackPressed();
+            if (f instanceof ArticleDetailsFragment)
+                handled = ((ArticleDetailsFragment) f).onBackPressed();
+            if (handled)
+                break;
+        }
+        if (!handled) {
+                super.onBackPressed();
+        }
+    } // onBackPressed
 }

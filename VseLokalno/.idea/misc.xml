@@ -22,6 +22,7 @@
         <entry key="app/src/main/res/drawable/decrease_btn_background.xml" value="0.30833333333333335" />
         <entry key="app/src/main/res/drawable/default_farm_image.xml" value="0.31203703703703706" />
         <entry key="app/src/main/res/drawable/error_background_border.xml" value="0.17395833333333333" />
+        <entry key="app/src/main/res/drawable/google_maps_btn_background.xml" value="0.1515625" />
         <entry key="app/src/main/res/drawable/gray_search_view_background.xml" value="0.278125" />
         <entry key="app/src/main/res/drawable/ic_accept.xml" value="0.3484375" />
         <entry key="app/src/main/res/drawable/ic_active_orders.xml" value="0.3323076923076923" />
@@ -72,7 +73,7 @@
         <entry key="app/src/main/res/layout/custom_info_window.xml" value="0.3802083333333333" />
         <entry key="app/src/main/res/layout/default_farm_image.xml" value="0.32135416666666666" />
         <entry key="app/src/main/res/layout/fragment_active_orders_list.xml" value="0.32135416666666666" />
-        <entry key="app/src/main/res/layout/fragment_actve_order_details.xml" value="0.2824074074074074" />
+        <entry key="app/src/main/res/layout/fragment_actve_order_details.xml" value="0.55" />
         <entry key="app/src/main/res/layout/fragment_article_list.xml" value="0.45" />
         <entry key="app/src/main/res/layout/fragment_basket.xml" value="0.19553466057046956" />
         <entry key="app/src/main/res/layout/fragment_basket_item.xml" value="0.32135416666666666" />
@@ -82,7 +83,7 @@
         <entry key="app/src/main/res/layout/fragment_edit_article.xml" value="0.2972181551976574" />
         <entry key="app/src/main/res/layout/fragment_edit_category.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_farm_description.xml" value="0.1375" />
-        <entry key="app/src/main/res/layout/fragment_farm_details.xml" value="0.22580645161290322" />
+        <entry key="app/src/main/res/layout/fragment_farm_details.xml" value="0.40146501082046915" />
         <entry key="app/src/main/res/layout/fragment_farm_location.xml" value="0.30925925925925923" />
         <entry key="app/src/main/res/layout/fragment_farm_time.xml" value="0.3463541666666667" />
         <entry key="app/src/main/res/layout/fragment_farm_time_fragmetn.xml" value="0.46510416666666665" />

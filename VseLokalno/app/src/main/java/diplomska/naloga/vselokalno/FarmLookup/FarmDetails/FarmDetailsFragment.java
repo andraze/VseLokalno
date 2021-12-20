@@ -2,6 +2,7 @@ package diplomska.naloga.vselokalno.FarmLookup.FarmDetails;
 
 import static diplomska.naloga.vselokalno.MainActivity.appBasket;
 import static diplomska.naloga.vselokalno.MainActivity.appUser;
+import static diplomska.naloga.vselokalno.MainActivity.makeLogD;
 import static diplomska.naloga.vselokalno.MainActivity.makeLogW;
 import static diplomska.naloga.vselokalno.MainActivity.userID;
 
@@ -10,7 +11,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -37,15 +37,17 @@ import diplomska.naloga.vselokalno.DataObjects.Order;
 import diplomska.naloga.vselokalno.FarmLookup.FarmDetails.ArticleDetails.ArticleDetailsFragment;
 import diplomska.naloga.vselokalno.R;
 
-public class FarmDetailsFragment extends Fragment implements FarmDetailsCategoryAdapter.CategoryClickCallback, FarmDetailsArticleAdapter.ArticleClickCallback, ArticleDetailsFragment.BuyArticleCallback {
+public class FarmDetailsFragment extends Fragment implements FarmDetailsCategoryAdapter.CategoryClickCallback, FarmDetailsArticleAdapter.ArticleClickCallback, ArticleDetailsFragment.ArticleDetailsCallback {
 
     private final String TAG = "FarmDetailsFragment";
     // Current farm short details:
     private Map<String, String> mCurrentFarm_short;
     // Categories of this farm:
     ArrayList<Category> currentFarmCategories;
+    boolean gotCategories = false;
     // Articles of this farm:
     ArrayList<Article> currentFarmArticles;
+    boolean gotArticles = false;
     // Firestore:
     private FirebaseFirestore db;
     // Views
@@ -59,6 +61,8 @@ public class FarmDetailsFragment extends Fragment implements FarmDetailsCategory
     public FarmDetailsCategoryAdapter mCategoryAdapter;
     // Article recycler adapter:
     public FarmDetailsArticleAdapter mArticleAdapter;
+    // Last article opened:
+    Article lastOpenedArticle;
 
     public FarmDetailsFragment() {
         // Required empty public constructor
@@ -111,7 +115,15 @@ public class FarmDetailsFragment extends Fragment implements FarmDetailsCategory
                             currentFarmCategories.add(document.toObject(Category.class));
                         }
                         // Set category adapter:
-                        setCategoryAdapter();
+                        if (!gotCategories) {
+                            gotCategories = true;
+                            if (gotArticles)
+                                setCategoryAdapter();
+                        } else {
+                            Category categoryTemp = new Category();
+                            categoryTemp.setCategory_id(lastOpenedArticle.getCategory_id());
+                            onCategoryClickListener(categoryTemp);
+                        }
                     } else {
                         makeLogW(TAG, "Error getting documents: " + task.getException());
                     }
@@ -126,18 +138,20 @@ public class FarmDetailsFragment extends Fragment implements FarmDetailsCategory
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             currentFarmArticles.add(document.toObject(Article.class));
                         }
+                        // Set category adapter:
+                        if (!gotArticles) {
+                            gotArticles = true;
+                            if (gotCategories)
+                                setCategoryAdapter();
+                        } else {
+                            Category categoryTemp = new Category();
+                            categoryTemp.setCategory_id(lastOpenedArticle.getCategory_id());
+                            onCategoryClickListener(categoryTemp);
+                        }
                     } else {
                         makeLogW(TAG, "Error getting documents: " + task.getException());
                     }
                 });
-        // Back button:
-        ImageButton backBtn = rootView.findViewById(R.id.backBtn_FarmDetailsFragmen);
-        backBtn.setOnClickListener(v -> {
-            if (mRecyclerView.getAdapter() instanceof FarmDetailsArticleAdapter)
-                setCategoryAdapter();
-            else
-                requireActivity().onBackPressed();
-        });
         // Parallax effect:
         /* intially hide the view */
         topBackgroundView.setAlpha(0f);
@@ -232,5 +246,21 @@ public class FarmDetailsFragment extends Fragment implements FarmDetailsCategory
         newOrder.setIme_priimek_kupca(appUser.getIme_uporabnika() + " " + appUser.getPriimek_uporabnika());
         newOrder.addOrdered_articles(newArticle);
         appBasket.add(newOrder);
+        // Set right adapter:
+        lastOpenedArticle = newArticle;
     } // onArticleBuyListener
+
+    @Override
+    public void onArticleCancelListener(Article article) {
+        // Set right adapter
+        lastOpenedArticle = article;
+    } // onArticleCancelListener
+
+    public boolean onBackPressed() {
+        if (mRecyclerView.getAdapter() instanceof FarmDetailsArticleAdapter) {
+            setCategoryAdapter();
+            return true;
+        }
+        return false;
+    } // onBackPressed
 }
