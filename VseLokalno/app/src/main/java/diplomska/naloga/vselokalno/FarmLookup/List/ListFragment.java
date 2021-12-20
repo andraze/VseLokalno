@@ -39,6 +39,7 @@ public class ListFragment extends Fragment implements RecyclerAdapter.ItemClickL
 
     private final String TAG = "ListFragment";
     RecyclerView mRecyclerView;
+    ArrayList<Article> mQueryArticles;
 
     public ListFragment() {
         // Required empty public constructor
@@ -60,7 +61,9 @@ public class ListFragment extends Fragment implements RecyclerAdapter.ItemClickL
 //        makeLogI(TAG, "(onCreateView) Working!");
         View rootView = inflater.inflate(R.layout.fragment_list, container, false);
         mRecyclerView = rootView.findViewById(R.id.recycler_view);
-        if (mRecyclerView != null) {
+        if (mRecyclerView == null)
+            makeLogW(TAG, "RecyclerView is NULL!");
+        if (mQueryArticles == null || mQueryArticles.isEmpty()) {
             // Initialize the adapter and set it to the RecyclerView.
             RecyclerAdapter mAdapter = new RecyclerAdapter(requireContext(), allFarmsDataShort,
                     requireActivity().getSupportFragmentManager(), this);
@@ -68,7 +71,7 @@ public class ListFragment extends Fragment implements RecyclerAdapter.ItemClickL
             mRecyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 2));
             makeLogD(TAG, "(OnCreateView) recycler adapter ready.");
         } else {
-            makeLogW(TAG, "(onCreateView) RecyclerView is NULL!");
+            setArticleAdapter();
         }
         // Search for farm:
         SearchView searchView = rootView.findViewById(R.id.search_FarmListFragment);
@@ -76,7 +79,7 @@ public class ListFragment extends Fragment implements RecyclerAdapter.ItemClickL
             @Override
             public boolean onQueryTextSubmit(String query) {
                 setArticleQueryAdapter(query.trim());
-                return false;
+                return true;
             }
 
             @Override
@@ -89,31 +92,33 @@ public class ListFragment extends Fragment implements RecyclerAdapter.ItemClickL
 
     void setArticleQueryAdapter(String query) {
         query = query.toLowerCase();
-        ArrayList<Article> queryArticles = new ArrayList<>();
+        mQueryArticles = new ArrayList<>();
         FirebaseFirestore.getInstance().collectionGroup("Artikli")
-//                .whereArrayContains("test", query)
-                .whereEqualTo("article_name_keywords", query)
+                .whereArrayContains("article_name_keywords", query)
                 .limit(20).get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                         Article articleTemp = documentSnapshot.toObject(Article.class);
                         if (articleTemp != null) {
                             makeLogD(TAG, articleTemp.getArticle_id());
-                            queryArticles.add(articleTemp);
+                            mQueryArticles.add(articleTemp);
                         }
                     }
-
-                    FarmDetailsArticleAdapter adapterTemp = new FarmDetailsArticleAdapter(
-                            requireContext(),
-                            queryArticles,
-                            this
-                    );
-                    // Set article adapter:
-                    mRecyclerView.setAdapter(adapterTemp);
-                    mRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+                    setArticleAdapter();
                 })
                 .addOnFailureListener(e -> makeLogW(TAG, e.getMessage()));
     } // setArticleQueryAdapter
+
+    void setArticleAdapter() {
+        FarmDetailsArticleAdapter adapterTemp = new FarmDetailsArticleAdapter(
+                requireContext(),
+                mQueryArticles,
+                this
+        );
+        // Set article adapter:
+        mRecyclerView.setAdapter(adapterTemp);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+    }
 
     @Override
     public void onArticleClickListener(Article article) {
@@ -177,13 +182,19 @@ public class ListFragment extends Fragment implements RecyclerAdapter.ItemClickL
         newOrder.setIme_priimek_kupca(appUser.getIme_uporabnika() + " " + appUser.getPriimek_uporabnika());
         newOrder.addOrdered_articles(newArticle);
         appBasket.add(newOrder);
+        // Open article adapter to where we left it:
+        setArticleAdapter();
     } // onArticleBuyListener
 
     @Override
-    public void onArticleCancelListener(Article article) {}
+    public void onArticleCancelListener(Article article) {
+        // Open article adapter to where we left it:
+        setArticleAdapter();
+    }
 
     public boolean onBackPressed() {
         if (mRecyclerView.getAdapter() instanceof FarmDetailsArticleAdapter) {
+            mQueryArticles.clear();
             RecyclerAdapter mAdapter = new RecyclerAdapter(requireContext(), allFarmsDataShort,
                     requireActivity().getSupportFragmentManager(), this);
             mRecyclerView.setAdapter(mAdapter);
