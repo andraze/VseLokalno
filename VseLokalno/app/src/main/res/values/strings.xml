@@ -125,4 +125,8 @@
     <string name="notifikacije">Notifikacije</string>
     <string name="shrani_spremembe">SHRANI SPREMEMBE</string>
     <string name="zavrzi_spremembe">ZAVRZI SPREMEMBE</string>
+    <string name="prijava">PRIJAVA</string>
+    <string name="geslo">Geslo</string>
+    <string name="potrditev_identitete">Potrditev identitete</string>
+    <string name="reauth_explanation">Prosimo vas da se ponovno prijavite s starim elektronskim naslovom in geslom.</string>
 </resources>

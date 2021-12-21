@@ -69,7 +69,6 @@ public class UserPasswordFragment extends Fragment {
             if (!Objects.requireNonNull(passwordET.getText()).toString().equals(Objects.requireNonNull(repeatPasswordET.getText()).toString()))
                 Toast.makeText(requireContext(), "Gesli se ne ujemata.", Toast.LENGTH_SHORT).show();
             else {
-                userData.setPassword(passwordET.getText().toString());
                 if (!userData.isLastnik_kmetije()) {
                     UserNameFragment userNameFragment = UserNameFragment.newInstance();
                     FragmentManager fragmentManager = getParentFragmentManager();

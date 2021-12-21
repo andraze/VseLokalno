@@ -101,7 +101,7 @@ public class FINALChoosePhotoFragment extends Fragment implements ImageCropper.I
                         makeLogD("UserPasswordFragment", "(OnCreateView) user created!");
                         FirebaseUser user = mAuth.getCurrentUser();
                         if (user != null) {
-//                                TODO: userData.setPassword(""); // To not show the password unprotected.
+                            userData.setPassword("");
                             updateUI(user);
                         } else
                             makeLogW("UserPasswordFragment", "(OnCreateView) ERROR user is null!");

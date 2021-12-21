@@ -30,7 +30,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -113,7 +112,7 @@ public class FINALFarmPictureFragment extends Fragment implements ImageCropper.I
                         makeLogD("UserPasswordFragment", "(OnCreateView) user created!");
                         FirebaseUser user = mAuth.getCurrentUser();
                         if (user != null) {
-//                                TODO: userData.setPassword(""); // To not show the password unprotected.
+                            userData.setPassword("");
                             updateUI(user);
                         } else
                             makeLogW("UserPasswordFragment", "(OnCreateView) ERROR user is null!");

@@ -96,12 +96,13 @@
                 android:textColor="@color/blue_dark"
                 android:textSize="@dimen/sp_22" />
 
-            <ImageView
+            <ImageButton
+                android:id="@+id/hide_password"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
                 android:background="@drawable/edit_pencil_background"
-                android:src="@drawable/ic_pencil_edit" />
+                android:src="@drawable/ic_eye_crossed" />
 
         </LinearLayout>
 

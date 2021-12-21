@@ -20,10 +20,12 @@ import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,8 +37,10 @@ import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
@@ -54,6 +58,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import diplomska.naloga.vselokalno.DataObjects.GlideApp;
 import diplomska.naloga.vselokalno.ImageCrop.ImageCropper;
 import diplomska.naloga.vselokalno.R;
+import diplomska.naloga.vselokalno.UserFunctions.StockList_F.Category.EditCategoryFragment;
 
 
 public class EditProfileInformationFragment extends Fragment implements ImageCropper.ImageCroppedCallbackListener, EditFarmHoursFragment.EditFarmHoursFragmentCallback {
@@ -80,6 +85,8 @@ public class EditProfileInformationFragment extends Fragment implements ImageCro
     LinearLayout editUserSurnameLin;
     LinearLayout editFarmWorkingHoursLin;
 
+    boolean showPassword;
+
 
     boolean sendUserUpdatedInfo = false;
     boolean sendFarmUpdatedInfo = false;
@@ -97,7 +104,7 @@ public class EditProfileInformationFragment extends Fragment implements ImageCro
         super.onCreate(savedInstanceState);
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint({"SetTextI18n", "UseCompatLoadingForDrawables"})
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -117,7 +124,18 @@ public class EditProfileInformationFragment extends Fragment implements ImageCro
         editEmailView.setText(appUser.getEmail());
         // Edit password:
         editPasswordView = rootView.findViewById(R.id.edit_password);
-        editPasswordView.setText(appUser.getPassword());
+        showPassword = false;
+        ImageButton hidePasswordBtn = rootView.findViewById(R.id.hide_password);
+        hidePasswordBtn.setOnClickListener(v -> {
+            showPassword = !showPassword;
+            if (showPassword) {
+                hidePasswordBtn.setImageDrawable(getResources().getDrawable(R.drawable.ic_eye));
+                editPasswordView.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+            } else {
+                hidePasswordBtn.setImageDrawable(getResources().getDrawable(R.drawable.ic_eye_crossed));
+                editPasswordView.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            }
+        });
         // Show notifications:
         TextView notificationExplanation = rootView.findViewById(R.id.notification_explanation);
         notificationSwitch = rootView.findViewById(R.id.notification_switch);
@@ -148,8 +166,8 @@ public class EditProfileInformationFragment extends Fragment implements ImageCro
             editUserSurnameLin.setVisibility(View.GONE);
             editFarmNameView.setText(appFarm.getIme_kmetije());
             editFarmAddressView.setText(appFarm.getNaslov_kmetije());
-            editFarmWorkingHoursLin.setOnClickListener(v-> {
-                EditFarmHoursFragment editFarmHoursFragment= EditFarmHoursFragment.newInstance(this);
+            editFarmWorkingHoursLin.setOnClickListener(v -> {
+                EditFarmHoursFragment editFarmHoursFragment = EditFarmHoursFragment.newInstance(this);
                 FragmentManager fragmentManager = getParentFragmentManager();
                 fragmentManager.beginTransaction()
                         .setCustomAnimations(R.anim.fade_in, R.anim.fade_out, R.anim.fade_in, R.anim.fade_out)
@@ -166,7 +184,7 @@ public class EditProfileInformationFragment extends Fragment implements ImageCro
         }
         // Discard changes:
         TextView discardChanges = rootView.findViewById(R.id.discard_changes);
-        discardChanges.setOnClickListener(v->{
+        discardChanges.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
             builder.setMessage("Ste prepričani, da želite zavreči spremembe?")
                     .setTitle("Zavrzi spremembe");
@@ -177,7 +195,7 @@ public class EditProfileInformationFragment extends Fragment implements ImageCro
         });
         // Save changes:
         AppCompatButton saveChangesBtn = rootView.findViewById(R.id.save_changes);
-        saveChangesBtn.setOnClickListener(v->{
+        saveChangesBtn.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
             builder.setMessage("Ste prepričani, da želite shraniti spremembe?")
                     .setTitle("Shrani spremembe");
@@ -194,7 +212,7 @@ public class EditProfileInformationFragment extends Fragment implements ImageCro
         boolean change_email = false;
         boolean change_password = false;
         if (photo_changed) { // Upload new photo:
-            appUser.setUse_default_pic(true);
+            appUser.setUse_default_pic(false);
             try {
                 FirebaseStorage storage = FirebaseStorage.getInstance();
                 StorageReference storageRef = storage.getReference();
@@ -210,21 +228,14 @@ public class EditProfileInformationFragment extends Fragment implements ImageCro
                 e.printStackTrace();
             }
         }
-        /* TODO password and email change
-        if (!appUser.getEmail().equals(editEmailView.getText().toString())) {
-            appUser.setEmail(editEmailView.getText().toString());
-            sendUserUpdatedInfo = true;
+        if (!editEmailView.getText().toString().isEmpty())
             change_email = true;
-        }
-        if (!appUser.getPassword().equals(editPasswordView.getText().toString())) {
-            appUser.setPassword(editPasswordView.getText().toString());
-            sendUserUpdatedInfo = true;
+        if (!editPasswordView.getText().toString().isEmpty())
             change_password = true;
-        }
         if (change_email || change_password) {
             changeEmailOrPassword(change_email, change_password);
             sendUserUpdatedInfo = true;
-        }*/
+        }
         mySharedPreferences.edit()
                 .putBoolean(mNotificationsSharedPrefKey, notificationSwitch.isChecked())
                 .apply();
@@ -262,7 +273,6 @@ public class EditProfileInformationFragment extends Fragment implements ImageCro
         }
         sendUserUpdatedInfo = false;
         sendFarmUpdatedInfo = false;
-        Toast.makeText(requireContext(), "Spremembe so shranjene.", Toast.LENGTH_SHORT).show();
     } // saveChanges
 
     private void updateUser() {
@@ -283,28 +293,14 @@ public class EditProfileInformationFragment extends Fragment implements ImageCro
     } // updateFarm
 
     private void changeEmailOrPassword(boolean email, boolean password) {
-        AuthCredential credential = EmailAuthProvider
-                .getCredential(appUser.getEmail(), appUser.getPassword());
-        // TODO: Prompt the user to re-provide their sign-in credentials
-        currentUser.reauthenticate(credential)
-                .addOnCompleteListener(task -> {
-                    if (email)
-                        currentUser.updateEmail(editEmailView.getText().toString())
-                                .addOnCompleteListener(task1 -> {
-                                    if (task1.isSuccessful())
-                                        makeLogD(TAG, "User email address updated.");
-                                    else
-                                        makeLogW(TAG, Objects.requireNonNull(task1.getException()).getMessage());
-                                });
-                    if (password)
-                        currentUser.updatePassword(editEmailView.getText().toString())
-                                .addOnCompleteListener(task1 -> {
-                                    if (task1.isSuccessful())
-                                        makeLogD(TAG, "User password updated.");
-                                    else
-                                        makeLogW(TAG, Objects.requireNonNull(task1.getException()).getMessage());
-                                });
-                });
+        String emailString = "";
+        String passwordString = "";
+        if (email)
+            emailString = editEmailView.getText().toString();
+        if (password)
+            passwordString = editPasswordView.getText().toString();
+        ReauthenticateFragment reauthenticateFragment = ReauthenticateFragment.newInstance(emailString, passwordString);
+        reauthenticateFragment.show(getParentFragmentManager(), "Ponovna prijava");
     } // changeEmail
 
     private void openGallery() {

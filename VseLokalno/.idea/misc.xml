@@ -22,6 +22,7 @@
         <entry key="app/src/main/res/drawable/decreaseBtn_background.xml" value="0.30833333333333335" />
         <entry key="app/src/main/res/drawable/decrease_btn_background.xml" value="0.30833333333333335" />
         <entry key="app/src/main/res/drawable/default_farm_image.xml" value="0.31203703703703706" />
+        <entry key="app/src/main/res/drawable/edit_pencil_background_crossed.xml" value="0.5" />
         <entry key="app/src/main/res/drawable/error_background_border.xml" value="0.17395833333333333" />
         <entry key="app/src/main/res/drawable/google_maps_btn_background.xml" value="0.1515625" />
         <entry key="app/src/main/res/drawable/gray_search_view_background.xml" value="0.278125" />
@@ -39,6 +40,8 @@
         <entry key="app/src/main/res/drawable/ic_default_profile_picture.xml" value="0.3619791666666667" />
         <entry key="app/src/main/res/drawable/ic_edit.xml" value="0.32685185185185184" />
         <entry key="app/src/main/res/drawable/ic_error.xml" value="0.17395833333333333" />
+        <entry key="app/src/main/res/drawable/ic_eye.xml" value="0.14114583333333333" />
+        <entry key="app/src/main/res/drawable/ic_eye_crossed.xml" value="0.27708333333333335" />
         <entry key="app/src/main/res/drawable/ic_info.xml" value="0.17395833333333333" />
         <entry key="app/src/main/res/drawable/ic_map_farm.xml" value="0.3625" />
         <entry key="app/src/main/res/drawable/ic_minus.xml" value="0.34791666666666665" />
@@ -101,6 +104,7 @@
         <entry key="app/src/main/res/layout/fragment_order_history_details.xml" value="0.2609375" />
         <entry key="app/src/main/res/layout/fragment_order_history_list.xml" value="0.2609375" />
         <entry key="app/src/main/res/layout/fragment_ordering.xml" value="0.259375" />
+        <entry key="app/src/main/res/layout/fragment_reauthenticate.xml" value="0.335" />
         <entry key="app/src/main/res/layout/fragment_show_farm_descripton.xml" value="0.1375" />
         <entry key="app/src/main/res/layout/fragment_user_email.xml" value="0.3328125" />
         <entry key="app/src/main/res/layout/fragment_user_functions.xml" value="0.46510416666666665" />
