@@ -4,16 +4,12 @@ import static diplomska.naloga.vselokalno.MainActivity.allFarmsDataShort;
 import static diplomska.naloga.vselokalno.MainActivity.makeLogD;
 import static diplomska.naloga.vselokalno.MainActivity.makeLogW;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Handler;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,7 +19,6 @@ import android.widget.Toast;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
@@ -39,7 +34,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -53,17 +47,11 @@ public class MapFragment extends Fragment implements GoogleMap.OnInfoWindowClick
     private static final String TAG = "MapFragment";
     // Google map:
     private GoogleMap mMap;
-    // Location settings request:
-    static final int LOCATION_SETTINGS_REQUEST = 1;
     // Current LAT and LON:
     public static double LAT = 46.0660318;
     public static double LON = 14.3920158;
-    // ArrayList of farms:
-    ArrayList<Map<String, String>> farmsList = new ArrayList<>();
     // ArrayList of markers for farms:
     public static ArrayList<Marker> farmMarkers = new ArrayList<>();
-    // Request permission ID:
-    private static final int requestPermissionID = 200;
     // Simple location (for current location):
     private SimpleLocation location;
     // On Info Window Click Listener:
@@ -121,18 +109,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnInfoWindowClick
         if (mapFragment != null) {
             mapFragment.getMapAsync(callback);
         }
-
         location = new SimpleLocation(requireContext());
-        // if we can't access the location yet
-        if (!location.hasLocationEnabled()) {
-            // ask the user to enable location access
-            Handler handler = new Handler();
-            handler.postDelayed(() -> {
-                makeToastNeedLocation();
-                startActivityForResult((new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)), 1);
-            }, 0);
-        }
-
         // Get user location:
         try {
             LAT = location.getLatitude();
@@ -147,33 +124,7 @@ public class MapFragment extends Fragment implements GoogleMap.OnInfoWindowClick
             }
             restartApp();
         }
-        // Log the location under 'USER LOCATION':
-        Log.d("USER LOCATION", location.toString());
-
-        if (ActivityCompat.checkSelfPermission(requireActivity().getApplicationContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                    requireActivity(),
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    requestPermissionID
-            );
-        }
     } // onViewCreated
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == LOCATION_SETTINGS_REQUEST) {
-            // user is back from location settings - check if location services are now enabled
-            if (ActivityCompat.checkSelfPermission(requireActivity().getApplicationContext(),
-                    Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(requireActivity(),
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, requestPermissionID);
-                return;
-            }
-            restartApp();
-        }
-    } // onActivityResult
 
     @Override
     public void onInfoWindowClick(@NonNull Marker marker) {
@@ -239,16 +190,10 @@ public class MapFragment extends Fragment implements GoogleMap.OnInfoWindowClick
         super.onPause();
     } // onPause
 
-    public void centrirajMe() {
-        LAT = location.getLatitude();
-        LON = location.getLongitude();
-        LatLng MyLocation = new LatLng(LAT, LON);
+    public void centerMe(double lat, double lon) {
+        LatLng MyLocation = new LatLng(lat, lon);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(MyLocation, 12));
-    } // centrirajMe
-
-    public void makeToastNeedLocation() {
-        Toast.makeText(requireContext(), "Potrebujemo tvojo lokacijo da prikažemo mapo.", Toast.LENGTH_LONG).show();
-    } // makeToastNeedLocation
+    } // centerMe
 
     private void restartApp() {
         Intent i = requireContext().getPackageManager().getLaunchIntentForPackage(requireContext().getPackageName());

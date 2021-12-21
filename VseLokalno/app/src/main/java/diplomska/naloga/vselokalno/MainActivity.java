@@ -1,13 +1,19 @@
 package diplomska.naloga.vselokalno;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -52,6 +58,8 @@ import diplomska.naloga.vselokalno.UserFunctions.UserFunctionsFragment;
 
 public class MainActivity extends AppCompatActivity {
 
+    // Location permission request code
+    public static final int MY_PERMISSIONS_REQUEST_LOCATION = 56;
     //    TAG:
     private static final String TAG = "MainActivity";
     //    Firebase AUTH:
@@ -152,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 default:
                     // Map
-                    openFragment(0);
+                    checkLocationPermission();
                     break;
             }
         });
@@ -385,7 +393,7 @@ public class MainActivity extends AppCompatActivity {
                         allFarmsDataShort = new HashMap<>();
                         for (String key : Objects.requireNonNull(documentSnapshot.getData()).keySet())
                             allFarmsDataShort.put(key, (Map<String, String>) documentSnapshot.getData().get(key));
-                        openFragment(0);
+                        checkLocationPermission();
                     } else {
                         makeLogW(TAG, "(getAllFarmData) No such document!");
                     }
@@ -404,10 +412,6 @@ public class MainActivity extends AppCompatActivity {
         Log.w(TAG, Message);
     } // makeLogW
 
-    public static void makeLogI(String TAG, String Message) {
-        Log.i(TAG, Message);
-    } // makeLogI
-
     public void signOut(View view) {
         mAuth.signOut();
         Intent restart = new Intent(this, MainActivity.class);
@@ -416,13 +420,6 @@ public class MainActivity extends AppCompatActivity {
     } // signOut
 
     public void openFragment(int id) {
-//        if (GoToFragment != null) {
-//            switch (GoToFragment) {
-//                case "UserFunctionsFragment":
-//                    id = 2;
-//                    break;
-//            }
-//        }
         Fragment fragmentToOpen = null;
         switch (id) {
             case 0:
@@ -515,4 +512,35 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+    public void checkLocationPermission() {
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(this, "Potrebujemo vašo lokacijo.", Toast.LENGTH_SHORT).show();
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    MY_PERMISSIONS_REQUEST_LOCATION);
+        } else {
+            openFragment(0);
+        }
+    } // checkLocationPermission
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == MY_PERMISSIONS_REQUEST_LOCATION) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (ContextCompat.checkSelfPermission(this,
+                        Manifest.permission.ACCESS_FINE_LOCATION)
+                        == PackageManager.PERMISSION_GRANTED) {
+                    openFragment(0);
+                }
+            } else {
+                finish();
+            }
+        }
+    } // onRequestPermissionsResult
 }
