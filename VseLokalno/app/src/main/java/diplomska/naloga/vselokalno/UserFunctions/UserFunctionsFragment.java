@@ -81,23 +81,12 @@ public class UserFunctionsFragment extends Fragment {
         email.setText(appUser.getEmail());
         // Go to firebase storage only if they uploaded a picture:
         CircleImageView profilePic = rootView.findViewById(R.id.profile_image_view_userFunctionsFragment);
-        StorageReference imageRef = FirebaseStorage.getInstance().getReference()
-                .child("Profile Images/" + userID);
-        GlideApp.with(requireContext()).load(imageRef)
-//                .addListener(new RequestListener<Drawable>() {
-//                    @Override
-//                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-//                        makeLogW(TAG, "Error loading image resource.");
-//                        return false;
-//                    }
-//
-//                    @Override
-//                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-//                        return false;
-//                    }
-//                })
-                .error(getResources().getDrawable(R.drawable.default_profile_picture))
-                .into(profilePic);
+        if (!appUser.isUse_default_pic()) {
+            StorageReference imageRef = FirebaseStorage.getInstance().getReference()
+                    .child("Profile Images/" + userID);
+            GlideApp.with(requireContext()).load(imageRef)
+                    .into(profilePic);
+        }
         if (appUser.isLastnik_kmetije()) {
             // Change some text if farm owner:
             TextView kosaricaVNarocila = rootView.findViewById(R.id.tv_kosarica_userFunctions);

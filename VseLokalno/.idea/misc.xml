@@ -108,6 +108,7 @@
         <entry key="app/src/main/res/layout/fragment_show_farm_descripton.xml" value="0.1375" />
         <entry key="app/src/main/res/layout/fragment_user_email.xml" value="0.3328125" />
         <entry key="app/src/main/res/layout/fragment_user_functions.xml" value="0.46510416666666665" />
+        <entry key="app/src/main/res/layout/fragment_user_name.xml" value="0.12447916666666667" />
         <entry key="app/src/main/res/layout/fragment_user_type.xml" value="0.30833333333333335" />
         <entry key="app/src/main/res/layout/list_active_orders_item.xml" value="0.32135416666666666" />
         <entry key="app/src/main/res/layout/list_article_item.xml" value="0.32135416666666666" />
