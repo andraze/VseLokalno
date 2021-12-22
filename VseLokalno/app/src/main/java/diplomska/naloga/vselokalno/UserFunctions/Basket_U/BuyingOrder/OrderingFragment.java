@@ -43,8 +43,6 @@ import diplomska.naloga.vselokalno.R;
 public class OrderingFragment extends Fragment implements OrderRecyclerAdapter.OrderSelectDateListener {
 
     private final String TAG = "OrderingFragment";
-    // Current farm index:
-    private int farmNumber;
     // current farm object:
     Farm farmOfInterest;
     // Time and day selected:
@@ -70,14 +68,8 @@ public class OrderingFragment extends Fragment implements OrderRecyclerAdapter.O
         // Required empty public constructor
     }
 
-    public OrderingFragment(int farmIndex) {
-        this.farmNumber = farmIndex;
-        this.mOrderSelectDateListener = this;
-    }
-
-
-    public static OrderingFragment newInstance(int farmIndex) {
-        return new OrderingFragment(farmIndex);
+    public static OrderingFragment newInstance() {
+        return new OrderingFragment();
     }
 
     @Override
@@ -125,7 +117,7 @@ public class OrderingFragment extends Fragment implements OrderRecyclerAdapter.O
             btn.setOnClickListener(this::selectTimeOrder);
         }
         farmNameView = rootView.findViewById(R.id.farm_name_tv_OrderingFragment);
-        farmNameView.setText(appBasket.get(farmNumber).getIme_kmetije());
+        farmNameView.setText(appBasket.get(0).getIme_kmetije());
         rootView.findViewById(R.id.cancel_order_fab_OrderingFragment).setOnClickListener(v -> getParentFragmentManager().popBackStack("ProceedToBuying", FragmentManager.POP_BACK_STACK_INCLUSIVE));
         rootView.findViewById(R.id.continue_roder_fab_OrderingFragment).setOnClickListener(v -> {
             if (indexDaySelected == -1) {
@@ -143,16 +135,18 @@ public class OrderingFragment extends Fragment implements OrderRecyclerAdapter.O
                             Toast.makeText(requireContext(), "Prišlo je do napake, poskusite ponovno.", Toast.LENGTH_LONG).show();
                             return;
                         }
-                        finishOrder(farmNumber);
-                        if (farmNumber + 1 == appBasket.size()) {
+                        finishOrder();
+                        if (appBasket.size() == 1) {
                             appBasket.clear();
                             getParentFragmentManager().popBackStack("ProceedToBuying", FragmentManager.POP_BACK_STACK_INCLUSIVE);
                         } else {
-                            OrderingFragment orderingFragment = OrderingFragment.newInstance(farmNumber + 1);
+                            appBasket.remove(0);
+                            OrderingFragment orderingFragment = OrderingFragment.newInstance();
                             FragmentManager fragmentManager = getParentFragmentManager();
                             fragmentManager.beginTransaction()
                                     .setCustomAnimations(R.anim.fade_in, R.anim.fade_out)
                                     .replace(R.id.main_fragment_container, orderingFragment)
+                                    .addToBackStack(null)
                                     .commit();
                         }
                     } else {
@@ -165,17 +159,17 @@ public class OrderingFragment extends Fragment implements OrderRecyclerAdapter.O
             }
         });
         availableDaysRecyclerView = rootView.findViewById(R.id.recycler_view_date_OrderingFragment);
-        DocumentReference farmDocReference = db.collection("Kmetije").document(appBasket.get(farmNumber).getId_kmetije());
+        DocumentReference farmDocReference = db.collection("Kmetije").document(appBasket.get(0).getId_kmetije());
         farmDocReference.get().addOnSuccessListener(documentSnapshot -> {
             farmOfInterest = documentSnapshot.toObject(Farm.class);
             if (farmOfInterest != null) {
                 makeLogD(TAG, "Got farm: " + farmOfInterest);
-                mAdapter = new OrderRecyclerAdapter(requireContext(), farmNumber, mOrderSelectDateListener, farmOfInterest);
+                mAdapter = new OrderRecyclerAdapter(requireContext(), 0, this, farmOfInterest);
                 availableDaysRecyclerView.setAdapter(mAdapter);
                 availableDaysRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
             }
         });
-        updateArticles(farmNumber, 0);
+        updateArticles(0, 0);
         makeLogD(TAG, "Started updating articles!");
         return rootView;
     }
@@ -208,7 +202,7 @@ public class OrderingFragment extends Fragment implements OrderRecyclerAdapter.O
     } // updateArticles
 
     private boolean checkCurrentStorage() {
-        Order order = appBasket.get(farmNumber);
+        Order order = appBasket.get(0);
         for (Article article : order.getOrdered_articles()) {
             if (article.getArticle_storage() < article.getArticle_buying_amount())
                 return false;
@@ -216,9 +210,9 @@ public class OrderingFragment extends Fragment implements OrderRecyclerAdapter.O
         return true;
     } // checkCurrentStorage
 
-    private void finishOrder(int index) {
+    private void finishOrder() {
         // Update order with "Opravljeno", IDs, etc.:
-        Order order = appBasket.get(index);
+        Order order = appBasket.get(0);
         order.setId_kupca(userID);
         order.setIme_priimek_kupca(appUser.getIme_uporabnika() + " " + appUser.getPriimek_uporabnika());
         order.setOpravljeno(0);
@@ -241,7 +235,7 @@ public class OrderingFragment extends Fragment implements OrderRecyclerAdapter.O
             }
         }
         // Update storages for every article ordered.
-        syncArticlesInFarm(index, 0);
+        syncArticlesInFarm(0);
         // Send "New order" notification:
         MyPostRequestSender myPostRequestSender = new MyPostRequestSender(requireContext());
         String status_message = String.valueOf(order.getOpravljeno()) + extraStatus;
@@ -262,8 +256,8 @@ public class OrderingFragment extends Fragment implements OrderRecyclerAdapter.O
                 .addOnCompleteListener(buyerTask -> makeLogD(TAG, buyerTask.toString()));
     } // finishOrder
 
-    private void syncArticlesInFarm(int orderIndex, int articleIndex) {
-        Order order = appBasket.get(orderIndex);
+    private void syncArticlesInFarm(int articleIndex) {
+        Order order = appBasket.get(0);
         if (articleIndex == order.getOrdered_articles().size())
             return;
         Article article = order.getOrdered_articles().get(articleIndex).makeCopy();
@@ -272,13 +266,13 @@ public class OrderingFragment extends Fragment implements OrderRecyclerAdapter.O
         db.collection("Kmetije").document(article.getFarm_id())
                 .collection("Artikli").document(article.getArticle_id())
                 .set(article);
-        syncArticlesInFarm(orderIndex, articleIndex + 1);
+        syncArticlesInFarm(articleIndex + 1);
     } // syncArticlesInFarm
 
     @SuppressLint("SimpleDateFormat")
     private boolean setDateOfPickup() {
         Date date = new Date();
-        appBasket.get(farmNumber).setDatum_narocila(date);
+        appBasket.get(0).setDatum_narocila(date);
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         calendar.add(Calendar.DATE, indexDaySelected);
@@ -294,7 +288,7 @@ public class OrderingFragment extends Fragment implements OrderRecyclerAdapter.O
         String dateOfPickupString = dateCalendar + " " + dateTime;
         try {
             Date dateOfPickup = new SimpleDateFormat(Order.DATE_FORMAT).parse(dateOfPickupString);
-            appBasket.get(farmNumber).setDatum_prevzema(dateOfPickup);
+            appBasket.get(0).setDatum_prevzema(dateOfPickup);
             return true;
         } catch (ParseException e) {
             e.printStackTrace();
@@ -378,4 +372,9 @@ public class OrderingFragment extends Fragment implements OrderRecyclerAdapter.O
         }
         selectTimeOrder(null);
     } // onOrderSelectDateListener
+
+    public boolean onBackPressed() {
+        getParentFragmentManager().popBackStack("ProceedToBuying", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        return true;
+    }
 }

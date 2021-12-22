@@ -52,6 +52,7 @@ import diplomska.naloga.vselokalno.FarmLookup.List.ListFragment;
 import diplomska.naloga.vselokalno.FarmLookup.Map.MapFragment;
 import diplomska.naloga.vselokalno.ImageCrop.ImageCropper;
 import diplomska.naloga.vselokalno.SignInUp.SignInUpActivity;
+import diplomska.naloga.vselokalno.UserFunctions.Basket_U.BuyingOrder.OrderingFragment;
 import diplomska.naloga.vselokalno.UserFunctions.ProfileSettings_FU.EditFarmHoursFragment;
 import diplomska.naloga.vselokalno.UserFunctions.UserFunctionsFragment;
 
@@ -172,6 +173,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         saveAppBasket();
+        stopActiveOrdersListeners();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
         stopActiveOrdersListeners();
     }
 
@@ -414,6 +421,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void signOut(View view) {
         mAuth.signOut();
+        stopActiveOrdersListeners();
         Intent restart = new Intent(this, MainActivity.class);
         startActivity(restart);
         finish();
@@ -485,21 +493,21 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        List<Fragment> fragmentList = getSupportFragmentManager().getFragments();
+        Fragment f = getSupportFragmentManager().findFragmentById(R.id.main_fragment_container);
         boolean handled = false;
-        for (Fragment f : fragmentList) {
-            if (f instanceof FarmDetailsFragment)
-                handled = ((FarmDetailsFragment) f).onBackPressed();
-            if (f instanceof ArticleDetailsFragment)
-                handled = ((ArticleDetailsFragment) f).onBackPressed();
-            if (f instanceof ListFragment)
-                handled = ((ListFragment) f).onBackPressed();
-            if (handled)
-                break;
-        }
+        if (f instanceof FarmDetailsFragment)
+            handled = ((FarmDetailsFragment) f).onBackPressed();
+        else if (f instanceof ArticleDetailsFragment)
+            handled = ((ArticleDetailsFragment) f).onBackPressed();
+        else if (f instanceof ListFragment)
+            handled = ((ListFragment) f).onBackPressed();
+        else if (f instanceof OrderingFragment)
+            handled = ((OrderingFragment) f).onBackPressed();
+
         if (!handled) {
             super.onBackPressed();
         }
+
     } // onBackPressed
 
     public void selectNewTime(View view) {

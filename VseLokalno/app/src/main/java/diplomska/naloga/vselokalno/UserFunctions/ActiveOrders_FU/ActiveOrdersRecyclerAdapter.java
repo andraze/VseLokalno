@@ -91,12 +91,13 @@ public class ActiveOrdersRecyclerAdapter extends RecyclerView.Adapter<ActiveOrde
                 Date dateToday = new Date();
                 String datePickupString = new SimpleDateFormat("dd-MM-yyyy").format(Objects.requireNonNull(datePickup));
                 String dateTodayString = new SimpleDateFormat("dd-MM-yyyy").format(dateToday);
-                if (datePickup.after(dateToday)) { // Not pickup day yet
-                    holderTemp.confirmedImage.setVisibility(View.VISIBLE);
-                    holderTemp.entireView.setBackground(mContext.getResources().getDrawable(R.drawable.green_background_border));
-                } else if (datePickupString.equals(dateTodayString)) { // Today is pickup day
+                if (datePickupString.equals(dateTodayString)) { // Today is pickup day
                     holderTemp.entireView.setBackground(mContext.getResources().getDrawable(R.drawable.blue_background_border));
                     holderTemp.infoImage.setVisibility(View.VISIBLE);
+                }
+                 else if (datePickup.after(dateToday)) { // Not pickup day yet
+                    holderTemp.confirmedImage.setVisibility(View.VISIBLE);
+                    holderTemp.entireView.setBackground(mContext.getResources().getDrawable(R.drawable.green_background_border));
                 }
                 break;
             case 3: // There is an issue and the order was canceled (red).

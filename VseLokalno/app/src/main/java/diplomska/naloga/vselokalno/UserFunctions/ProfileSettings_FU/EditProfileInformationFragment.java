@@ -228,7 +228,7 @@ public class EditProfileInformationFragment extends Fragment implements ImageCro
                 e.printStackTrace();
             }
         }
-        if (!editEmailView.getText().toString().isEmpty())
+        if (!editEmailView.getText().toString().equals(appUser.getEmail()))
             change_email = true;
         if (!editPasswordView.getText().toString().isEmpty())
             change_password = true;
@@ -299,8 +299,10 @@ public class EditProfileInformationFragment extends Fragment implements ImageCro
             emailString = editEmailView.getText().toString();
         if (password)
             passwordString = editPasswordView.getText().toString();
-        ReauthenticateFragment reauthenticateFragment = ReauthenticateFragment.newInstance(emailString, passwordString);
-        reauthenticateFragment.show(getParentFragmentManager(), "Ponovna prijava");
+        if (email || password) {
+            ReauthenticateFragment reauthenticateFragment = ReauthenticateFragment.newInstance(emailString, passwordString);
+            reauthenticateFragment.show(getParentFragmentManager(), "Ponovna prijava");
+        }
     } // changeEmail
 
     private void openGallery() {

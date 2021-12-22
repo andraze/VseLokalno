@@ -17,8 +17,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
 import diplomska.naloga.vselokalno.DataObjects.Article;
 import diplomska.naloga.vselokalno.DataObjects.Order;
 import diplomska.naloga.vselokalno.R;
@@ -87,7 +85,7 @@ public class BasketFragment extends Fragment implements BasketRecyclerAdapter.Ba
             if (appBasket.isEmpty()) {
                 Toast.makeText(requireContext(), "Košarica je prazna.", Toast.LENGTH_SHORT).show();
             } else {
-                OrderingFragment orderingFragment = OrderingFragment.newInstance(0);
+                OrderingFragment orderingFragment = OrderingFragment.newInstance();
                 FragmentManager fragmentManager = getParentFragmentManager();
                 fragmentManager.beginTransaction()
                         .setCustomAnimations(R.anim.fade_in, R.anim.fade_out)

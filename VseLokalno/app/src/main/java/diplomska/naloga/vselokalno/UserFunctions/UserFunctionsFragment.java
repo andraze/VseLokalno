@@ -36,7 +36,7 @@ public class UserFunctionsFragment extends Fragment {
     // Linear Layouts:
     LinearLayoutCompat kosarica_narocilaLinearLayout;
     LinearLayoutCompat seznam_artikliLinearLayout;
-    LinearLayoutCompat zeljeLinearLayout;
+//    LinearLayoutCompat zeljeLinearLayout;
     LinearLayoutCompat zgodovinaLinearLayout;
     LinearLayoutCompat uporabniske_nastavitveLinearLayout;
     // Fragment:
@@ -128,12 +128,11 @@ public class UserFunctionsFragment extends Fragment {
                     .addToBackStack(null)
                     .commit();
         });
-        // Zelje:
-        zeljeLinearLayout = rootView.findViewById(R.id.zelje_userFunctionsFragment);
-        zeljeLinearLayout.setOnClickListener(l -> {
-            bottomNavigation.setVisibility(View.GONE);
-            // TODO: open zelje
-        });
+//        // Zelje:
+//        zeljeLinearLayout = rootView.findViewById(R.id.zelje_userFunctionsFragment);
+//        zeljeLinearLayout.setOnClickListener(l -> {
+//            bottomNavigation.setVisibility(View.GONE);
+//        });
         // Zgodovina:
         zgodovinaLinearLayout = rootView.findViewById(R.id.zgodovina_userFunctionsFragment);
         zgodovinaLinearLayout.setOnClickListener(l -> {

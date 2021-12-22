@@ -16,7 +16,6 @@ import java.util.Map;
  * public String naslov_kmetije
  * public Map<String, ArrayList<Boolean> cas_prevzema ... npr: {"pon": ["10:00-11:00", "11:00-12:00"]}
  * public Map<String, String> koordinate_kmetije ... npr: {"lat": 45.65154123, "lan": 22.85636531}
- * public ArrayList<Map<String, String>> artikli
  */
 public class Farm {
 
@@ -31,22 +30,12 @@ public class Farm {
     public String naslov_kmetije;
     public Map<String, ArrayList<Boolean>> cas_prevzema;
     public Map<String, String> koordinate_kmetije;
-    boolean use_default_pic;
 
     public Farm() {
         this.ime_kmetije = "";
         this.naslov_kmetije = "";
         this.cas_prevzema = new HashMap<>();
         this.koordinate_kmetije = new HashMap<>();
-        this.use_default_pic = true;
-    }
-
-    public boolean isUse_default_pic() {
-        return use_default_pic;
-    }
-
-    public void setUse_default_pic(boolean use_default_pic) {
-        this.use_default_pic = use_default_pic;
     }
 
     public String getIme_kmetije() {

@@ -80,9 +80,9 @@ public class RecyclerAdapter_FarmCategories extends RecyclerView.Adapter<Recycle
                     article.isPicture()) {
                 if (articleIDs.size() < 3)
                     articleIDs.add(article.getArticle_id());
-                if (article.getArticle_storage() < 0.1)
+                if (article.getArticle_storage() <= 0.1)
                     out_of_stock = true;
-                else if (article.getArticle_storage() < 1)
+                else if (article.getArticle_storage() <= 1)
                     low_on_stock = true;
             }
         }

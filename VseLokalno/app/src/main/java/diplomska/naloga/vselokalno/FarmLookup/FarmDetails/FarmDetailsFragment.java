@@ -257,6 +257,8 @@ public class FarmDetailsFragment extends Fragment implements FarmDetailsCategory
 
     @Override
     public void onArticleBuyListener(Article newArticle) {
+        // Set right adapter:
+        lastOpenedArticle = newArticle;
         for (int orderIndex = 0; orderIndex < appBasket.size(); orderIndex++) {
             Order order = appBasket.get(orderIndex);
             if (order.getId_kmetije().equals(newArticle.getFarm_id())) {
@@ -280,8 +282,6 @@ public class FarmDetailsFragment extends Fragment implements FarmDetailsCategory
         newOrder.setIme_priimek_kupca(appUser.getIme_uporabnika() + " " + appUser.getPriimek_uporabnika());
         newOrder.addOrdered_articles(newArticle);
         appBasket.add(newOrder);
-        // Set right adapter:
-        lastOpenedArticle = newArticle;
     } // onArticleBuyListener
 
     @Override

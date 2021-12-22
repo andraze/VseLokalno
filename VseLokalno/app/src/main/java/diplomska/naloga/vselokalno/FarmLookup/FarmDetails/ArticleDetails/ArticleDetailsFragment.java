@@ -110,7 +110,7 @@ public class ArticleDetailsFragment extends Fragment {
         AppCompatImageButton decreaseAmountBtn = rootView.findViewById(R.id.decrease_btn);
         decreaseAmountBtn.setOnClickListener(v -> {
             String currentAmountString = articleBuyAmountView.getText().toString();
-            if (currentAmountString.isEmpty() || Double.parseDouble(currentAmountString) < 0.0) {
+            if (currentAmountString.isEmpty() || Double.parseDouble(currentAmountString) <= 0.0) {
                 Toast.makeText(requireContext(), "Količina mora biti pozitivna.", Toast.LENGTH_SHORT).show();
             } else {
                 double currentAmountDouble = Double.parseDouble(currentAmountString);
@@ -140,7 +140,7 @@ public class ArticleDetailsFragment extends Fragment {
         acceptArticleBtn.setOnClickListener(v -> {
             String buyingAmountString = articleBuyAmountView.getText().toString();
             // Check if custemer trying to buy 0:
-            if (buyingAmountString.isEmpty() || Double.parseDouble(buyingAmountString) == 0) {
+            if (buyingAmountString.isEmpty() || Double.parseDouble(buyingAmountString) <= 0) {
                 articleStockView.setTextColor(getResources().getColor(R.color.red_normal));
                 Toast.makeText(requireContext(), "Količina mora biti večja od 0.", Toast.LENGTH_SHORT).show();
             } else {

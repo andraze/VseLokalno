@@ -137,9 +137,9 @@ public class EditArticleFragment extends Fragment implements ImageCropper.ImageC
         // Stock size:
         EditText stockQuantity = rootView.findViewById(R.id.article_storage);
         stockQuantity.setText(String.format("%.2f", currentArticle.getArticle_storage()));
-        if (currentArticle.getArticle_storage() < 0.1)
+        if (currentArticle.getArticle_storage() <= 0.1)
             stockQuantity.setTextColor(getResources().getColor(R.color.red_normal));
-        else if (currentArticle.getArticle_storage() < 1)
+        else if (currentArticle.getArticle_storage() <= 1)
             stockQuantity.setTextColor(getResources().getColor(R.color.yellow_normal));
         // Save button:
         AppCompatButton saveArticle = rootView.findViewById(R.id.save_article);
