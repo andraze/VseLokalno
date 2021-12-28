@@ -259,8 +259,11 @@ public class MainActivity extends AppCompatActivity {
         for (Order order : appActiveOrders) {
             if (order.getOpravljeno() == 3)
                 sendOrderToHistory(order);
-            if (orderPickupPassed(order))
+            if (orderPickupPassed(order)) {
+                if (order.getOpravljeno() == 0)
+                    order.setOpravljeno(3);
                 sendOrderToHistory(order);
+            }
         }
     } // checkStageOfActiveOrders
 
