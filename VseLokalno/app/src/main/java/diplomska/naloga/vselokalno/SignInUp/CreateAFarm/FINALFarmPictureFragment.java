@@ -17,11 +17,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageView;
+import androidx.core.widget.ContentLoadingProgressBar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -50,6 +52,7 @@ public class FINALFarmPictureFragment extends Fragment implements ImageCropper.I
 
     //    Views
     AppCompatImageView imageView;
+    ProgressBar progressBar;
     //    Image request code
     private final static int PICK_IMAGE = 100;
     //    Image uri
@@ -89,6 +92,7 @@ public class FINALFarmPictureFragment extends Fragment implements ImageCropper.I
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_final_farm_picture, container, false);
         imageView = rootView.findViewById(R.id.image_holder);
+        progressBar = rootView.findViewById(R.id.loading_bar_create_farm);
 //        Cancel
         FloatingActionButton cancelBtn = rootView.findViewById(R.id.pop_to_choser_btn);
         cancelBtn.setOnClickListener(v -> {
@@ -100,7 +104,10 @@ public class FINALFarmPictureFragment extends Fragment implements ImageCropper.I
         choosePhotoButton.setOnClickListener(v -> openGallery());
 //        Next
         MaterialButton nexBtn = rootView.findViewById(R.id.create_a_farm_btn);
-        nexBtn.setOnClickListener(v -> createAccount());
+        nexBtn.setOnClickListener(v -> {
+            progressBar.setVisibility(View.VISIBLE);
+            createAccount();
+        });
         return rootView;
     } // onCreateView
 
@@ -185,6 +192,7 @@ public class FINALFarmPictureFragment extends Fragment implements ImageCropper.I
         allFarmsDocument.update(user.getUid(), shortDataFarm)
                 .addOnSuccessListener(unused -> {
                     makeLogD(TAG, "(addToAllFarmList) addition successful.");
+                    progressBar.setVisibility(View.GONE);
                     Intent toMainActivity = new Intent(requireContext(), MainActivity.class);
                     startActivity(toMainActivity);
                     requireActivity().finish();
