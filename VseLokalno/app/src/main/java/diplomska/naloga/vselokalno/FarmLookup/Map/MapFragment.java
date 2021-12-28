@@ -10,6 +10,8 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -88,6 +90,34 @@ public class MapFragment extends Fragment implements GoogleMap.OnInfoWindowClick
         } // onMapReady
     };
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        location = new SimpleLocation(requireContext());
+        if (!location.hasLocationEnabled()) {
+            // ask the user to enable location access
+            Handler handler = new Handler();
+            handler.postDelayed(() -> {
+                Toast.makeText(requireContext(), "Potrebujemo vašo lokacijo.", Toast.LENGTH_SHORT).show();
+                startActivityForResult((new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)), 1);
+            }, 0);
+        }
+        // Get user location:
+        try {
+            LAT = location.getLatitude();
+            LON = location.getLongitude();
+
+        } catch (SecurityException e) {
+            Toast.makeText(requireContext(), "We need your location to start the map.", Toast.LENGTH_SHORT).show();
+            try {
+                Thread.sleep(3000);                   // Wait for 3 Seconds
+            } catch (Exception e2) {
+                System.out.println("Error: " + e2);      // Catch the exception
+            }
+            restartApp();
+        }
+    }
+
     public MapFragment() {
         // Required empty public constructor
     }
@@ -110,6 +140,14 @@ public class MapFragment extends Fragment implements GoogleMap.OnInfoWindowClick
             mapFragment.getMapAsync(callback);
         }
         location = new SimpleLocation(requireContext());
+        if (!location.hasLocationEnabled()) {
+            // ask the user to enable location access
+            Handler handler = new Handler();
+            handler.postDelayed(() -> {
+                Toast.makeText(requireContext(), "Potrebujemo vašo lokacijo.", Toast.LENGTH_SHORT).show();
+                startActivityForResult((new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)), 1);
+            }, 0);
+        }
         // Get user location:
         try {
             LAT = location.getLatitude();
