@@ -37,15 +37,36 @@
             android:textColor="@color/blue_normal"
             android:textSize="@dimen/sp_22" />
 
-        <TextView
-            android:id="@+id/article_price_unit"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/dp_8"
-            android:fontFamily="@font/roboto_bold_family"
-            android:textAlignment="center"
-            android:textColor="@color/blue_normal"
-            android:textSize="@dimen/sp_18" />
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/article_price_unit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="@dimen/dp_4"
+                android:fontFamily="@font/roboto_bold_family"
+                android:textAlignment="center"
+                android:textColor="@color/blue_normal"
+                android:textSize="@dimen/sp_18" />
+
+            <TextView
+                android:id="@+id/farm_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/article_price_unit"
+                android:layout_centerHorizontal="true"
+                android:layout_marginStart="@dimen/dp_4"
+                android:layout_marginTop="@dimen/dp_4"
+                android:layout_marginEnd="@dimen/dp_4"
+                android:layout_marginBottom="@dimen/dp_4"
+                android:fontFamily="@font/roboto_regular_family"
+                android:textColor="@color/blue_normal"
+                android:textSize="@dimen/sp_14" />
+
+        </RelativeLayout>
 
         <View
             android:layout_width="0dp"

@@ -73,7 +73,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     public void onBindViewHolder(RecyclerAdapter.ViewHolder holder, int position) {
         // Get current sport.
         Map<String, String> currentFarm = mFarmData.get(mFarmDataKeys[position]);
-        // Populate the textviews with data.
+        // Populate the text views with data.
         holder.mNaslovText.setText(Objects.requireNonNull(currentFarm).get("ime_kmetije"));
         // Reference to an image file in Cloud Storage
         StorageReference imageRef = FirebaseStorage.getInstance().getReference()

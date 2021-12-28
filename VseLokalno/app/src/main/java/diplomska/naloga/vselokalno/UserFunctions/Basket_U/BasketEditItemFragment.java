@@ -1,7 +1,13 @@
 package diplomska.naloga.vselokalno.UserFunctions.Basket_U;
 
+import static diplomska.naloga.vselokalno.FarmLookup.Map.MapFragment.LAT;
+import static diplomska.naloga.vselokalno.FarmLookup.Map.MapFragment.LON;
+import static diplomska.naloga.vselokalno.MainActivity.allFarmsDataShort;
+import static diplomska.naloga.vselokalno.MainActivity.makeLogD;
+
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.location.Location;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.view.LayoutInflater;
@@ -21,6 +27,9 @@ import com.bumptech.glide.Glide;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+
+import java.util.Map;
+import java.util.Objects;
 
 import diplomska.naloga.vselokalno.DataObjects.Article;
 import diplomska.naloga.vselokalno.DataObjects.DecimalDitgitsInputFilter;
@@ -85,6 +94,18 @@ public class BasketEditItemFragment extends Fragment {
         } else {
             articleImageView.setVisibility(View.GONE);
             imageShadowBackground.setVisibility(View.GONE);
+        }
+        // Farm name:
+        TextView farmNameView = rootView.findViewById(R.id.farm_name);
+        Map<String, String> tempMap = allFarmsDataShort.get(mArticle.getFarm_id());
+        if (tempMap != null) {
+            float[] results = new float[1];
+            Location.distanceBetween(LAT, LON,
+                    Double.parseDouble(Objects.requireNonNull(tempMap.get("lat"))),
+                    Double.parseDouble(Objects.requireNonNull(tempMap.get("lon"))), results);
+            makeLogD(TAG, String.format("%.2f", results[0]));
+            String farmName_Distance = String.format("%s (%.2f km)", tempMap.get("ime_kmetije"), results[0]/1000);
+            farmNameView.setText(farmName_Distance);
         }
         // Article name:
         TextView articleNameView = rootView.findViewById(R.id.article_name);
