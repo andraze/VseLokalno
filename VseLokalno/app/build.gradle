@@ -86,4 +86,6 @@ dependencies {
     // Image cropper
     implementation 'com.github.CanHub:Android-Image-Cropper:4.0.0'
     kapt 'com.github.bumptech.glide:compiler:4.12.0'
+    // Spark button
+    implementation 'com.github.varunest:sparkbutton:1.0.6'
 }

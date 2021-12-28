@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".StartActivity">
+
+    <com.varunest.sparkbutton.SparkButton
+        android:id="@+id/spark_button"
+        android:layout_width="500dp"
+        android:layout_height="500dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="100dp"
+        android:layout_marginBottom="100dp"
+        app:sparkbutton_activeImage="@drawable/vse_lokalno_logo"
+        app:sparkbutton_animationSpeed="0.5"
+        app:sparkbutton_iconSize="150dp"
+        app:sparkbutton_inActiveImage="@drawable/vse_lokalno_logo"
+        app:sparkbutton_primaryColor="@color/blue_bright"
+        app:sparkbutton_secondaryColor="@color/green_bright" />
+
+
+</RelativeLayout>
