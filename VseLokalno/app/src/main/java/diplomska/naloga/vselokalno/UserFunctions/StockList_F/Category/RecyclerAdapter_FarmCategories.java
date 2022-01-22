@@ -76,9 +76,8 @@ public class RecyclerAdapter_FarmCategories extends RecyclerView.Adapter<Recycle
         boolean low_on_stock = false;
         boolean out_of_stock = false;
         for (Article article : appArticles) {
-            if (article.getCategory_id().equals(currentCategory.getCategory_id()) &&
-                    article.isPicture()) {
-                if (articleIDs.size() < 3)
+            if (article.getCategory_id().equals(currentCategory.getCategory_id())) {
+                if (article.isPicture() && articleIDs.size() < 3)
                     articleIDs.add(article.getArticle_id());
                 if (article.getArticle_storage() <= 0.1)
                     out_of_stock = true;

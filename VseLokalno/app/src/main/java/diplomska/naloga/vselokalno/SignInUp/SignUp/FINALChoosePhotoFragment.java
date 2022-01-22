@@ -35,6 +35,7 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import diplomska.naloga.vselokalno.DataObjects.User;
 import diplomska.naloga.vselokalno.ImageCrop.ImageCropper;
 import diplomska.naloga.vselokalno.MainActivity;
@@ -43,7 +44,7 @@ import diplomska.naloga.vselokalno.R;
 public class FINALChoosePhotoFragment extends Fragment implements ImageCropper.ImageCroppedCallbackListener {
 
     //    Views
-    AppCompatImageView imageView;
+    CircleImageView imageView;
     ProgressBar progressBar;
     //    Image request code
     private final static int PICK_IMAGE = 100;
