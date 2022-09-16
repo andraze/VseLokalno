@@ -23,8 +23,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -78,7 +76,7 @@ public class ListFragment extends Fragment implements RecyclerAdapter.ItemClickL
             @Override
             public boolean onQueryTextSubmit(String query) {
                 setArticleQueryAdapter(query.trim());
-                return true;
+                return false;
             }
 
             @Override
@@ -91,11 +89,11 @@ public class ListFragment extends Fragment implements RecyclerAdapter.ItemClickL
 
     void setArticleQueryAdapter(String query) {
         query = query.toLowerCase();
-        mQueryArticles = new ArrayList<>();
         FirebaseFirestore.getInstance().collectionGroup("Artikli")
                 .whereArrayContains("article_name_keywords", query)
                 .limit(20).get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
+                    mQueryArticles = new ArrayList<>();
                     for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                         Article articleTemp = documentSnapshot.toObject(Article.class);
                         if (articleTemp != null) {
